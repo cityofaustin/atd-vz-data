@@ -46,7 +46,7 @@ export const crashGridTableColumns = {
     label_table: "ATD Death Count",
     type: "Date",
   },
-  est_comp_cost: {
+  est_comp_cost_crash_based: {
     searchable: false,
     sortable: true,
     label_table: "Est Comprehensive Cost",
@@ -111,7 +111,7 @@ export const nonCR3CrashGridTableColumns = {
     label_table: "Speed Management Points",
     type: "Int",
   },
-  est_comp_cost: {
+  est_comp_cost_crash_based: {
     primary_key: false,
     searchable: false,
     sortable: true,

@@ -27,7 +27,7 @@ export const crashDataMap = [
         label: "Day of Week",
         editable: false,
       },
-      est_comp_cost: {
+      est_comp_cost_crash_based: {
         label: "Est. Comprehensive Cost",
         editable: false,
         format: "dollars",

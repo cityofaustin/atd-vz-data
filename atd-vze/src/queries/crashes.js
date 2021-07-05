@@ -26,6 +26,7 @@ export const GET_CRASH = gql`
       day_of_week
       death_cnt
       est_comp_cost
+      est_comp_cost_crash_based
       est_econ_cost
       fhe_collsn_id
       geocode_method {
@@ -250,6 +251,7 @@ rpt_sec_block_num
 rpt_sec_street_pfx
 rpt_sec_street_name
 est_comp_cost
+est_comp_cost_crash_based
 atd_fatality_count
 sus_serious_injry_cnt
 nonincap_injry_cnt
@@ -291,5 +293,6 @@ hour
 address
 speed_mgmt_points
 est_comp_cost
+est_comp_cost_crash_based
 est_econ_cost
 `;

@@ -19,7 +19,7 @@ function LocationCrashes(props) {
     showDateRange: true,
     columns: crashGridTableColumns,
     order_by: {
-      est_comp_cost: "desc"
+      est_comp_cost_crash_based: "desc"
     },
     where: {
       location_id: `_eq: "${props.locationId}"`,
@@ -39,7 +39,7 @@ function LocationCrashes(props) {
       columns: [
         `count`,
         `sum { apd_confirmed_death_count
-               est_comp_cost }`,
+               est_comp_cost_crash_based }`,
       ],
     },
     {
@@ -149,7 +149,7 @@ function LocationCrashes(props) {
         "atd_txdot_crashes_aggregate",
         "aggregate",
         "sum",
-        "est_comp_cost",
+        "est_comp_cost_crash_based",
       ],
       sum: false,
       format: "dollars",
