@@ -25,7 +25,7 @@ WITH
   noncr3 AS (
     SELECT COUNT(aab.case_id) AS total_crashes,
       COUNT(aab.case_id) *
-        (select est_comp_cost_amount from atd_txdot__est_comp_cost where est_comp_cost_id = 6)
+        (select est_comp_cost_amount from atd_txdot__est_comp_cost_crash_based where est_comp_cost_id = 7) 
       AS est_comp_cost
     FROM atd_apd_blueform aab
     WHERE aab.location_id = noncr3_location
@@ -39,7 +39,7 @@ WITH
       -- In the case of no CR3 crashes, the SUM() returns null,
       -- which in turn causes 'total_est_comp_cost' to be null
       -- in the main query, as INT + null = null.
-      COALESCE(SUM(est_comp_cost),0) AS est_comp_cost
+      COALESCE(SUM(est_comp_cost_crash_based),0) AS est_comp_cost
     FROM atd_txdot_crashes atc
     WHERE atc.location_id = cr3_location
       AND atc.crash_date >= cr3_crash_date
