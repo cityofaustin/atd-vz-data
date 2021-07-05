@@ -18,7 +18,7 @@ SELECT atc.crash_id AS crash_id
      , atc.tot_injry_cnt
      , atc.death_cnt
      , atc.unkn_injry_cnt
-     , atc.est_comp_cost
+     , atc.est_comp_cost_crash_based as est_comp_cost
      , string_agg(atcl.collsn_desc::text, ',')          AS collsn_desc
      , string_agg(attdl.trvl_dir_desc::text, ',')       AS travel_direction
      , string_agg(atml.movement_desc::text, ',')        AS movement_desc
@@ -83,7 +83,7 @@ SELECT
      , 0 AS tot_injry_cnt
      , 0 AS death_cnt
      , 0 AS unkn_injry_cnt
-     , est_comp_cost
+     , est_comp_cost_crash_based as est_comp_cost
      , ''::text AS collsn_desc
      , ''::text AS travel_direction
      , ''::text AS movement_desc

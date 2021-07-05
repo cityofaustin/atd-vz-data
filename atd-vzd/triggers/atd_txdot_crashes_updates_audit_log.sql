@@ -1,9 +1,10 @@
-create function atd_txdot_crashes_updates_audit_log() returns trigger
+create or replace function atd_txdot_crashes_updates_audit_log() returns trigger
     language plpgsql
 as
 $$
 DECLARE
     estCompCostList decimal(10,2)[];
+    estCompCostListCrashBased decimal(10,2)[];
     estCompEconList decimal(10,2)[];
     speedMgmtList decimal(10,2)[];
 BEGIN
@@ -15,8 +16,8 @@ BEGIN
         INSERT INTO atd_txdot_change_log (record_id, record_crash_id, record_type, record_json, updated_by)
         VALUES (old.crash_id, old.crash_id, 'crashes', row_to_json(old), NEW.updated_by);
     END IF;
-            
-    -- COPIES THE CITY_ID INTO ORIGINAL_CITY_ID FOR BACKUP 
+
+    -- COPIES THE CITY_ID INTO ORIGINAL_CITY_ID FOR BACKUP
     IF (TG_OP = 'INSERT') THEN
             NEW.original_city_id = NEW.city_id;
     END IF;
@@ -52,17 +53,18 @@ BEGIN
     --- END OF LAT/LONG OPERATIONS ---
 
 
-	------------------------------------------------------------------------------------------
+    ------------------------------------------------------------------------------------------
     -- CONFIRMED ADDRESSES
     ------------------------------------------------------------------------------------------
-
+   
+   
     -- If there is no confirmed primary address provided, then generate it:
     IF (NEW.address_confirmed_primary IS NULL) THEN
-    	NEW.address_confirmed_primary 	= TRIM(CONCAT(NEW.rpt_street_pfx, ' ', NEW.rpt_block_num, ' ', NEW.rpt_street_name, ' ', NEW.rpt_street_sfx));
+      NEW.address_confirmed_primary   = TRIM(CONCAT(NEW.rpt_street_pfx, ' ', NEW.rpt_block_num, ' ', NEW.rpt_street_name, ' ', NEW.rpt_street_sfx));
     END IF;
     -- If there is no confirmed secondary address provided, then generate it:
     IF (NEW.address_confirmed_secondary IS NULL) THEN
-		NEW.address_confirmed_secondary = TRIM(CONCAT(NEW.rpt_sec_street_pfx, ' ', NEW.rpt_sec_block_num, ' ', NEW.rpt_sec_street_name, ' ', NEW.rpt_sec_street_sfx));
+    NEW.address_confirmed_secondary = TRIM(CONCAT(NEW.rpt_sec_street_pfx, ' ', NEW.rpt_sec_block_num, ' ', NEW.rpt_sec_street_name, ' ', NEW.rpt_sec_street_sfx));
     END IF;
     --- END OF ADDRESS OPERATIONS ---
 
@@ -72,7 +74,7 @@ BEGIN
     -- If our apd death count is null, then assume death_cnt's value
     IF (NEW.atd_fatality_count IS NULL) THEN
         NEW.atd_fatality_count = NEW.death_cnt;
-	END IF;
+  END IF;
 
     IF (NEW.apd_confirmed_death_count IS NULL) THEN
         NEW.apd_confirmed_death_count = NEW.death_cnt;
@@ -98,6 +100,7 @@ BEGIN
 
     -- First we need to gather a list of all of our costs, comprehensive and economic.
     estCompCostList = ARRAY(SELECT est_comp_cost_amount FROM atd_txdot__est_comp_cost ORDER BY est_comp_cost_id ASC);
+    estCompCostListCrashBased = ARRAY(SELECT est_comp_cost_amount FROM atd_txdot__est_comp_cost_crash_based ORDER BY est_comp_cost_id ASC);
     estCompEconList = ARRAY(SELECT est_econ_cost_amount FROM atd_txdot__est_econ_cost ORDER BY est_econ_cost_id ASC);
 
     NEW.est_comp_cost = (0
@@ -108,6 +111,16 @@ BEGIN
        + (NEW.poss_injry_cnt * (estCompCostList[5]))
        + (NEW.non_injry_cnt * (estCompCostList[6]))
    )::decimal(10,2);
+
+    IF (NEW.atd_fatality_count > 0) THEN NEW.est_comp_cost_crash_based = estCompCostListCrashBased[1];
+    ELSIF (NEW.sus_serious_injry_cnt > 0) THEN NEW.est_comp_cost_crash_based = estCompCostListCrashBased[2];
+    ELSIF (NEW.nonincap_injry_cnt > 0) THEN NEW.est_comp_cost_crash_based = estCompCostListCrashBased[3];
+    ELSIF (NEW.poss_injry_cnt > 0) THEN NEW.est_comp_cost_crash_based = estCompCostListCrashBased[4];
+    ELSIF (NEW.non_injry_cnt > 0) THEN NEW.est_comp_cost_crash_based = estCompCostListCrashBased[5];
+    ELSIF (NEW.unkn_injry_cnt > 0) THEN NEW.est_comp_cost_crash_based = estCompCostListCrashBased[6];
+    ELSE NEW.est_comp_cost_crash_based = 0;
+    END IF;
+
 
     NEW.est_econ_cost = (0
        + (NEW.unkn_injry_cnt * (estCompEconList[1]))
@@ -125,8 +138,8 @@ BEGIN
     ------------------------------------------------------------------------------------------
     speedMgmtList = ARRAY (SELECT speed_mgmt_points FROM atd_txdot__speed_mgmt_lkp ORDER BY speed_mgmt_id ASC);
 
-	NEW.speed_mgmt_points = (0
-		+ (NEW.unkn_injry_cnt * (speedMgmtList [1]))
+  NEW.speed_mgmt_points = (0
+    + (NEW.unkn_injry_cnt * (speedMgmtList [1]))
         + (NEW.atd_fatality_count * (speedMgmtList [2]))
         + (NEW.sus_serious_injry_cnt * (speedMgmtList [3]))
         + (NEW.nonincap_injry_cnt * (speedMgmtList [4]))
