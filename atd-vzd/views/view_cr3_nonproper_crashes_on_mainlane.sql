@@ -66,6 +66,6 @@ AS WITH cr3_mainlanes AS (
     cr3_mainlanes l,
     seek_direction d
      JOIN atd_jurisdictions aj ON aj.id = 5
-  WHERE 1 = 1 AND c.location_id IS NULL AND d.crash_id = c.crash_id AND st_contains(aj.geometry, c."position") AND c.private_dr_fl::text = 'N'::text AND (c.rpt_road_part_id = ANY (ARRAY[2, 3, 4, 5, 7])) AND st_contains(l.geometry, c."position");
+  WHERE 1 = 1 AND d.crash_id = c.crash_id AND st_contains(aj.geometry, c."position") AND c.private_dr_fl::text = 'N'::text AND (c.rpt_road_part_id = ANY (ARRAY[2, 3, 4, 5, 7])) AND st_contains(l.geometry, c."position");
 
 -- Ensure that this view is tracked in Hasura and that it has at least, surface_street_polygon & crash_id exposed for SELECT.
