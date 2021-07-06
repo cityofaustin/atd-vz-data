@@ -11,6 +11,7 @@ from typing import Optional
 HASURA_ADMIN_SECRET = os.getenv("HASURA_ADMIN_SECRET", "")
 HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT", "")
 HASURA_EVENT_API = os.getenv("HASURA_EVENT_API", "")
+HASURA_SSL_VERIFY = True# Set False for local hasura with self-generated SSL cert
 
 # Prep Hasura query
 HEADERS = {
@@ -56,6 +57,52 @@ def is_insert(data: dict) -> bool:
             exception_type=KeyError
         )
 
+def is_crash_nonproper_and_directional(crash_id: int) -> str:
+    """
+    Returns location_id of a location based on directionality and rpt_road_part_id for a mainlane crash, Empty string otherwise.
+    As a result of the empty string behavior, this can be used as a test as well, to see if a SVRD polygon can be used for a mainlane crash.
+    :param int crash_id: The crash_id to be evaluated
+    """
+    if not str(crash_id).isdigit():
+        return False
+
+    check_nonproper_polygon_query = """
+        query has_alt_polygon($crash_id: Int) {
+          cr3_nonproper_crashes_on_mainlane(where: {crash_id: {_eq: $crash_id}}) {
+            surface_street_polygon
+          }
+        }
+    """
+
+    try:
+        """
+            We will attempt to find the record through a query on the cr3_nonproper_crashes_on_mainlane view.
+            if no matches are returned, then it means the crash does not meet all criteria to have an association to a SVRD polygon.
+        """
+        response = requests.post(
+            HASURA_ENDPOINT,
+            data=json.dumps(
+                {
+                    "query": check_nonproper_polygon_query,
+                    "variables": {
+                        "crash_id": crash_id
+                    }
+                }
+            ),
+            headers=HEADERS,
+            verify=HASURA_SSL_VERIFY
+        )
+        if (response.json()["data"]["cr3_nonproper_crashes_on_mainlane"][0]["surface_street_polygon"] is None):
+            return ''
+        else:
+            return response.json()["data"]["cr3_nonproper_crashes_on_mainlane"][0]["surface_street_polygon"]
+    except:
+        """
+            In case the response is broken or invalid, we need to:
+            - Output the problem for debugging
+            - Default to empty string, False by another name, but fitting in the expected str datatype
+        """
+        return False
 
 def is_crash_mainlane(crash_id: int) -> bool:
     """
@@ -92,7 +139,8 @@ def is_crash_mainlane(crash_id: int) -> bool:
                     }
                 }
             ),
-            headers=HEADERS
+            headers=HEADERS,
+            verify=HASURA_SSL_VERIFY
         )
         return len(response.json()["data"]["find_cr3_mainlane_crash"]) > 0
     except:
@@ -160,7 +208,8 @@ def find_crash_location(crash_id: int) -> Optional[str]:
                     }
                 }
             ),
-            headers=HEADERS
+            headers=HEADERS,
+            verify=HASURA_SSL_VERIFY
         )
         return response.json()["data"]["find_location_for_cr3_collision"][0]["location_id"]
     except:
@@ -208,7 +257,8 @@ def get_cr3_location_id(crash_id: int) -> Optional[str]:
         response = requests.post(
             HASURA_ENDPOINT,
             data=json.dumps(query_get_location_id),
-            headers=HEADERS
+            headers=HEADERS,
+            verify=HASURA_SSL_VERIFY
         )
         return response.json()["data"]["atd_txdot_crashes"][0]["location_id"]
     except (IndexError, KeyError, TypeError):
@@ -247,7 +297,8 @@ def update_location(crash_id: int, new_location_id: str) -> dict:
         mutation_response = requests.post(
             HASURA_ENDPOINT,
             data=json.dumps(mutation_json_body),
-            headers=HEADERS
+            headers=HEADERS,
+            verify=HASURA_SSL_VERIFY
         )
     except Exception as e:
         raise_critical_error(
@@ -275,8 +326,11 @@ def hasura_request(record: str) -> bool:
 
     # Check if this crash is a main-lane
     if is_crash_mainlane(crash_id):
-        # If so, make sure to nullify the new location_id
-        new_location_id = None
+        if(nonproper_level_5_directional_polygon := is_crash_nonproper_and_directional(crash_id)):
+            new_location_id = nonproper_level_5_directional_polygon
+        else:
+            # If so, make sure to nullify the new location_id
+            new_location_id = None
     else:
         # If not, then try to find the location...
         new_location_id = find_crash_location(crash_id)
@@ -317,3 +371,14 @@ def handler(event, context):
                         data=record,
                         exception_type=Exception
                     )
+
+
+
+# Work-around to test easily on the command line
+
+#if __name__ == "__main__":
+    #event = {'Records': [{'body': """ { "event": { "data": { "old": null, "new": {
+                #"crash_id": 15359199,
+              #"location_id": null } } } } """}]}
+    #context = {}
+    #handler(event, context)
