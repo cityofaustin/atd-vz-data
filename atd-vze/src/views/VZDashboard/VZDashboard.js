@@ -49,7 +49,7 @@ function VZDashboard() {
         <Col xs="12" sm="12" md="12">
           <VZNoticeWidget
             header={`July 2021: Comprehensive Cost Schedule Updates`}
-            mainText={`Vision Zero has implemented a revised comprehensive cost scale for crashes in the VZE crash database and various mapping tools. The revised scale inflates comprehensive costs to 2021 dollars, deemphasizes the value of non-injury/property damage only crashes (i.e. non-CR-3 crashes) and now applies cost values based on the highest injury severity of each crash, rather than the sum of all injuries per crash. Questions regarding the revised comprehensive cost scale can be directed to lewis.leff@austintexas.gov.`}
+            mainText={`Vision Zero has implemented a revised comprehensive cost scale for crashes in the VZE crash database and various mapping tools. The revised scale inflates comprehensive costs to 2021 dollars, deemphasizes the relative value of non-injury/property damage only crashes (i.e. non-CR-3 crashes) and now applies cost values based on the highest injury severity of each crash, rather than the sum of all injuries per crash. Questions regarding the revised comprehensive cost scale can be directed to lewis.leff@austintexas.gov.`}
             icon="fa fa-exclamation-triangle"
             color="warning"
           />
