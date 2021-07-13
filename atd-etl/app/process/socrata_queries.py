@@ -20,6 +20,7 @@ crashes_query_template = Template(
                 order_by: {crash_id: asc},
                 where: {
                     crash_date: { _lt: "$date_limit" }
+                    private_dr_fl: { _eq: "N" },
                     _and: [
                       { crash_date: { _is_null: false }},
                       { crash_time: { _is_null: false }}
@@ -86,6 +87,7 @@ people_query_template = Template(
             offset: $offset,
             order_by: {person_id: asc},
             where: {
+                crash: { private_dr_fl: { _eq: "N" }},
                 _or: [
                     {prsn_injry_sev_id: {_eq: 1}},
                     {prsn_injry_sev_id: {_eq: 4}}
@@ -126,6 +128,7 @@ people_query_template = Template(
             offset: $offset,
             order_by: {primaryperson_id: asc},
             where: {
+                crash: { private_dr_fl: { _eq: "N" }},
                 _or: [{prsn_injry_sev_id: {_eq: 1}}, {prsn_injry_sev_id: {_eq: 4}}],
                 _and: {
                     crash: {crash_date: {_lt: "$date_limit"}}
