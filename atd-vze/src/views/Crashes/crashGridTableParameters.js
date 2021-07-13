@@ -116,14 +116,14 @@ export const nonCR3CrashGridTableColumns = {
     searchable: false,
     sortable: true,
     label_table: "Est Comprehensive Cost",
-    type: "Int",
+    type: "Currency",
   },
   est_econ_cost: {
     primary_key: false,
     searchable: false,
     sortable: true,
     label_table: "Est Economic Cost",
-    type: "Int",
+    type: "Currency",
   },
 };
 
