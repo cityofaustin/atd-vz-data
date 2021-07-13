@@ -136,19 +136,14 @@ const CrashesByMode = () => {
 
   // Sort mode order in stack and apply colors by averaging total mode fatalities across all years in chart
   const sortAndColorModeData = (modeData) => {
-    const averageModeFatalities = (modeDataArray) =>
-      modeDataArray.reduce((a, b) => a + b) / modeDataArray.length;
-    const modeDataSorted = modeData.sort(
-      (a, b) => averageModeFatalities(b.data) - averageModeFatalities(a.data)
-    );
-    modeDataSorted.forEach((category, i) => {
+    modeData.forEach((category, i) => {
       const color = chartColors[i];
       category.backgroundColor = color;
       category.borderColor = color;
       category.hoverBackgroundColor = color;
       category.hoverBorderColor = color;
     });
-    return modeDataSorted;
+    return modeData;
   };
 
   // Create dataset for each mode type, data property is an array of fatality sums sorted chronologically
