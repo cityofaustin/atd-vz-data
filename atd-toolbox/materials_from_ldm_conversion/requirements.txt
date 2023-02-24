@@ -1,0 +1,2 @@
+psycopg==3.*
+load-dotenv==0.1.*
