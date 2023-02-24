@@ -1,4 +1,4 @@
-DB_HOST=host.docker.internal
+DB_HOST=localhost
 DB_IMPORT_SCHEMA=import
 DB_NAME=atd_vz_data
 DB_USER=visionzero
