@@ -2,6 +2,7 @@
 
 import os
 import psycopg2
+import psycopg2.extras
 from dotenv import load_dotenv
 
 load_dotenv("env")
@@ -26,3 +27,32 @@ def get_pg_connection():
     )
 
 pg = get_pg_connection()
+cris_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+public_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+vz_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+vz_cursor.execute('truncate vz.atd_txdot_crashes')
+pg.commit()
+
+sql = "select * from cris.atd_txdot_crashes order by crash_id asc"
+cris_cursor.execute(sql)
+for cris in cris_cursor:
+    print()
+    print("CRIS:   ", cris["crash_id"])
+    sql = "select * from public.atd_txdot_crashes where crash_id = %s"
+    public_cursor.execute(sql, (cris["crash_id"],))
+    public = public_cursor.fetchone()
+    print("public: ", public["crash_id"])
+    keys = ["crash_id"]
+    values = [cris["crash_id"]]
+    for k, v in cris.items():
+        if (k in ('crash_id')): # use to define fields to ignore
+            continue
+        if v != public[k]:
+            # print("Δ ", k, ": ", public[k], " → ", v)
+            keys.append(k)
+            values.append(v)
+    print("keys: ", keys)
+    print("values: ", values)
+    #sql = "insert into vz_atd_txdot_crashes (crash_id, " + ", ".join(changes.keys()) + ") values (" + str(public["crash_id"]) + ", " + ", ".join(["%s"] * len(changes)) + ")"
+    #print(sql)
