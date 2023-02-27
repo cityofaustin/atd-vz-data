@@ -14,8 +14,21 @@ DB_NAME = os.getenv("DB_NAME")
 DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
 def values_for_sql(values):
-    pass
-    return ['frank', 'chia', 'mike']
+    strings = []
+    for value in values:
+        # print(value, type(value))
+        # print(value, isinstance(value, datetime.datetime))
+        if isinstance(value, str):
+            strings.append(f"'{value}'")
+        elif isinstance(value, datetime.date):
+            strings.append(f"'{str(value)}'")
+        elif isinstance(value, datetime.datetime):
+            strings.append(f"'{str(value)}'")
+        elif value is None:
+            strings.append("null")
+        else:
+            strings.append(f"{str(value)}")
+    return strings
 
 def get_pg_connection():
     """
