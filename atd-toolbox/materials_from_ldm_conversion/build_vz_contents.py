@@ -78,7 +78,16 @@ for cris in cris_cursor:
         {comma_linefeed.join(keys)}
     ) values (
         {comma_linefeed.join(values_for_sql(values))}
-    )
+    );
     """
-    print(sql)
-    input("Press Enter to continue...")
+    # print(sql)
+    try:
+        vz_cursor.execute(sql)
+        pg.commit()
+    except:
+        print("keys: ", keys)
+        print("values: ", values)
+        print("ERROR: ", sql)
+        quit()
+    print("Inserted: ", cris["crash_id"])
+    # input("Press Enter to continue...")
