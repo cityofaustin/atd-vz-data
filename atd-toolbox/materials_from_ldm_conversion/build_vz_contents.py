@@ -55,8 +55,8 @@ pg.commit()
 sql = "select * from cris.atd_txdot_crashes order by crash_id asc"
 cris_cursor.execute(sql)
 for cris in cris_cursor:
-    print()
-    print("CRIS:   ", cris["crash_id"])
+    # if cris["crash_id"] != 14866997:
+        # continue
     sql = "select * from public.atd_txdot_crashes where crash_id = %s"
     public_cursor.execute(sql, (cris["crash_id"],))
     public = public_cursor.fetchone()
