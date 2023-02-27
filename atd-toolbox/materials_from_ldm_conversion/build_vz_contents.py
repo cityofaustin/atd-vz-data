@@ -57,10 +57,12 @@ cris_cursor.execute(sql)
 for cris in cris_cursor:
     # if cris["crash_id"] != 14866997:
         # continue
+    # print()
+    # print("CRIS:   ", cris["crash_id"])
     sql = "select * from public.atd_txdot_crashes where crash_id = %s"
     public_cursor.execute(sql, (cris["crash_id"],))
     public = public_cursor.fetchone()
-    print("public: ", public["crash_id"])
+    # print("public: ", public["crash_id"])
     keys = ["crash_id"]
     values = [cris["crash_id"]]
     for k, v in cris.items():
@@ -70,11 +72,9 @@ for cris in cris_cursor:
             # print("Δ ", k, ": ", public[k], " → ", v)
             keys.append(k)
             values.append(v)
-    print("keys: ", keys)
-    print("values: ", values)
     comma_linefeed = ",\n        "
     sql = f"""
-    insert into vz_atd_txdot_crashes (
+    insert into vz.atd_txdot_crashes (
         {comma_linefeed.join(keys)}
     ) values (
         {comma_linefeed.join(values_for_sql(values))}
