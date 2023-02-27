@@ -13,6 +13,10 @@ DB_PASS = os.getenv("DB_PASS")
 DB_NAME = os.getenv("DB_NAME")
 DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
+def values_for_sql(values):
+    pass
+    return ['frank', 'chia', 'mike']
+
 def get_pg_connection():
     """
     Returns a connection to the Postgres database
@@ -54,5 +58,13 @@ for cris in cris_cursor:
             values.append(v)
     print("keys: ", keys)
     print("values: ", values)
-    #sql = "insert into vz_atd_txdot_crashes (crash_id, " + ", ".join(changes.keys()) + ") values (" + str(public["crash_id"]) + ", " + ", ".join(["%s"] * len(changes)) + ")"
-    #print(sql)
+    comma_linefeed = ",\n        "
+    sql = f"""
+    insert into vz_atd_txdot_crashes (
+        {comma_linefeed.join(keys)}
+    ) values (
+        {comma_linefeed.join(values_for_sql(values))}
+    )
+    """
+    print(sql)
+    input("Press Enter to continue...")
