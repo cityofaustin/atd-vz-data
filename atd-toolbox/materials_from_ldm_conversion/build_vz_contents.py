@@ -114,7 +114,6 @@ def compute_for_crashes():
             print("keys: ", keys)
             print("values: ", values)
             print("ERROR: ", sql)
-            quit()
         print("Inserted: ", cris["crash_id"])
         # input("Press Enter to continue...")
 
@@ -131,7 +130,7 @@ def compute_for_units():
     sql = "select * from cris.atd_txdot_units order by crash_id asc, unit_nbr asc"
     cris_cursor.execute(sql)
     for cris in cris_cursor:
-        # if cris["crash_id"] != 15359065:
+        # if cris["crash_id"] != 18793787:
             # continue
 
         # This is a special case where CRIS reports a third unit where there is none.
@@ -171,7 +170,6 @@ def compute_for_units():
             print("keys: ", keys)
             print("values: ", values)
             print("ERROR: ", sql)
-            quit()
         print("Inserted: crash_id: ", cris["crash_id"], "; unit_nbr: ", cris["unit_nbr"])
         # input("Press Enter to continue...")
 
@@ -192,8 +190,8 @@ def compute_for_person():
             # continue
         # print()
         # print("Crash ID: ", cris["crash_id"], "; Unit Number: ", cris["unit_nbr"], "; Person Number: ", cris["prsn_nbr"], "; Person Type ID: ", cris["prsn_type_id"], "; Person Occupant Position ID: ", cris["prsn_occpnt_pos_id"])
-        sql = "select * from public.atd_txdot_person where crash_id = %s and unit_nbr = %s"
-        public_cursor.execute(sql, (cris["crash_id"], cris["unit_nbr"]))
+        sql = "select * from public.atd_txdot_person where crash_id = %s and unit_nbr = %s and prsn_nbr = %s and prsn_type_id = %s and prsn_occpnt_pos_id = %s"
+        public_cursor.execute(sql, (cris["crash_id"], cris["unit_nbr"], cris["prsn_nbr"], cris["prsn_type_id"], cris["prsn_occpnt_pos_id"]))
         public = public_cursor.fetchone()
         keys = ["crash_id", "unit_nbr", "prsn_nbr", "prsn_type_id", "prsn_occpnt_pos_id"]
         values = [cris["crash_id"], cris["unit_nbr"], cris["prsn_nbr"], cris["prsn_type_id"], cris["prsn_occpnt_pos_id"]]
@@ -220,7 +218,6 @@ def compute_for_person():
             print("keys: ", keys)
             print("values: ", values)
             print("ERROR: ", sql)
-            quit()
         print("Inserted: crash_id: ", cris["crash_id"], "; Unit Number: ", cris["unit_nbr"], "; Person Number: ", cris["prsn_nbr"], "; Person Type ID: ", cris["prsn_type_id"], "; Person Occupant Position ID: ", cris["prsn_occpnt_pos_id"])
         # input("Press Enter to continue...")
 
@@ -268,7 +265,6 @@ def compute_for_primaryperson():
             print("keys: ", keys)
             print("values: ", values)
             print("ERROR: ", sql)
-            quit()
         print("Inserted: crash_id: ", cris["crash_id"], "; Unit Number: ", cris["unit_nbr"], "; Person Number: ", cris["prsn_nbr"], "; Person Type ID: ", cris["prsn_type_id"], "; Person Occupant Position ID: ", cris["prsn_occpnt_pos_id"])
         # input("Press Enter to continue...")
 
