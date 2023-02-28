@@ -15,8 +15,10 @@ DB_NAME = os.getenv("DB_NAME")
 DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
 def main():
-    # compute_for_crashes()
-    compute_for_units()
+    compute_for_crashes()
+    # compute_for_units()
+    # compute_for_person()
+    # compute_for_primaryperson()
 
 def values_for_sql(values):
     strings = []
@@ -58,7 +60,11 @@ def compute_for_crashes():
     vz_cursor.execute('truncate vz.atd_txdot_crashes')
     pg.commit()
 
-    sql = "select * from cris.atd_txdot_crashes order by crash_id asc"
+        # where crash_id > 18793000
+    sql = """
+        select * from cris.atd_txdot_crashes 
+        order by crash_id asc
+        """
     cris_cursor.execute(sql)
     for cris in cris_cursor:
         # This is for focusing in on a single record (debugging)
