@@ -14,6 +14,9 @@ DB_PASS = os.getenv("DB_PASS")
 DB_NAME = os.getenv("DB_NAME")
 DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
+def main():
+    compute_for_crashes()
+
 def values_for_sql(values):
     strings = []
     for value in values:
@@ -44,50 +47,56 @@ def get_pg_connection():
         sslrootcert="/root/rds-combined-ca-bundle.pem",
     )
 
-pg = get_pg_connection()
-cris_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-public_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-vz_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-vz_cursor.execute('truncate vz.atd_txdot_crashes')
-pg.commit()
+def compute_for_crashes():
+    pg = get_pg_connection()
+    cris_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    public_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    vz_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-sql = "select * from cris.atd_txdot_crashes order by crash_id asc"
-cris_cursor.execute(sql)
-for cris in cris_cursor:
-    # if cris["crash_id"] != 14866997:
-        # continue
-    # print()
-    # print("CRIS:   ", cris["crash_id"])
-    sql = "select * from public.atd_txdot_crashes where crash_id = %s"
-    public_cursor.execute(sql, (cris["crash_id"],))
-    public = public_cursor.fetchone()
-    # print("public: ", public["crash_id"])
-    keys = ["crash_id"]
-    values = [cris["crash_id"]]
-    for k, v in cris.items():
-        if (k in ('crash_id')): # use to define fields to ignore
-            continue
-        if v != public[k]:
-            # print("Δ ", k, ": ", public[k], " → ", v)
-            keys.append(k)
-            values.append(v)
-    comma_linefeed = ",\n        "
-    sql = f"""
-    insert into vz.atd_txdot_crashes (
-        {comma_linefeed.join(keys)}
-    ) values (
-        {comma_linefeed.join(values_for_sql(values))}
-    );
-    """
-    # print(sql)
-    try:
-        vz_cursor.execute(sql)
-        pg.commit()
-    except:
-        print("keys: ", keys)
-        print("values: ", values)
-        print("ERROR: ", sql)
-        quit()
-    print("Inserted: ", cris["crash_id"])
-    # input("Press Enter to continue...")
+    vz_cursor.execute('truncate vz.atd_txdot_crashes')
+    pg.commit()
+
+    sql = "select * from cris.atd_txdot_crashes order by crash_id asc"
+    cris_cursor.execute(sql)
+    for cris in cris_cursor:
+        # if cris["crash_id"] != 14866997:
+            # continue
+        # print()
+        # print("CRIS:   ", cris["crash_id"])
+        sql = "select * from public.atd_txdot_crashes where crash_id = %s"
+        public_cursor.execute(sql, (cris["crash_id"],))
+        public = public_cursor.fetchone()
+        # print("public: ", public["crash_id"])
+        keys = ["crash_id"]
+        values = [cris["crash_id"]]
+        for k, v in cris.items():
+            if (k in ('crash_id')): # use to define fields to ignore
+                continue
+            if v != public[k]:
+                # print("Δ ", k, ": ", public[k], " → ", v)
+                keys.append(k)
+                values.append(v)
+        comma_linefeed = ",\n        "
+        sql = f"""
+        insert into vz.atd_txdot_crashes (
+            {comma_linefeed.join(keys)}
+        ) values (
+            {comma_linefeed.join(values_for_sql(values))}
+        );
+        """
+        # print(sql)
+        try:
+            vz_cursor.execute(sql)
+            pg.commit()
+        except:
+            print("keys: ", keys)
+            print("values: ", values)
+            print("ERROR: ", sql)
+            quit()
+        print("Inserted: ", cris["crash_id"])
+        # input("Press Enter to continue...")
+
+
+if __name__ == "__main__":
+    main()
