@@ -78,7 +78,7 @@ def compute_for_crashes():
                 # print("Δ ", k, ": ", public[k], " → ", v)
                 keys.append(k)
                 values.append(v)
-        comma_linefeed = ",\n        "
+        comma_linefeed = ",\n            "
         sql = f"""
         insert into vz.atd_txdot_crashes (
             {comma_linefeed.join(keys)}
@@ -128,7 +128,7 @@ def compute_for_units():
                 # print("Δ ", k, ": ", public[k], " → ", v)
                 keys.append(k)
                 values.append(v)
-        comma_linefeed = ",\n        "
+        comma_linefeed = ",\n            "
         sql = f"""
         insert into vz.atd_txdot_units (
             {comma_linefeed.join(keys)}
@@ -136,7 +136,7 @@ def compute_for_units():
             {comma_linefeed.join(values_for_sql(values))}
         );
         """
-        print(sql)
+        # print(sql)
         try:
             vz_cursor.execute(sql)
             pg.commit()
@@ -146,7 +146,7 @@ def compute_for_units():
             print("ERROR: ", sql)
             quit()
         print("Inserted: crash_id: ", cris["crash_id"], "; unit_nbr: ", cris["unit_nbr"])
-        input("Press Enter to continue...")
+        # input("Press Enter to continue...")
 
 
 
