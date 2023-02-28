@@ -15,7 +15,8 @@ DB_NAME = os.getenv("DB_NAME")
 DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
 def main():
-    compute_for_crashes()
+    # compute_for_crashes()
+    compute_for_units()
 
 def values_for_sql(values):
     strings = []
@@ -96,6 +97,57 @@ def compute_for_crashes():
             quit()
         print("Inserted: ", cris["crash_id"])
         # input("Press Enter to continue...")
+
+
+def compute_for_units():
+    pg = get_pg_connection()
+    cris_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    public_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    vz_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    vz_cursor.execute('truncate vz.atd_txdot_units')
+    pg.commit()
+
+    sql = "select * from cris.atd_txdot_units order by crash_id asc, unit_nbr asc"
+    cris_cursor.execute(sql)
+    for cris in cris_cursor:
+        # if cris["crash_id"] != 14866997:
+            # continue
+        # print()
+        # print("Crash ID:   ", cris["crash_id"], "; Unit Number: ", cris["unit_nbr"])
+        sql = "select * from public.atd_txdot_units where crash_id = %s and unit_nbr = %s"
+        public_cursor.execute(sql, (cris["crash_id"], cris["unit_nbr"]))
+        public = public_cursor.fetchone()
+        # print("public: ", public["crash_id"])
+        keys = ["crash_id", "unit_nbr"]
+        values = [cris["crash_id"], cris["unit_nbr"]]
+        for k, v in cris.items():
+            if (k in ('crash_id', 'unit_nbr')): # use to define fields to ignore
+                continue
+            if v != public[k]:
+                # print("Δ ", k, ": ", public[k], " → ", v)
+                keys.append(k)
+                values.append(v)
+        comma_linefeed = ",\n        "
+        sql = f"""
+        insert into vz.atd_txdot_units (
+            {comma_linefeed.join(keys)}
+        ) values (
+            {comma_linefeed.join(values_for_sql(values))}
+        );
+        """
+        print(sql)
+        try:
+            vz_cursor.execute(sql)
+            pg.commit()
+        except:
+            print("keys: ", keys)
+            print("values: ", values)
+            print("ERROR: ", sql)
+            quit()
+        print("Inserted: crash_id: ", cris["crash_id"], "; unit_nbr: ", cris["unit_nbr"])
+        input("Press Enter to continue...")
+
 
 
 if __name__ == "__main__":
