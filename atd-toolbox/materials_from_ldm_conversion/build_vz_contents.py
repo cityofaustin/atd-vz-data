@@ -111,19 +111,26 @@ def compute_for_units():
     sql = "select * from cris.atd_txdot_units order by crash_id asc, unit_nbr asc"
     cris_cursor.execute(sql)
     for cris in cris_cursor:
-        # if cris["crash_id"] != 14866997:
+        # if cris["crash_id"] != 15359065:
             # continue
+
+        # This is a special case where CRIS reports a third unit where there is none.
+        # It needs to be handled here because we have manually removed that crash from the VZDB.
+        if cris["crash_id"] == 15359065 and cris["unit_nbr"] == 3:
+            continue
+
         # print()
-        # print("Crash ID:   ", cris["crash_id"], "; Unit Number: ", cris["unit_nbr"])
+        # print("Crash ID: ", cris["crash_id"], "; Unit Number: ", cris["unit_nbr"])
         sql = "select * from public.atd_txdot_units where crash_id = %s and unit_nbr = %s"
         public_cursor.execute(sql, (cris["crash_id"], cris["unit_nbr"]))
         public = public_cursor.fetchone()
-        # print("public: ", public["crash_id"])
+        # print("public: ", public)
         keys = ["crash_id", "unit_nbr"]
         values = [cris["crash_id"], cris["unit_nbr"]]
         for k, v in cris.items():
             if (k in ('crash_id', 'unit_nbr')): # use to define fields to ignore
                 continue
+            # print(k, v, public[k])
             if v != public[k]:
                 # print("Δ ", k, ": ", public[k], " → ", v)
                 keys.append(k)
