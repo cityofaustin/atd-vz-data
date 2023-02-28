@@ -156,6 +156,54 @@ def compute_for_units():
         # input("Press Enter to continue...")
 
 
+def compute_for_person():
+    pg = get_pg_connection()
+    cris_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    public_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    vz_cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    vz_cursor.execute('truncate vz.atd_txdot_person')
+    pg.commit()
+
+    sql = "select * from cris.atd_txdot_person order by crash_id asc, unit_nbr asc, prsn_nbr asc, prsn_type_id asc, prsn_occpnt_pos_id asc"
+    cris_cursor.execute(sql)
+    for cris in cris_cursor:
+        # if cris["crash_id"] != 14866997:
+            # continue
+        # print()
+        # print("Crash ID: ", cris["crash_id"], "; Unit Number: ", cris["unit_nbr"], "; Person Number: ", cris["prsn_nbr"], "; Person Type ID: ", cris["prsn_type_id"], "; Person Occupant Position ID: ", cris["prsn_occpnt_pos_id"])
+        sql = "select * from public.atd_txdot_person where crash_id = %s and unit_nbr = %s"
+        public_cursor.execute(sql, (cris["crash_id"], cris["unit_nbr"]))
+        public = public_cursor.fetchone()
+        keys = ["crash_id", "unit_nbr", "prsn_nbr", "prsn_type_id", "prsn_occpnt_pos_id"]
+        values = [cris["crash_id"], cris["unit_nbr"], cris["prsn_nbr"], cris["prsn_type_id"], cris["prsn_occpnt_pos_id"]]
+        for k, v in cris.items():
+            if (k in ('crash_id', 'unit_nbr', 'prsn_nbr', 'prsn_type_id', 'prsn_occpnt_pos_id')): # use to define fields to ignore
+                continue
+            if v != public[k]:
+                # print("Δ ", k, ": ", public[k], " → ", v)
+                keys.append(k)
+                values.append(v)
+        comma_linefeed = ",\n            "
+        sql = f"""
+        insert into vz.atd_txdot_person (
+            {comma_linefeed.join(keys)}
+        ) values (
+            {comma_linefeed.join(values_for_sql(values))}
+        );
+        """
+        # print(sql)
+        try:
+            vz_cursor.execute(sql)
+            pg.commit()
+        except:
+            print("keys: ", keys)
+            print("values: ", values)
+            print("ERROR: ", sql)
+            quit()
+        print("Inserted: crash_id: ", cris["crash_id"], "; Unit Number: ", cris["unit_nbr"], "; Person Number: ", cris["prsn_nbr"], "; Person Type ID: ", cris["prsn_type_id"], "; Person Occupant Position ID: ", cris["prsn_occpnt_pos_id"])
+        # input("Press Enter to continue...")
+
 
 if __name__ == "__main__":
     main()
