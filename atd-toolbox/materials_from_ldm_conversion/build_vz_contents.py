@@ -64,7 +64,7 @@ def compute_for_crashes():
         # if cris["crash_id"] != 14866997:
             # continue
         # print()
-        # print("CRIS:   ", cris["crash_id"])
+        # print("CRIS: ", cris["crash_id"])
         sql = "select * from public.atd_txdot_crashes where crash_id = %s"
         public_cursor.execute(sql, (cris["crash_id"],))
         public = public_cursor.fetchone()
