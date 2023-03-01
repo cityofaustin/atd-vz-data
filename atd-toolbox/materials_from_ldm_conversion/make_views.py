@@ -14,6 +14,7 @@ DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
 
 def main():
+    create_schema()
     make_crashes_view()
 
 def make_crashes_view():
@@ -34,6 +35,19 @@ def make_crashes_view():
     while column := db.fetchone():
         print(column)
     pass
+
+def create_schema():
+    pg = get_pg_connection()
+    db = pg.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    db.execute("DROP SCHEMA IF EXISTS ldm CASCADE;")
+    pg.commit()
+
+    db.execute("CREATE SCHEMA IF NOT EXISTS ldm;")
+    pg.commit()
+
+    db.close()
+    pg.close()
 
 def get_pg_connection():
     """
