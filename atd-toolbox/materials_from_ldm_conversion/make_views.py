@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import psycopg2
 import psycopg2.extras
@@ -32,6 +34,12 @@ def make_crashes_view():
     ;
     """
     db.execute(sql)
+
+    view = """
+    create view ldm.atd_txdot_crashes as
+        select
+            cris.atd_txdot_crashes.crash_id,
+    """
     while column := db.fetchone():
         print(column)
     pass
