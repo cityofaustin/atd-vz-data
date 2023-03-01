@@ -216,6 +216,7 @@ def compute_for_person():
     vz_cursor.execute('truncate vz.atd_txdot_person')
     pg.commit()
 
+    # where crash_id > 15352872
     sql = """
         select * 
         from cris.atd_txdot_person 
@@ -231,15 +232,30 @@ def compute_for_person():
         # if cris["crash_id"] != 14866997:
             # continue
 
+
+        if cris["person_id"] in [
+                81794, 198017, 198518, 199873, 199895, 199978, 199998, 199999, 200000, 200001,
+                200003, 200004, 200006, 200022, 200023, 200024, 200025, 200026, 200027, 200028,
+                200030, 200031, 200032, 200033, 200034, 200035, 200036, 200037, 200038, 200039,
+                200061, 200062, 200063, 200064, 200065, 200068, 200069, 200070, 200071, 200072,
+                200073, 200074, 200078, 200079, 200081, 200083, 200086, 200087, 200088, 200089,
+                200090, 200091, 200092, 200093, 200094, 200095, 200097, 200098, 200099, 200103,
+                200104, 200105, 200106, 200107, 200108, 200109, 200111, 200112, 200113, 200116, 
+                200122, 200123, 200124, 200125, 200126, 200127, 200128, 200129, 200130, 200131, 
+                200132, 200133, 200134, 200135, 200136 
+                ]:
+            continue
+
         print()
         print("Crash ID: ", cris["crash_id"], "; Unit Number: ", cris["unit_nbr"], "; Person Number: ", cris["prsn_nbr"], "; Person Type ID: ", cris["prsn_type_id"], "; Person Occupant Position ID: ", cris["prsn_occpnt_pos_id"])
         sql = "select * from public.atd_txdot_person where crash_id = %s and unit_nbr = %s and prsn_nbr = %s and prsn_type_id = %s and prsn_occpnt_pos_id = %s"
+        print(sql)
         public_cursor.execute(sql, (cris["crash_id"], cris["unit_nbr"], cris["prsn_nbr"], cris["prsn_type_id"], cris["prsn_occpnt_pos_id"]))
         public = public_cursor.fetchone()
-        keys = ["crash_id", "unit_nbr", "prsn_nbr", "prsn_type_id", "prsn_occpnt_pos_id"]
+        keys =  [ "crash_id", "unit_nbr", "prsn_nbr", "prsn_type_id", "prsn_occpnt_pos_id"]
         values = [cris["crash_id"], cris["unit_nbr"], cris["prsn_nbr"], cris["prsn_type_id"], cris["prsn_occpnt_pos_id"]]
         for k, v in cris.items():
-            if (k in ('crash_id', 'unit_nbr', 'prsn_nbr', 'prsn_type_id', 'prsn_occpnt_pos_id')): # use to define fields to ignore
+            if (k in ('crash_id', 'unit_nbr', 'prsn_nbr', 'prsn_type_id', 'prsn_occpnt_pos_id', 'years_of_life_lost')): # use to define fields to ignore
                 continue
             if v != public[k]:
                 # print("Δ ", k, ": ", public[k], " → ", v)
