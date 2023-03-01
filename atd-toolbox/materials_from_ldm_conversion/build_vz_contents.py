@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import re
 import os
 import psycopg2
 import psycopg2.extras
@@ -26,6 +27,7 @@ def values_for_sql(values):
         # print(value, type(value))
         # print(value, isinstance(value, datetime.datetime))
         if isinstance(value, str):
+            value = re.sub("'", "''", value)
             strings.append(f"'{value}'")
         elif isinstance(value, datetime.date):
             strings.append(f"'{str(value)}'")
@@ -133,7 +135,7 @@ def compute_for_units():
     vz_cursor.execute('truncate vz.atd_txdot_units')
     pg.commit()
 
-    # where cris.atd_txdot_units.crash_id > 18793960
+        # where cris.atd_txdot_units.crash_id > 19102309
     sql = """
         select * 
         from cris.atd_txdot_units 
