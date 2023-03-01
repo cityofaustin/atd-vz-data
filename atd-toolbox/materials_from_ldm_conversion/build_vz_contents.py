@@ -15,8 +15,8 @@ DB_NAME = os.getenv("DB_NAME")
 DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
 def main():
-    compute_for_crashes()
-    # compute_for_units()
+    # compute_for_crashes() # this works - save the 80 missing crashes..
+    compute_for_units()
     # compute_for_person()
     # compute_for_primaryperson()
 
