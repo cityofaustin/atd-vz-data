@@ -17,8 +17,8 @@ DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
 def main():
     # compute_for_crashes() # this works - save the 80 missing crashes..
-    compute_for_units()
-    # compute_for_person()
+    # compute_for_units() # this works - save for the 164 missing units and the one special case
+    compute_for_person()
     # compute_for_primaryperson()
 
 def values_for_sql(values):
@@ -216,13 +216,23 @@ def compute_for_person():
     vz_cursor.execute('truncate vz.atd_txdot_person')
     pg.commit()
 
-    sql = "select * from cris.atd_txdot_person order by crash_id asc, unit_nbr asc, prsn_nbr asc, prsn_type_id asc, prsn_occpnt_pos_id asc"
+    sql = """
+        select * 
+        from cris.atd_txdot_person 
+        order by 
+            crash_id asc, 
+            unit_nbr asc, 
+            prsn_nbr asc, 
+            prsn_type_id asc, 
+            prsn_occpnt_pos_id asc
+        """
     cris_cursor.execute(sql)
     for cris in cris_cursor:
         # if cris["crash_id"] != 14866997:
             # continue
-        # print()
-        # print("Crash ID: ", cris["crash_id"], "; Unit Number: ", cris["unit_nbr"], "; Person Number: ", cris["prsn_nbr"], "; Person Type ID: ", cris["prsn_type_id"], "; Person Occupant Position ID: ", cris["prsn_occpnt_pos_id"])
+
+        print()
+        print("Crash ID: ", cris["crash_id"], "; Unit Number: ", cris["unit_nbr"], "; Person Number: ", cris["prsn_nbr"], "; Person Type ID: ", cris["prsn_type_id"], "; Person Occupant Position ID: ", cris["prsn_occpnt_pos_id"])
         sql = "select * from public.atd_txdot_person where crash_id = %s and unit_nbr = %s and prsn_nbr = %s and prsn_type_id = %s and prsn_occpnt_pos_id = %s"
         public_cursor.execute(sql, (cris["crash_id"], cris["unit_nbr"], cris["prsn_nbr"], cris["prsn_type_id"], cris["prsn_occpnt_pos_id"]))
         public = public_cursor.fetchone()
