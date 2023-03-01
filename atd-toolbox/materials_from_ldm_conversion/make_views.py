@@ -3,7 +3,6 @@
 import os
 import psycopg2
 import psycopg2.extras
-import datetime
 from dotenv import load_dotenv
 
 load_dotenv("env")
@@ -30,6 +29,7 @@ def make_crashes_view():
     WHERE true
         AND table_schema = 'vz'
         AND table_name = 'atd_txdot_crashes'
+        AND column_name not in ('crash_id')
     order by ordinal_position
     ;
     """
@@ -38,11 +38,14 @@ def make_crashes_view():
     view = """
     create view ldm.atd_txdot_crashes as
         select
-            cris.atd_txdot_crashes.crash_id,
-    """
-    while column := db.fetchone():
-        print(column)
-    pass
+            cris.atd_txdot_crashes.crash_id as crash_id,
+        """
+    columns = []
+    for column in db:
+        print(column["column_name"])
+        columns.append(f'coalesce(vz.atd_txdot_crashes.{column["column_name"]}, cris.atd_txdot_crashes.{column["column_name"]}) as {column["column_name"]}')
+    view = view + "    " + ", \n            ".join(columns)
+    print(view)
 
 def create_schema():
     pg = get_pg_connection()
