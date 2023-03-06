@@ -21,6 +21,11 @@ def main():
 def make_crashes_view():
     pg = get_pg_connection()
     db = pg.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    
+    db.execute("drop view if exists ldm.atd_txdot_crashes;")
+    pg.commit()
+
+
     sql = """
     SELECT
         column_name, data_type, udt_name, character_maximum_length, numeric_precision,
@@ -35,6 +40,7 @@ def make_crashes_view():
     """
     db.execute(sql)
 
+
     view = """
     create view ldm.atd_txdot_crashes as
         select
@@ -42,10 +48,16 @@ def make_crashes_view():
         """
     columns = []
     for column in db:
-        print(column["column_name"])
         columns.append(f'coalesce(vz.atd_txdot_crashes.{column["column_name"]}, cris.atd_txdot_crashes.{column["column_name"]}) as {column["column_name"]}')
     view = view + "    " + ", \n            ".join(columns)
+    view = view + """
+        from vz.atd_txdot_crashes
+        full outer join cris.atd_txdot_crashes
+            on vz.atd_txdot_crashes.crash_id = cris.atd_txdot_crashes.crash_id
+                """
     print(view)
+    db.execute(view)
+    pg.commit()
 
 def create_schema():
     pg = get_pg_connection()
