@@ -548,3 +548,8 @@ CREATE INDEX atd_txdot_units_unit_id_index ON cris.atd_txdot_units USING btree (
 CREATE INDEX idx_atd_txdot_units_crash_id ON cris.atd_txdot_units USING btree (crash_id);
 
 
+update cris.atd_txdot_crashes 
+set position = case 
+    when rpt_latitude is not null and rpt_longitude is not null then ST_SetSRID(ST_MakePoint(rpt_longitude, rpt_latitude), 4326)
+    when latitude is not null and longitude is not null then ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)
+end;
