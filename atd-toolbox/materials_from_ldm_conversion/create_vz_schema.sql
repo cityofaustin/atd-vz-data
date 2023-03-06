@@ -15,7 +15,7 @@ CREATE TABLE vz.atd_txdot_crashes (
     crash_time time without time zone,
     case_id character varying(32),
     local_use character varying(32),
-    rpt_vz_cnty_id integer,
+    rpt_cris_cnty_id integer,
     rpt_city_id integer,
     rpt_outside_city_limit_fl character varying(1),
     thousand_damage_fl character varying(1),
