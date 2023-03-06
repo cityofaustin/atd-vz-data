@@ -18,8 +18,8 @@ DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 def main():
     # compute_for_crashes() # this works - save the 80 missing crashes..
     # compute_for_units() # this works - save for the 164 missing units and the one special case
-    compute_for_person() # this works - save for the 85 missing persons
-    # compute_for_primaryperson()
+    # compute_for_person() # this works - save for the 85 missing persons
+    compute_for_primaryperson()
 
 def values_for_sql(values):
     strings = []
@@ -322,7 +322,7 @@ def compute_for_primaryperson():
         keys = ["crash_id", "unit_nbr", "prsn_nbr", "prsn_type_id", "prsn_occpnt_pos_id"]
         values = [cris["crash_id"], cris["unit_nbr"], cris["prsn_nbr"], cris["prsn_type_id"], cris["prsn_occpnt_pos_id"]]
         for k, v in cris.items():
-            if (k in ('crash_id', 'unit_nbr', 'prsn_nbr', 'prsn_type_id', 'prsn_occpnt_pos_id')): # use to define fields to ignore
+            if (k in ('crash_id', 'unit_nbr', 'prsn_nbr', 'prsn_type_id', 'prsn_occpnt_pos_id', 'years_of_life_lost')): # use to define fields to ignore
                 continue
             if v != public[k]:
                 # print("Δ ", k, ": ", public[k], " → ", v)
