@@ -27,16 +27,32 @@ def make_crashes_view():
 
 
     sql = """
-    SELECT
+with vz as (
+    select
+        'vz' as schema,
         column_name, data_type, udt_name, character_maximum_length, numeric_precision,
         numeric_precision, numeric_scale, is_generated, generation_expression, is_updatable
     FROM information_schema.columns
     WHERE true
         AND table_schema = 'vz'
         AND table_name = 'atd_txdot_crashes'
-        AND column_name not in ('crash_id')
     order by ordinal_position
-    ;
+    ), cris as (
+    SELECT
+    'cris' as schema,    
+    column_name, data_type, udt_name, character_maximum_length, numeric_precision,
+        numeric_precision, numeric_scale, is_generated, generation_expression, is_updatable
+    FROM information_schema.columns
+    WHERE true
+        AND table_schema = 'cris'
+        AND table_name = 'atd_txdot_crashes'
+    order by ordinal_position
+    )
+select vz.column_name, cris.column_name
+from vz
+    full join cris on (vz.column_name = cris.column_name)
+where true
+    and (vz.column_name != 'crash_id' or cris.column_name != 'crash_id')
     """
     db.execute(sql)
 
@@ -48,7 +64,9 @@ def make_crashes_view():
         """
     columns = []
     for column in db:
-        columns.append(f'coalesce(vz.atd_txdot_crashes.{column["column_name"]}, cris.atd_txdot_crashes.{column["column_name"]}) as {column["column_name"]}')
+        #if (column[])
+        pass
+        # columns.append(f'coalesce(vz.atd_txdot_crashes.{column["column_name"]}, cris.atd_txdot_crashes.{column["column_name"]}) as {column["column_name"]}')
     view = view + "    " + ", \n            ".join(columns)
     view = view + """
         from vz.atd_txdot_crashes
