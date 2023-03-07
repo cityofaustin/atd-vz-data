@@ -38,6 +38,8 @@ def values_for_sql(values):
             strings.append(f"'{str(value)}'")
         elif isinstance(value, datetime.datetime):
             strings.append(f"'{str(value)}'")
+        elif isinstance(value, datetime.time):
+            strings.append(f"'{str(value)}'")
         elif value is None:
             strings.append("null")
         else:
@@ -298,7 +300,12 @@ def compute_for_primaryperson():
     vz_cursor.execute('truncate vz.atd_txdot_primaryperson')
     pg.commit()
 
-    sql = "select * from cris.atd_txdot_primaryperson order by crash_id asc, unit_nbr asc, prsn_nbr asc, prsn_type_id asc, prsn_occpnt_pos_id asc"
+    # where crash_id = 17998493
+    sql = """
+    select * 
+    from cris.atd_txdot_primaryperson 
+    order by crash_id asc, unit_nbr asc, prsn_nbr asc, prsn_type_id asc, prsn_occpnt_pos_id asc
+    """
     cris_cursor.execute(sql)
     for cris in cris_cursor:
         # if cris["crash_id"] != 14866997:
