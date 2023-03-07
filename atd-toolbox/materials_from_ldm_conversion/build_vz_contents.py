@@ -196,7 +196,7 @@ def compute_for_units():
             if v != public[k]:
                 # print("Δ ", k, ": ", public[k], " → ", v)
                 keys.append(k)
-                values.append(v)
+                values.append(public[k])
         comma_linefeed = ",\n            "
         sql = f"""
         insert into vz.atd_txdot_units (
@@ -269,7 +269,7 @@ def compute_for_person():
             if v != public[k]:
                 # print("Δ ", k, ": ", public[k], " → ", v)
                 keys.append(k)
-                values.append(v)
+                values.append(public[k])
         comma_linefeed = ",\n            "
         sql = f"""
         insert into vz.atd_txdot_person (
@@ -337,7 +337,7 @@ def compute_for_primaryperson():
             if v != public[k]:
                 # print("Δ ", k, ": ", public[k], " → ", v)
                 keys.append(k)
-                values.append(v)
+                values.append(public[k])
         comma_linefeed = ",\n            "
         sql = f"""
         insert into vz.atd_txdot_primaryperson (
