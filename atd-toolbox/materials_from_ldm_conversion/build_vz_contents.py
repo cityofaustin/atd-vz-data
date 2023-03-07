@@ -107,6 +107,10 @@ def compute_for_crashes():
         for k, v in cris.items():
             if (k in ('crash_id')): # use to define fields to ignore
                 continue
+            # if k == 'position':
+                # print ("cris position:   ", v)
+                # print ("public position: ", public[k])
+
             if v != public[k]:
                 # print("Δ ", k, ": ", public[k], " → ", v)
                 keys.append(k)
