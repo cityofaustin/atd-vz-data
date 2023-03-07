@@ -17,10 +17,10 @@ DB_NAME = os.getenv("DB_NAME")
 DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
 def main():
-    compute_for_crashes() # this works - save the 80 missing crashes..
+    # compute_for_crashes() # this works - save the 80 missing crashes..
     # compute_for_units() # this works - save for the 164 missing units and the one special case
     # compute_for_person() # this works - save for the 85 missing persons
-    # compute_for_primaryperson() # this works - save for the 151 missing primary persons
+    compute_for_primaryperson() # this works - save for the 151 missing primary persons
 
 def values_for_sql(values):
     strings = []
