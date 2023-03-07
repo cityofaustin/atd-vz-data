@@ -114,7 +114,7 @@ def compute_for_crashes():
             if v != public[k]:
                 # print("Δ ", k, ": ", public[k], " → ", v)
                 keys.append(k)
-                values.append(v)
+                values.append(public[k])
         comma_linefeed = ",\n            "
         sql = f"""
         insert into vz.atd_txdot_crashes (
