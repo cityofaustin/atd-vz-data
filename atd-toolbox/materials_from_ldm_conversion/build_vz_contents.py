@@ -25,7 +25,7 @@ def main():
 def values_for_sql(values):
     strings = []
     for value in values:
-        print(value, type(value))
+        # print(value, type(value))
         # print(value, isinstance(value, datetime.datetime))
         if isinstance(value, str):
             value = re.sub("'", "''", value)
@@ -68,6 +68,7 @@ def compute_for_crashes():
     pg.commit()
 
         # where crash_id > 18793000
+        # where crash_id = 16558169
     sql = """
         select * from cris.atd_txdot_crashes 
         order by crash_id asc
@@ -75,8 +76,8 @@ def compute_for_crashes():
     cris_cursor.execute(sql)
     for cris in cris_cursor:
         # This is for focusing in on a single record (debugging)
-        # if cris["crash_id"] != 18793962:
-            # continue
+        #if cris["crash_id"] != 16558169:
+            #continue
 
         # 18793962 This is a real crash in CRIS that is not in the VZDB, see issue #11589
 
