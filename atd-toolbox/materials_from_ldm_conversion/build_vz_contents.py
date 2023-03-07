@@ -2,6 +2,7 @@
 
 import re
 import os
+import json
 import psycopg2
 import psycopg2.extras
 import datetime
@@ -16,19 +17,23 @@ DB_NAME = os.getenv("DB_NAME")
 DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
 def main():
-    # compute_for_crashes() # this works - save the 80 missing crashes..
+    compute_for_crashes() # this works - save the 80 missing crashes..
     # compute_for_units() # this works - save for the 164 missing units and the one special case
     # compute_for_person() # this works - save for the 85 missing persons
-    compute_for_primaryperson() # this works - save for the 151 missing primary persons
+    # compute_for_primaryperson() # this works - save for the 151 missing primary persons
 
 def values_for_sql(values):
     strings = []
     for value in values:
-        # print(value, type(value))
+        print(value, type(value))
         # print(value, isinstance(value, datetime.datetime))
         if isinstance(value, str):
             value = re.sub("'", "''", value)
             strings.append(f"'{value}'")
+        elif isinstance(value, list):
+            strings.append(f"'{json.dumps(value)}'")
+        elif isinstance(value, dict):
+            strings.append(f"'{json.dumps(value)}'")
         elif isinstance(value, datetime.date):
             strings.append(f"'{str(value)}'")
         elif isinstance(value, datetime.datetime):
