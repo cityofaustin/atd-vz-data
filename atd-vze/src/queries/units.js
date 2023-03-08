@@ -2,7 +2,7 @@ import { gql } from "apollo-boost";
 
 export const GET_UNITS = gql`
   query FindUnits($crashId: Int) {
-    atd_txdot_units(where: { crash_id: { _eq: $crashId } }) {
+    atd_txdot_units: ldm_atd_txdot_units(where: { crash_id: { _eq: $crashId } }) {
       unit_desc_id
       unit_nbr
       contributing_factor_1 {
