@@ -227,8 +227,11 @@ def make_person_view():
         from vz.atd_txdot_person
         join cris.atd_txdot_person
             on  (
-                    vz.atd_txdot_person.crash_id = cris.atd_txdot_person.crash_id
+                vz.atd_txdot_person.crash_id = cris.atd_txdot_person.crash_id
                 and vz.atd_txdot_person.unit_nbr = cris.atd_txdot_person.unit_nbr
+                and vz.atd_txdot_person.prsn_nbr = cris.atd_txdot_person.prsn_nbr
+                and vz.atd_txdot_person.prsn_type_id = cris.atd_txdot_person.prsn_type_id
+                and vz.atd_txdot_person.prsn_occpnt_pos_id = cris.atd_txdot_person.prsn_occpnt_pos_id
                 )
                 """
     print(view)
@@ -300,8 +303,11 @@ def make_primaryperson_view():
         from vz.atd_txdot_primaryperson
         join cris.atd_txdot_primaryperson
             on  (
-                    vz.atd_txdot_primaryperson.crash_id = cris.atd_txdot_primaryperson.crash_id
+                vz.atd_txdot_primaryperson.crash_id = cris.atd_txdot_primaryperson.crash_id
                 and vz.atd_txdot_primaryperson.unit_nbr = cris.atd_txdot_primaryperson.unit_nbr
+                and vz.atd_txdot_primaryperson.prsn_nbr = cris.atd_txdot_primaryperson.prsn_nbr
+                and vz.atd_txdot_primaryperson.prsn_type_id = cris.atd_txdot_primaryperson.prsn_type_id
+                and vz.atd_txdot_primaryperson.prsn_occpnt_pos_id = cris.atd_txdot_primaryperson.prsn_occpnt_pos_id
                 )
                 """
     print(view)
