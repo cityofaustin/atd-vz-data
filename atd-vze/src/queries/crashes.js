@@ -2,7 +2,7 @@ import { gql } from "apollo-boost";
 
 export const GET_CRASH = gql`
   query FindCrash($crashId: Int) {
-    ldm_atd_txdot_crashes(where: { crash_id: { _eq: $crashId } }) {
+    atd_txdot_crashes: ldm_atd_txdot_crashes(where: { crash_id: { _eq: $crashId } }) {
       active_school_zone_fl
       address_confirmed_primary
       address_confirmed_secondary
