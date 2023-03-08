@@ -2,7 +2,7 @@ import { gql } from "apollo-boost";
 
 export const GET_PEOPLE = gql`
   query FindPeople($crashId: Int) {
-    atd_txdot_primaryperson(where: { crash_id: { _eq: $crashId } }) {
+    ldm_atd_txdot_primaryperson(where: { crash_id: { _eq: $crashId } }) {
       prsn_age
       prsn_nbr
       primaryperson_id
@@ -26,7 +26,7 @@ export const GET_PEOPLE = gql`
       }
       unit_nbr
     }
-    atd_txdot_person(where: { crash_id: { _eq: $crashId } }) {
+    ldm_atd_txdot_person(where: { crash_id: { _eq: $crashId } }) {
       prsn_age
       prsn_nbr
       person_id
