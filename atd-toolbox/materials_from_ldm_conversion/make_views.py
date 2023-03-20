@@ -28,6 +28,11 @@ def make_crashes_view():
     db.execute("drop view if exists ldm.atd_txdot_crashes;")
     pg.commit()
 
+    # ldm.atd_txdot_crashes columns we want to compute on the fly
+    # * latitude_primary
+    # * longitude_primary
+    
+
 
     sql = """
     with vz as (
@@ -74,12 +79,18 @@ def make_crashes_view():
         """
     columns = []
     for column in db:
-        if column["vz_column_name"] is not None and column["cris_column_name"] is None:
-            columns.append(f'vz.atd_txdot_crashes.{column["column_name"]}')
-        elif column["cris_column_name"] is not None and column["vz_column_name"] is None:
-            columns.append(f'cris.atd_txdot_crashes.{column["column_name"]}')
+        print("Column: ", column["vz_column_name"])
+        if column["vz_column_name"] == "longitude_primary":
+            columns.append("ST_X(COALESCE(vz.atd_txdot_crashes.position, cris.atd_txdot_crashes.position)) as longitude_primary")
+        elif column["vz_column_name"] == "latitude_primary":
+            columns.append("ST_Y(COALESCE(vz.atd_txdot_crashes.position, cris.atd_txdot_crashes.position)) as latitude_primary")
         else:
-            columns.append(f'coalesce(vz.atd_txdot_crashes.{column["column_name"]}, cris.atd_txdot_crashes.{column["column_name"]}) as {column["column_name"]}')
+            if column["vz_column_name"] is not None and column["cris_column_name"] is None:
+                columns.append(f'vz.atd_txdot_crashes.{column["column_name"]}')
+            elif column["cris_column_name"] is not None and column["vz_column_name"] is None:
+                columns.append(f'cris.atd_txdot_crashes.{column["column_name"]}')
+            else:
+                columns.append(f'coalesce(vz.atd_txdot_crashes.{column["column_name"]}, cris.atd_txdot_crashes.{column["column_name"]}) as {column["column_name"]}')
     view = view + "    " + ", \n            ".join(columns)
     view = view + """
         from vz.atd_txdot_crashes
