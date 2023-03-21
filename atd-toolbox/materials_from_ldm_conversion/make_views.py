@@ -84,6 +84,23 @@ def make_crashes_view():
             columns.append("ST_X(COALESCE(vz.atd_txdot_crashes.position, cris.atd_txdot_crashes.position)) as longitude_primary")
         elif column["vz_column_name"] == "latitude_primary":
             columns.append("ST_Y(COALESCE(vz.atd_txdot_crashes.position, cris.atd_txdot_crashes.position)) as latitude_primary")
+        elif column["vz_column_name"] == "last_update":
+            definition = """
+            case
+                when 
+                    vz.atd_txdot_crashes.last_update is not null
+                    and cris.atd_txdot_crashes.last_update is not null
+                    and vz.atd_txdot_crashes.last_update > cris.atd_txdot_crashes.last_update 
+                        then vz.atd_txdot_crashes.last_update
+                when
+                    vz.atd_txdot_crashes.last_update is not null
+                    and cris.atd_txdot_crashes.last_update is not null
+                    and vz.atd_txdot_crashes.last_update < cris.atd_txdot_crashes.last_update 
+                        then cris.atd_txdot_crashes.last_update
+                else 
+                    coalesce(vz.atd_txdot_crashes.last_update, cris.atd_txdot_crashes.last_update)
+            end as last_update
+            """ 
         else:
             if column["vz_column_name"] is not None and column["cris_column_name"] is None:
                 columns.append(f'vz.atd_txdot_crashes.{column["column_name"]}')
