@@ -101,6 +101,24 @@ def make_crashes_view():
                     coalesce(vz.atd_txdot_crashes.last_update, cris.atd_txdot_crashes.last_update)
             end as last_update
             """ 
+        elif column["vz_column_name"] == "last_update":
+            definition = """
+            case
+                when 
+                    vz.atd_txdot_crashes.last_update is not null
+                    and cris.atd_txdot_crashes.last_update is not null
+                    and vz.atd_txdot_crashes.last_update > cris.atd_txdot_crashes.last_update 
+                        then vz.atd_txdot_crashes.updated_by
+                when
+                    vz.atd_txdot_crashes.last_update is not null
+                    and cris.atd_txdot_crashes.last_update is not null
+                    and vz.atd_txdot_crashes.last_update < cris.atd_txdot_crashes.last_update 
+                        then cris.atd_txdot_crashes.updated_by
+                else 
+                    coalesce(vz.atd_txdot_crashes.updated_by, cris.atd_txdot_crashes.updated_by)
+            end as updated_by
+            """ 
+            columns.append(definition)
         else:
             if column["vz_column_name"] is not None and column["cris_column_name"] is None:
                 columns.append(f'vz.atd_txdot_crashes.{column["column_name"]}')
