@@ -189,7 +189,42 @@ def make_units_view():
         """
     columns = []
     for column in db:
-        if column["vz_column_name"] is not None and column["cris_column_name"] is None:
+        if column["vz_column_name"] == "last_update":
+            definition = """
+            case
+                when 
+                    vz.atd_txdot_units.last_update is not null
+                    and cris.atd_txdot_units.last_update is not null
+                    and vz.atd_txdot_units.last_update > cris.atd_txdot_units.last_update 
+                        then vz.atd_txdot_units.last_update
+                when
+                    vz.atd_txdot_units.last_update is not null
+                    and cris.atd_txdot_units.last_update is not null
+                    and vz.atd_txdot_units.last_update < cris.atd_txdot_units.last_update 
+                        then cris.atd_txdot_units.last_update
+                else 
+                    coalesce(vz.atd_txdot_units.last_update, cris.atd_txdot_units.last_update)
+            end as last_update
+            """ 
+        elif column["vz_column_name"] == "last_update":
+            definition = """
+            case
+                when 
+                    vz.atd_txdot_units.last_update is not null
+                    and cris.atd_txdot_units.last_update is not null
+                    and vz.atd_txdot_units.last_update > cris.atd_txdot_units.last_update 
+                        then vz.atd_txdot_units.updated_by
+                when
+                    vz.atd_txdot_units.last_update is not null
+                    and cris.atd_txdot_units.last_update is not null
+                    and vz.atd_txdot_units.last_update < cris.atd_txdot_units.last_update 
+                        then cris.atd_txdot_units.updated_by
+                else 
+                    coalesce(vz.atd_txdot_units.updated_by, cris.atd_txdot_units.updated_by)
+            end as updated_by
+            """ 
+            columns.append(definition)
+        elif column["vz_column_name"] is not None and column["cris_column_name"] is None:
             columns.append(f'vz.atd_txdot_units.{column["column_name"]}')
         elif column["cris_column_name"] is not None and column["vz_column_name"] is None:
             columns.append(f'cris.atd_txdot_units.{column["column_name"]}')
