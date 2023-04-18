@@ -77,7 +77,9 @@ const User = () => {
           formattedValue = !!user[key] ? "Yes" : "No";
           break;
         case "time":
-          formattedValue = format(parseISO(user[key]), "MM/dd/yyyy, h:mm:ss a");
+          formattedValue = !!user[key]
+            ? format(parseISO(user[key]), "MM/dd/yyyy, h:mm:ss a")
+            : "Never";
           break;
         case "roleObject":
           const nestedKey = value.nestedKey;

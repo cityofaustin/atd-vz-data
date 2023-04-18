@@ -10,8 +10,8 @@ export const crashGridTableColumns = {
   case_id: {
     searchable: true,
     sortable: true,
-    label_search: "Search by Case Number",
-    label_table: "Case Number",
+    label_search: "Search by Case ID",
+    label_table: "Case ID",
     type: "String",
   },
   crash_date: {
@@ -219,7 +219,7 @@ export const crashGridTableAdvancedFilters = {
       },
       {
         id: "geo_geocoded",
-        label: "Has been Geocoded",
+        label: "Has Been Geocoded",
         filter: {
           where: [
             {
@@ -244,7 +244,7 @@ export const crashGridTableAdvancedFilters = {
       },
       {
         id: "geo_afd",
-        label: "Remove Austin Full Purpose",
+        label: "Include Outside Of Austin Full Purpose",
         invert_toggle_state: true,
         filter: {
           where: [
@@ -312,7 +312,8 @@ export const crashGridTableAdvancedFilters = {
       },
       {
         id: "int_excludeprivdrive",
-        label: "Exclude Private Driveway Crashes",
+        label: "Include Private Driveway Crashes",
+        invert_toggle_state: true,
         filter: {
           where: [
             {

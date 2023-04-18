@@ -29,7 +29,7 @@ const MapInfoBox = React.memo(
     const buildSeriousInjuriesOrFatalitiesConfig = (info) => [
       {
         title: "Date/Time",
-        content: moment(info.crash_date).format("MM/DD/YYYY HH:MM A"),
+        content: moment(info.crash_date).format("MM/DD/YYYY HH:mm A"),
       },
       { title: "Fatalities", content: info.death_cnt },
       { title: "Serious Injuries", content: info.sus_serious_injry_cnt },
@@ -45,7 +45,7 @@ const MapInfoBox = React.memo(
       seriousInjuries: buildSeriousInjuriesOrFatalitiesConfig,
       cityCouncil: (info) => [
         {
-          title: `City Council District ${info.council_district}`,
+          title: `City Council District ${info.COUNCIL_DISTRICT}`,
           content: "",
         },
       ],

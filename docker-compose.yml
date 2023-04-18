@@ -1,7 +1,13 @@
 version: '3.7'
 services:
   graphql-engine:
-    image: hasura/graphql-engine:v2.16.1 # can jump cleanly to this with shorter event names
+    image: hasura/graphql-engine:v2.20.1  # added to patch critical security vulnerability
+
+    # I'm keeping these next two notes around until we're fully up to date with 2.20.1+ in 
+    # production, because I feel it will be prudent to re-test when we upgrade to 2.20.1+.
+    # since we're going to be coming all the way from the 1.* versions.
+
+    # image: hasura/graphql-engine:v2.16.1 # can jump cleanly to this with shorter event names
     # image: hasura/graphql-engine:v1.3.3 # use this to rename the events
     volumes:
       - ./atd-vzd/graphql-engine-metadata:/metadata
@@ -14,6 +20,8 @@ services:
       HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: /srv/console-assets
   db-tools:
     container_name: visionzero_download_db_data
+    logging:
+      driver: none
     build: atd-toolbox/download-db-data
     command: tail -f /dev/null
     hostname: db-tools

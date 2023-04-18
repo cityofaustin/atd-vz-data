@@ -1,6 +1,6 @@
 #
-# This GitHub action removes PR resources created by CircleCI
-# and it is only triggered whenever a PR is closed or merged.
+# This GitHub action removes PR resources created by the Build & Publish SQS
+# Github action, and it is only triggered whenever a PR is closed or merged.
 #
 name: "Remove Unused SQS PRs"
 

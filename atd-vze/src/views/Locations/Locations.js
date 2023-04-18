@@ -8,7 +8,7 @@ import { locationQueryExportFields } from "../../queries/Locations";
 
 // Our initial query configuration
 let queryConf = {
-  table: "atd_txdot_locations",
+  table: "locations_with_crash_injury_counts",
   single_item: "locations",
   showDateRange: false,
   columns: {
@@ -27,7 +27,7 @@ let queryConf = {
       label_table: "Location",
       type: "String",
     },
-    "crashes_count_cost_summary { total_crashes }": {
+    crash_count: {
       searchable: false,
       sortable: true,
       label_search: null,
@@ -35,7 +35,7 @@ let queryConf = {
       default: 0,
       type: "Integer",
     },
-    "crashes_count_cost_summary { total_deaths }": {
+    fatalities_count: {
       searchable: false,
       sortable: true,
       label_search: null,
@@ -43,7 +43,7 @@ let queryConf = {
       default: 0,
       type: "Integer",
     },
-    "crashes_count_cost_summary { total_serious_injuries }": {
+    serious_injury_count: {
       searchable: false,
       sortable: true,
       label_search: null,
@@ -51,7 +51,7 @@ let queryConf = {
       default: 0,
       type: "Integer",
     },
-    "crashes_count_cost_summary { est_comp_cost }": {
+    total_est_comp_cost: {
       searchable: false,
       sortable: true,
       label_search: null,
@@ -61,14 +61,9 @@ let queryConf = {
     },
   },
   order_by: {
-    crashes_count_cost_summary: `{ est_comp_cost: desc }`,
+    total_est_comp_cost: 'desc_nulls_last',
   },
-  where: {
-    // Only show Locations inside CoA Limits.
-    council_district: "_gt: 0",
-    // 1 = ASMP Levels 1-4, 2 = ASMP Level 5
-    location_group: "_eq: 1",
-  },
+  where: { },
   limit: 25,
   offset: 0,
 };

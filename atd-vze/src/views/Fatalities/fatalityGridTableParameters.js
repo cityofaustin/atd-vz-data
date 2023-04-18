@@ -1,0 +1,70 @@
+export const fatalityGridTableColumns = {
+  year: {
+    searchable: false,
+    sortable: true,
+    label_table: "Year",
+    type: "Int",
+  },
+  crash_id: {
+    primary_key: true,
+    searchable: true,
+    sortable: true,
+    label_search: "Search by Crash ID",
+    label_table: "Crash ID",
+    type: "Int",
+  },
+  case_id: {
+    searchable: false,
+    sortable: true,
+    label_table: "Case ID",
+    type: "Int",
+  },
+  law_enforcement_num: {
+    searchable: false,
+    sortable: true,
+    label_table: "Law Enforcement Number",
+    type: "Int",
+  },
+  ytd_fatal_crash: {
+    searchable: false,
+    sortable: false,
+    label_table: "YTD Fatal Crashes",
+    type: "Int",
+  },
+  ytd_fatality: {
+    searchable: false,
+    sortable: false,
+    label_table: "YTD Fatalities",
+    type: "Int",
+  },
+  crash_date: {
+    searchable: false,
+    sortable: true,
+    label_table: "Crash Date",
+    type: "Date",
+  },
+  location: {
+    searchable: false,
+    sortable: false,
+    label_table: "Location",
+    type: "String",
+  },
+  victim_name: {
+    searchable: false,
+    sortable: false,
+    label_table: "Victim Name",
+    type: "String",
+  },
+  "recommendation { atd__recommendation_status_lkp { description } }": {
+    searchable: false,
+    sortable: true,
+    label_table: "Current FRB Status",
+    type: "String",
+  },
+  "recommendation { text }": {
+    searchable: false,
+    sortable: false,
+    label_table: "FRB Recommendation",
+    type: "String",
+  },
+};

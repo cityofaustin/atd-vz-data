@@ -126,4 +126,4 @@ Make sure you run: `chmod +x app/your_new_python_script.py` before running it th
 
 Also make sure the "shebang" is present at the very first line: `#!/usr/bin/env python` to avoid issues. See other files for examples.
 
-As of this first iteration, the documentation is not fully fleshed out. This is a living document that needs to be updated as new features are added and implemented. 
+As of this 1st iteration, the documentation is not fully fleshed out. This is a living document that needs to be updated as new features are added and implemented. 

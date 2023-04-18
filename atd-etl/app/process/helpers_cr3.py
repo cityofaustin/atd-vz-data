@@ -14,7 +14,9 @@ import requests
 import base64
 import subprocess
 import time
+from http.cookies import SimpleCookie
 
+import magic
 
 # We need to import our configuration, and the run_query method
 from .config import ATD_ETL_CONFIG
@@ -47,14 +49,22 @@ def download_cr3(crash_id, cookies):
     :param crash_id: string - The crash id
     :param cookies: dict - A dictionary containing key=value pairs with cookie name and values.
     """
+
+    cookie = SimpleCookie()
+    cookie.load(cookies)
+    baked_cookies = {}
+    for key, morsel in cookie.items():
+        baked_cookies[key] = morsel.value
+
     crash_id_encoded = base64.b64encode(str("CrashId=" + crash_id).encode("utf-8")).decode("utf-8")
     url = ATD_ETL_CONFIG["ATD_CRIS_CR3_URL"] + crash_id_encoded
     download_path = ATD_ETL_CONFIG["AWS_CRIS_CR3_DOWNLOAD_PATH"] + "%s.pdf" % crash_id
 
     print("Downloading (%s): '%s' from %s" % (crash_id, download_path, url))
-    resp = requests.get(url, allow_redirects=True, cookies=cookies)
+    resp = requests.get(url, allow_redirects=True, cookies=baked_cookies)
     open(download_path, 'wb').write(resp.content)
 
+    return download_path
 
 def upload_cr3(crash_id):
     """
@@ -120,20 +130,39 @@ def update_crash_id(crash_id):
     print(update_record_cr3)
     return run_query(update_record_cr3)
 
+def check_if_pdf(file_path):
+    """
+    Checks if a file is a pdf
+    :param file_path: string - The file path
+    :return: boolean - True if the file is a pdf
+    """
+    mime = magic.Magic(mime=True)
+    file_type = mime.from_file(file_path)
+    return file_type == "application/pdf"
 
-def process_crash_cr3(crash_record, cookies):
+
+def process_crash_cr3(crash_record, cookies, skipped_uploads_and_updates):
     """
     Downloads a CR3 pdf, uploads it to s3, updates the database and deletes the pdf.
     :param crash_record: dict - The individual crash record being processed
     :param cookies: dict - The cookies taken from the browser object
+    :param skipped_uploads_and_updates: list - Crash IDs of unsuccessful pdf downloads
     """
     try:
         crash_id = str(crash_record["crash_id"])
+
         print("Processing Crash: " + crash_id)
 
-        download_cr3(crash_id, cookies)
-        upload_cr3(crash_id)
-        update_crash_id(crash_id)
+        download_path = download_cr3(crash_id, cookies)
+        is_file_pdf = check_if_pdf(download_path)
+
+        if not is_file_pdf:
+            print(f"\nFile {download_path} is not a pdf - skipping upload and update")
+            skipped_uploads_and_updates.append(crash_id)
+        else:
+            upload_cr3(crash_id)
+            update_crash_id(crash_id)
+            
         delete_cr3s(crash_id)
 
     except Exception as e:
