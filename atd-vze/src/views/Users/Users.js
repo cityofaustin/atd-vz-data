@@ -8,6 +8,9 @@ import {
   CardBody,
   CardHeader,
   Col,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
   Row,
   Table,
   Button,
@@ -40,7 +43,11 @@ const UserRow = ({ user }) => {
       </td>
       <td>{format(parseISO(user.created_at), "MM/dd/yyyy")}</td>
       <td>{user.logins_count}</td>
-      <td>{format(parseISO(user.last_login), "MM/dd/yyyy")}</td>
+      <td>
+        {user.last_login
+          ? format(parseISO(user.last_login), "MM/dd/yyyy")
+          : "Never"}
+      </td>
       <td>{rules[user.app_metadata.roles[0]].label}</td>
       <td>
         <Link to={userLink}>
@@ -58,9 +65,12 @@ const Users = () => {
   const token = window.localStorage.getItem("id_token");
 
   const [userList, setUserList] = useState(null);
+  const [totalUsers, setTotalUsers] = useState(null);
+  const [page, setPage] = useState(0);
+  const perPage = 50;
 
   useEffect(() => {
-    const endpoint = `${process.env.REACT_APP_CR3_API_DOMAIN}/user/list_users`;
+    const endpoint = `${process.env.REACT_APP_CR3_API_DOMAIN}/user/list_users?page=${page}&per_page=${perPage}`;
     axios
       .get(endpoint, {
         headers: {
@@ -68,9 +78,17 @@ const Users = () => {
         },
       })
       .then(res => {
-        setUserList(res.data);
+        setUserList(res.data.users);
+        setTotalUsers(res.data.total);
       });
-  }, [token]);
+  }, [token, page, perPage]);
+
+  const pageCount = Math.ceil(totalUsers / perPage);
+
+  const updatePage = newPageValue => {
+    setUserList(null);
+    setPage(newPageValue);
+  };
 
   return (
     <Can
@@ -82,16 +100,57 @@ const Users = () => {
             <Col>
               <Card>
                 <CardHeader>
-                  <i className="fa fa-align-justify"></i> Users{" "}
+                  <i className="fa fa-align-justify"></i> Users
                 </CardHeader>
                 <CardBody>
-                  <Row className="align-items-center mb-3">
-                    <Col col="6" sm="4" md="2" xl className="mb-xl-0">
+                  <Row className="align-items-center">
+                    <Col
+                      xs="12"
+                      md="6"
+                      className="d-flex justify-content-md-start justify-content-center ml-0 mb-3"
+                    >
                       <Link to="/users/add" className="link">
                         <Button color="primary">
                           <i className="fa fa-user-plus"></i> Add User
                         </Button>
                       </Link>
+                    </Col>
+                    <Col
+                      xs="12"
+                      md="6"
+                      className="d-flex justify-content-md-end justify-content-center mr-0"
+                    >
+                      <Pagination>
+                        <PaginationItem disabled={page <= 0}>
+                          <PaginationLink first onClick={() => updatePage(0)} />
+                        </PaginationItem>
+                        <PaginationItem disabled={page <= 0}>
+                          <PaginationLink
+                            previous
+                            onClick={() => updatePage(page - 1)}
+                          />
+                        </PaginationItem>
+                        <PaginationItem disabled>
+                          <PaginationLink>
+                            Page {page + 1}/{pageCount}
+                          </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem disabled>
+                          <PaginationLink>Users: {totalUsers}</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem disabled={page >= pageCount - 1}>
+                          <PaginationLink
+                            next
+                            onClick={() => updatePage(page + 1)}
+                          />
+                        </PaginationItem>
+                        <PaginationItem disabled={page >= pageCount - 1}>
+                          <PaginationLink
+                            last
+                            onClick={() => updatePage(pageCount - 1)}
+                          />
+                        </PaginationItem>
+                      </Pagination>
                     </Col>
                   </Row>
                   {!!userList ? (

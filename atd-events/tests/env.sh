@@ -6,4 +6,4 @@
 
 export HASURA_ADMIN_SECRET="...";
 export HASURA_ENDPOINT="...";
-export HASURA_EVENT_API="...";
+export HASURA_TRIGGER_API_KEY="...";

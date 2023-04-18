@@ -51,7 +51,11 @@ export const navigation = roles => {
       title: true,
       name: "Admin",
     },
-
+    {
+      name: "Fatalities",
+      url: "/fatalities",
+      icon: "fa fa-heart-o",
+    },
     {
       name: "Reports",
       url: "#",

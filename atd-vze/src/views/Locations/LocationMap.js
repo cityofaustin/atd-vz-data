@@ -5,9 +5,11 @@ import MapGL, {
   Source,
   Layer,
 } from "react-map-gl";
+import { WebMercatorViewport } from "@math.gl/web-mercator";
 import "mapbox-gl/dist/mapbox-gl.css";
 import axios from "axios";
 import { format, parse } from "date-fns";
+import bbox from "@turf/bbox";
 
 import styled from "styled-components";
 import { colors } from "../../styles/colors";
@@ -53,10 +55,12 @@ const polygonDataLayer = {
 export default class LocationMap extends Component {
   constructor(props) {
     super(props);
+    this.polygon = this.props.data.atd_txdot_locations[0];
+
     this.state = {
       viewport: {
-        latitude: this.props.data.atd_txdot_locations[0].latitude || 30.2672,
-        longitude: this.props.data.atd_txdot_locations[0].longitude || -97.7431,
+        latitude: this.polygon?.latitude || 30.2672,
+        longitude: this.polygon?.longitude || -97.7431,
         zoom: 17,
         bearing: 0,
         pitch: 0,
@@ -65,20 +69,20 @@ export default class LocationMap extends Component {
       aerialTimestamp: "",
     };
 
-    this.polygon = this.props.data.atd_txdot_locations[0];
-
     // Create GeoJSON object from location polygon record for Source component
-    this.locationPolygonGeoJson = {
-      type: "Feature",
-      properties: {
-        renderType: this.polygon.shape.type,
-        id: this.polygon.location_id,
-      },
-      geometry: {
-        coordinates: this.polygon.shape.coordinates,
-        type: this.polygon.shape.type,
-      },
-    };
+    this.locationPolygonGeoJson = this.polygon?.shape
+      ? {
+          type: "Feature",
+          properties: {
+            renderType: this.polygon.shape.type,
+            id: this.polygon.location_id,
+          },
+          geometry: {
+            coordinates: this.polygon.shape.coordinates,
+            type: this.polygon.shape.type,
+          },
+        }
+      : null;
   }
 
   _updateViewport = viewport => {
@@ -109,8 +113,41 @@ export default class LocationMap extends Component {
       });
   };
 
+  // @see https://github.com/visgl/react-map-gl/blob/5.3-release/docs/advanced/viewport-transition.md#example-transition-viewport-to-a-bounding-box
+  fitBoundsToLocationPolygon = () => {
+    const polygonBbox = bbox(this.locationPolygonGeoJson);
+
+    // We use WebMercatorViewport to calculate the new viewport
+    const { longitude, latitude, zoom } = new WebMercatorViewport({
+      ...this.state.viewport,
+      height: 500, // WebmercatorViewport requires height and width that are not in %
+      width: 500, // WebmercatorViewport requires height and width that are not in %
+    }).fitBounds(
+      // The bounding box of the polygon must be in the form [[minX, minY], [maxX, maxY]]
+      // @see https://docs.mapbox.com/mapbox-gl-js/api/geography/#lnglatboundslike
+      [[polygonBbox[0], polygonBbox[1]], [polygonBbox[2], polygonBbox[3]]],
+      {
+        padding: 100,
+      }
+    );
+
+    this.setState({
+      viewport: {
+        ...this.state.viewport,
+        longitude,
+        latitude,
+        zoom,
+        transitionDuration: 0,
+        width: "100%", // Now, we can set a % for width since react-map-gl accepts them
+      },
+    });
+  };
+
   componentDidMount() {
     this.getAerialTimestamps();
+
+    // Zoom to the location polygon if there is one
+    this.polygon?.shape && this.fitBoundsToLocationPolygon();
   }
 
   render() {

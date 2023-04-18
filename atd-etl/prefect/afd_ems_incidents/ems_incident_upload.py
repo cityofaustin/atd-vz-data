@@ -26,11 +26,12 @@ from psycopg2 import Error
 from prefect.storage import GitHub
 from prefect.run_configs import UniversalRun
 from prefect.backend import get_key_value
+from sshtunnel import SSHTunnelForwarder
 
 pp = pprint.PrettyPrinter(indent=4)
 
 kv_data = get_key_value(key="Vision Zero Development")
-environment_variables = json.loads(kv_data)
+environment_variables_from_kv_store = json.loads(kv_data)
 
 # Retrieve the db configuration
 DB_USERNAME = None
@@ -48,24 +49,28 @@ EMS_S3_SOURCE_BUCKET = None
 EMS_S3_ARCHIVE_BUCKET = None
 EMS_S3_SOURCE_PREFIX = None
 EMS_S3_ARCHIVE_PREFIX = None
+DB_BASTION_HOST = None
+DB_RDS_HOST = None
 
 if False:
     # Retrieve the db configuration
-    DB_USERNAME = environment_variables["AFD_DB_USERNAME"]
-    DB_PASSWORD = environment_variables["AFD_DB_PASSWORD"]
-    DB_HOSTNAME = environment_variables["AFD_DB_HOSTNAME"]
-    DB_PORT = environment_variables["AFD_DB_PORT"]
-    DB_DATABASE = environment_variables["AFD_DB_DATABASE"]
-    AWS_ACCESS_KEY_ID = environment_variables["AWS_ACCESS_KEY_ID"]
-    AWS_SECRET_ACCESS_KEY = environment_variables["AWS_SECRET_ACCESS_KEY"]
-    AFD_S3_SOURCE_BUCKET = environment_variables["AFD_S3_SOURCE_BUCKET"]
-    AFD_S3_ARCHIVE_BUCKET = environment_variables["AFD_S3_ARCHIVE_BUCKET"]
-    AFD_S3_SOURCE_PREFIX = environment_variables["AFD_S3_SOURCE_PREFIX"]
-    AFD_S3_ARCHIVE_PREFIX = environment_variables["AFD_S3_ARCHIVE_PREFIX"]
-    EMS_S3_SOURCE_BUCKET = environment_variables["EMS_S3_SOURCE_BUCKET"]
-    EMS_S3_ARCHIVE_BUCKET = environment_variables["EMS_S3_ARCHIVE_BUCKET"]
-    EMS_S3_SOURCE_PREFIX = environment_variables["EMS_S3_SOURCE_PREFIX"]
-    EMS_S3_ARCHIVE_PREFIX = environment_variables["EMS_S3_ARCHIVE_PREFIX"]
+    DB_USERNAME = environment_variables_from_kv_store["AFD_DB_USERNAME"]
+    DB_PASSWORD = environment_variables_from_kv_store["AFD_DB_PASSWORD"]
+    DB_HOSTNAME = environment_variables_from_kv_store["AFD_DB_HOSTNAME"]
+    DB_PORT = environment_variables_from_kv_store["AFD_DB_PORT"]
+    DB_DATABASE = environment_variables_from_kv_store["AFD_DB_DATABASE"]
+    AWS_ACCESS_KEY_ID = environment_variables_from_kv_store["AWS_ACCESS_KEY_ID"]
+    AWS_SECRET_ACCESS_KEY = environment_variables_from_kv_store["AWS_SECRET_ACCESS_KEY"]
+    AFD_S3_SOURCE_BUCKET = environment_variables_from_kv_store["AFD_S3_SOURCE_BUCKET"]
+    AFD_S3_ARCHIVE_BUCKET = environment_variables_from_kv_store["AFD_S3_ARCHIVE_BUCKET"]
+    AFD_S3_SOURCE_PREFIX = environment_variables_from_kv_store["AFD_S3_SOURCE_PREFIX"]
+    AFD_S3_ARCHIVE_PREFIX = environment_variables_from_kv_store["AFD_S3_ARCHIVE_PREFIX"]
+    EMS_S3_SOURCE_BUCKET = environment_variables_from_kv_store["EMS_S3_SOURCE_BUCKET"]
+    EMS_S3_ARCHIVE_BUCKET = environment_variables_from_kv_store["EMS_S3_ARCHIVE_BUCKET"]
+    EMS_S3_SOURCE_PREFIX = environment_variables_from_kv_store["EMS_S3_SOURCE_PREFIX"]
+    EMS_S3_ARCHIVE_PREFIX = environment_variables_from_kv_store["EMS_S3_ARCHIVE_PREFIX"]
+    DB_BASTION_HOST = environment_variables_from_kv_store["DB_BASTION_HOST"]
+    DB_RDS_HOST = environment_variables_from_kv_store["DB_RDS_HOST"]
 else:
     DB_USERNAME = os.getenv("AFD_DB_USERNAME")
     DB_PASSWORD = os.getenv("AFD_DB_PASSWORD")
@@ -82,6 +87,8 @@ else:
     EMS_S3_ARCHIVE_BUCKET = os.getenv("EMS_S3_ARCHIVE_BUCKET")
     EMS_S3_SOURCE_PREFIX = os.getenv("EMS_S3_SOURCE_PREFIX")
     EMS_S3_ARCHIVE_PREFIX = os.getenv("EMS_S3_ARCHIVE_PREFIX")
+    DB_BASTION_HOST = os.getenv("DB_BASTION_HOST")
+    DB_RDS_HOST = os.getenv("DB_RDS_HOST")
 
 
 
@@ -158,8 +165,21 @@ def create_and_parse_dataframe(location):
 
 @task
 def upload_data_to_postgres(data, age_cutoff):
+    
+    ssh_tunnel = SSHTunnelForwarder(
+        (DB_BASTION_HOST),
+        ssh_username="vz-etl",
+        ssh_private_key= '/root/.ssh/id_rsa', # will switch to ed25519 when we rebuild this for prefect 2
+        remote_bind_address=(DB_RDS_HOST, 5432)
+        )
+    ssh_tunnel.start() 
+
     pg = psycopg2.connect(
-        host=DB_HOSTNAME, user=DB_USERNAME, password=DB_PASSWORD, dbname=DB_DATABASE
+        host='localhost', 
+        port=ssh_tunnel.local_bind_port,
+        user=DB_USERNAME,
+        password=DB_PASSWORD,
+        dbname=DB_DATABASE
     )
 
     print(f"Max record age: {age_cutoff}")

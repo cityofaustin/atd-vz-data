@@ -204,7 +204,7 @@ export const buildHighInjuryLayer = (overlay) => {
 };
 
 // Style geojson returned from ArcGIS that populates the Source and Layer in Map component
-// https://data.austintexas.gov/Locations-and-Maps/Council-Districts-Fill/hdpc-ysmz
+// https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/BOUNDARIES_single_member_districts/FeatureServer/0/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&relationParam=&returnGeodetic=false&outFields=COUNCIL_DISTRICT&returnGeometry=true&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=6&outSR=4326&defaultSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pgeojson&token=
 export const cityCouncilDataLayer = {
   id: "cityCouncil",
   type: "fill",
@@ -212,26 +212,26 @@ export const cityCouncilDataLayer = {
     "fill-opacity": 0.25,
     "fill-color": [
       "match",
-      ["get", "council_district"],
-      "1",
+      ["get", "COUNCIL_DISTRICT"],
+      1,
       colors.mapCityCouncil1,
-      "2",
+      2,
       colors.mapCityCouncil2,
-      "3",
+      3,
       colors.mapCityCouncil3,
-      "4",
+      4,
       colors.mapCityCouncil4,
-      "5",
+      5,
       colors.mapCityCouncil5,
-      "6",
+      6,
       colors.mapCityCouncil6,
-      "7",
+      7,
       colors.mapCityCouncil7,
-      "8",
+      8,
       colors.mapCityCouncil8,
-      "9",
+      9,
       colors.mapCityCouncil9,
-      "10",
+      10,
       colors.mapCityCouncil10,
       /* other */ "#ccc",
     ],

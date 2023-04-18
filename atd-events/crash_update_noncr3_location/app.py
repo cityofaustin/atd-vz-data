@@ -10,7 +10,6 @@ from typing import Optional
 
 HASURA_ADMIN_SECRET = os.getenv("HASURA_ADMIN_SECRET", "")
 HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT", "")
-HASURA_EVENT_API = os.getenv("HASURA_EVENT_API", "")
 
 # Prep Hasura query
 HEADERS = {

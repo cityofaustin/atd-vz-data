@@ -2,10 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.6
--- Dumped by pg_dump version 10.10
-
--- Started on 2019-10-15 13:48:23 CDT
+-- Dumped from database version 14.6 (Debian 14.6-1.pgdg110+1)
+-- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -20,15 +18,14 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
--- TOC entry 219 (class 1259 OID 2345633)
--- Name: atd_txdot_crashes; Type: TABLE; Schema: public; Owner: atd_vz_data
+-- Name: atd_txdot_crashes; Type: TABLE; Schema: public; Owner: visionzero
 --
 
 CREATE TABLE public.atd_txdot_crashes (
-    crash_id integer,
+    crash_id integer NOT NULL,
     crash_fatal_fl character varying(1),
     cmv_involv_fl character varying(1),
     schl_bus_fl character varying(1),
@@ -219,84 +216,209 @@ CREATE TABLE public.atd_txdot_crashes (
     address_confirmed_secondary text,
     est_comp_cost numeric(10,2) DEFAULT 0.00,
     est_econ_cost numeric(10,2) DEFAULT 0.00,
-    "position" public.geometry,
+    "position" public.geometry(Geometry,4326),
     apd_confirmed_fatality character varying(1) DEFAULT 'N'::character varying NOT NULL,
     apd_confirmed_death_count integer,
-    micromobility_device_flag character varying(1) DEFAULT 'N'::character varying NOT NULL
+    micromobility_device_flag character varying(1) DEFAULT 'N'::character varying NOT NULL,
+    cr3_stored_flag character varying(1) DEFAULT 'N'::character varying NOT NULL,
+    apd_human_update character varying DEFAULT 'N'::character varying NOT NULL,
+    speed_mgmt_points numeric(10,2) DEFAULT 0.00,
+    geocode_match_quality numeric,
+    geocode_match_metadata json,
+    atd_mode_category_metadata json,
+    location_id character varying,
+    changes_approved_date timestamp without time zone,
+    austin_full_purpose character varying(1) DEFAULT 'N'::character varying NOT NULL,
+    original_city_id integer,
+    atd_fatality_count integer,
+    temp_record boolean DEFAULT false,
+    cr3_file_metadata jsonb,
+    cr3_ocr_extraction_date timestamp with time zone,
+    investigator_narrative_ocr text,
+    est_comp_cost_crash_based numeric(10,2) DEFAULT 0,
+    imported_at timestamp without time zone DEFAULT now(),
+    law_enforcement_num integer
 );
 
 
-ALTER TABLE public.atd_txdot_crashes OWNER TO atd_vz_data;
+ALTER TABLE public.atd_txdot_crashes OWNER TO visionzero;
 
 --
--- TOC entry 5627 (class 1259 OID 2348640)
--- Name: atd_txdot_crashes_apd_confirmed_fatality_index; Type: INDEX; Schema: public; Owner: atd_vz_data
+-- Name: atd_txdot_crashes atd_txdot_crashes_pkey; Type: CONSTRAINT; Schema: public; Owner: visionzero
+--
+
+ALTER TABLE ONLY public.atd_txdot_crashes
+    ADD CONSTRAINT atd_txdot_crashes_pkey PRIMARY KEY (crash_id);
+
+
+--
+-- Name: atd_txdot_crashes_apd_confirmed_fatality_index; Type: INDEX; Schema: public; Owner: visionzero
 --
 
 CREATE INDEX atd_txdot_crashes_apd_confirmed_fatality_index ON public.atd_txdot_crashes USING btree (apd_confirmed_fatality);
 
 
 --
--- TOC entry 5628 (class 1259 OID 2346767)
--- Name: atd_txdot_crashes_geocode_provider_index; Type: INDEX; Schema: public; Owner: atd_vz_data
+-- Name: atd_txdot_crashes_austin_full_purpose_index; Type: INDEX; Schema: public; Owner: visionzero
+--
+
+CREATE INDEX atd_txdot_crashes_austin_full_purpose_index ON public.atd_txdot_crashes USING btree (austin_full_purpose);
+
+
+--
+-- Name: atd_txdot_crashes_case_id_index; Type: INDEX; Schema: public; Owner: visionzero
+--
+
+CREATE INDEX atd_txdot_crashes_case_id_index ON public.atd_txdot_crashes USING btree (case_id);
+
+
+--
+-- Name: atd_txdot_crashes_city_id_index; Type: INDEX; Schema: public; Owner: visionzero
+--
+
+CREATE INDEX atd_txdot_crashes_city_id_index ON public.atd_txdot_crashes USING btree (city_id);
+
+
+--
+-- Name: atd_txdot_crashes_cr3_file_metadata_index; Type: INDEX; Schema: public; Owner: visionzero
+--
+
+CREATE INDEX atd_txdot_crashes_cr3_file_metadata_index ON public.atd_txdot_crashes USING gin (cr3_file_metadata);
+
+
+--
+-- Name: atd_txdot_crashes_cr3_stored_flag_index; Type: INDEX; Schema: public; Owner: visionzero
+--
+
+CREATE INDEX atd_txdot_crashes_cr3_stored_flag_index ON public.atd_txdot_crashes USING btree (cr3_stored_flag);
+
+
+--
+-- Name: atd_txdot_crashes_crash_date_index; Type: INDEX; Schema: public; Owner: visionzero
+--
+
+CREATE INDEX atd_txdot_crashes_crash_date_index ON public.atd_txdot_crashes USING btree (crash_date);
+
+
+--
+-- Name: atd_txdot_crashes_crash_fatal_fl_index; Type: INDEX; Schema: public; Owner: visionzero
+--
+
+CREATE INDEX atd_txdot_crashes_crash_fatal_fl_index ON public.atd_txdot_crashes USING btree (crash_fatal_fl);
+
+
+--
+-- Name: atd_txdot_crashes_death_cnt_index; Type: INDEX; Schema: public; Owner: visionzero
+--
+
+CREATE INDEX atd_txdot_crashes_death_cnt_index ON public.atd_txdot_crashes USING btree (death_cnt);
+
+
+--
+-- Name: atd_txdot_crashes_geocode_provider_index; Type: INDEX; Schema: public; Owner: visionzero
 --
 
 CREATE INDEX atd_txdot_crashes_geocode_provider_index ON public.atd_txdot_crashes USING btree (geocode_provider);
 
 
 --
--- TOC entry 5629 (class 1259 OID 2346768)
--- Name: atd_txdot_crashes_geocode_status_index; Type: INDEX; Schema: public; Owner: atd_vz_data
+-- Name: atd_txdot_crashes_geocode_status_index; Type: INDEX; Schema: public; Owner: visionzero
 --
 
 CREATE INDEX atd_txdot_crashes_geocode_status_index ON public.atd_txdot_crashes USING btree (geocode_status);
 
 
 --
--- TOC entry 5630 (class 1259 OID 2346769)
--- Name: atd_txdot_crashes_geocoded_index; Type: INDEX; Schema: public; Owner: atd_vz_data
+-- Name: atd_txdot_crashes_geocoded_index; Type: INDEX; Schema: public; Owner: visionzero
 --
 
 CREATE INDEX atd_txdot_crashes_geocoded_index ON public.atd_txdot_crashes USING btree (geocoded);
 
 
 --
--- TOC entry 5631 (class 1259 OID 2346770)
--- Name: atd_txdot_crashes_is_retired_index; Type: INDEX; Schema: public; Owner: atd_vz_data
+-- Name: atd_txdot_crashes_investigat_agency_id_index; Type: INDEX; Schema: public; Owner: visionzero
+--
+
+CREATE INDEX atd_txdot_crashes_investigat_agency_id_index ON public.atd_txdot_crashes USING btree (investigat_agency_id);
+
+
+--
+-- Name: atd_txdot_crashes_is_retired_index; Type: INDEX; Schema: public; Owner: visionzero
 --
 
 CREATE INDEX atd_txdot_crashes_is_retired_index ON public.atd_txdot_crashes USING btree (is_retired);
 
 
 --
--- TOC entry 5632 (class 1259 OID 2346771)
--- Name: atd_txdot_crashes_qa_status_index; Type: INDEX; Schema: public; Owner: atd_vz_data
+-- Name: atd_txdot_crashes_original_city_id_index; Type: INDEX; Schema: public; Owner: visionzero
+--
+
+CREATE INDEX atd_txdot_crashes_original_city_id_index ON public.atd_txdot_crashes USING btree (original_city_id);
+
+
+--
+-- Name: atd_txdot_crashes_position_index; Type: INDEX; Schema: public; Owner: visionzero
+--
+
+CREATE INDEX atd_txdot_crashes_position_index ON public.atd_txdot_crashes USING gist ("position");
+
+
+--
+-- Name: atd_txdot_crashes_qa_status_index; Type: INDEX; Schema: public; Owner: visionzero
 --
 
 CREATE INDEX atd_txdot_crashes_qa_status_index ON public.atd_txdot_crashes USING btree (qa_status);
 
 
 --
--- TOC entry 5633 (class 1259 OID 2346795)
--- Name: idx_atd_txdot_crashes_crash_id; Type: INDEX; Schema: public; Owner: atd_vz_data
+-- Name: atd_txdot_crashes_sus_serious_injry_cnt_index; Type: INDEX; Schema: public; Owner: visionzero
 --
 
-CREATE UNIQUE INDEX idx_atd_txdot_crashes_crash_id ON public.atd_txdot_crashes USING btree (crash_id);
+CREATE INDEX atd_txdot_crashes_sus_serious_injry_cnt_index ON public.atd_txdot_crashes USING btree (sus_serious_injry_cnt);
 
 
 --
--- TOC entry 5634 (class 2620 OID 2346813)
--- Name: atd_txdot_crashes atd_txdot_crashes_audit_log; Type: TRIGGER; Schema: public; Owner: atd_vz_data
+-- Name: atd_txdot_crashes_temp_record_index; Type: INDEX; Schema: public; Owner: visionzero
 --
 
-CREATE TRIGGER atd_txdot_crashes_audit_log BEFORE INSERT OR UPDATE ON public.atd_txdot_crashes FOR EACH ROW EXECUTE PROCEDURE public.atd_txdot_crashes_updates_audit_log();
-
-ALTER TABLE public.atd_txdot_crashes DISABLE TRIGGER atd_txdot_crashes_audit_log;
+CREATE INDEX atd_txdot_crashes_temp_record_index ON public.atd_txdot_crashes USING btree (temp_record);
 
 
--- Completed on 2019-10-15 13:48:26 CDT
+--
+-- Name: atd_txdot_crashes atd_txdot_crashes_audit_log; Type: TRIGGER; Schema: public; Owner: visionzero
+--
+
+CREATE TRIGGER atd_txdot_crashes_audit_log BEFORE INSERT OR UPDATE ON public.atd_txdot_crashes FOR EACH ROW EXECUTE FUNCTION public.atd_txdot_crashes_updates_audit_log();
+
+
+--
+-- Name: atd_txdot_crashes notify_hasura_jurisdiction_from_latlon_INSERT; Type: TRIGGER; Schema: public; Owner: visionzero
+--
+
+CREATE TRIGGER "notify_hasura_jurisdiction_from_latlon_INSERT" AFTER INSERT ON public.atd_txdot_crashes FOR EACH ROW EXECUTE FUNCTION hdb_catalog."notify_hasura_jurisdiction_from_latlon_INSERT"();
+
+
+--
+-- Name: atd_txdot_crashes notify_hasura_jurisdiction_from_latlon_UPDATE; Type: TRIGGER; Schema: public; Owner: visionzero
+--
+
+CREATE TRIGGER "notify_hasura_jurisdiction_from_latlon_UPDATE" AFTER UPDATE ON public.atd_txdot_crashes FOR EACH ROW EXECUTE FUNCTION hdb_catalog."notify_hasura_jurisdiction_from_latlon_UPDATE"();
+
+
+--
+-- Name: atd_txdot_crashes notify_hasura_location_from_latlon_INSERT; Type: TRIGGER; Schema: public; Owner: visionzero
+--
+
+CREATE TRIGGER "notify_hasura_location_from_latlon_INSERT" AFTER INSERT ON public.atd_txdot_crashes FOR EACH ROW EXECUTE FUNCTION hdb_catalog."notify_hasura_location_from_latlon_INSERT"();
+
+
+--
+-- Name: atd_txdot_crashes notify_hasura_location_from_latlon_UPDATE; Type: TRIGGER; Schema: public; Owner: visionzero
+--
+
+CREATE TRIGGER "notify_hasura_location_from_latlon_UPDATE" AFTER UPDATE ON public.atd_txdot_crashes FOR EACH ROW EXECUTE FUNCTION hdb_catalog."notify_hasura_location_from_latlon_UPDATE"();
+
 
 --
 -- PostgreSQL database dump complete
 --
-

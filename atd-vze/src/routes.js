@@ -49,6 +49,7 @@ const Crash = React.lazy(() => import("./views/Crashes/Crash"));
 const Profile = React.lazy(() => import("./views/Profile/Profile"));
 const Locations = React.lazy(() => import("./views/Locations/Locations"));
 const Location = React.lazy(() => import("./views/Locations/Location"));
+const Fatalities = React.lazy(() => import("./views/Fatalities/Fatalities"));
 const Users = React.lazy(() => import("./views/Users/Users"));
 const User = React.lazy(() => import("./views/Users/User"));
 const AddUser = React.lazy(() => import("./views/Users/AddUser"));
@@ -160,6 +161,12 @@ const routes = roles => [
     exact: true,
     name: "Crash Details",
     component: Crash,
+  },
+  (isAdmin(roles) || isItSupervisor(roles)) && {
+    path: "/fatalities",
+    exact: true,
+    name: "Fatalities",
+    component: Fatalities,
   },
   {
     path: "/dev",

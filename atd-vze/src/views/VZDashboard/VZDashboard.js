@@ -140,6 +140,14 @@ function VZDashboard() {
             link="https://visionzero.austin.gov/viewer/"
             target="_vzv"
           />
+          <VZLinksWidget
+            header={`Access Management Crashes`}
+            mainText={`Summary of crashes for individual locations`}
+            icon="fa fa-map"
+            color="primary"
+            link="https://austin.maps.arcgis.com/apps/instant/interactivelegend/index.html?appid=ea84226e6e5a4ecf998082b73b8c6cca"
+            target="_arcgis"
+          />
         </Col>
       </Row>
     </div>

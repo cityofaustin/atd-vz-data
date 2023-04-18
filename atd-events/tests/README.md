@@ -23,7 +23,7 @@ variables for the staging environment only:
    ```
    export HASURA_ADMIN_SECRET="..."
    export HASURA_ENDPOINT="..."
-   export HASURA_EVENT_API="..."
+   export HASURA_TRIGGER_API_KEY="..."
    ```
 4. Run your tests:
    ```
