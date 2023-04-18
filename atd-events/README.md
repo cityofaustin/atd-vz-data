@@ -124,5 +124,3 @@ immediate support for it due to these reasons:
 2. The Lambda function needs to be associated to the queue.
 3. The lambda function needs IAM permissions to run and access services.
 4. Security-critical API keys are needed to make this happen.
-
-(More content is being redacted soon)

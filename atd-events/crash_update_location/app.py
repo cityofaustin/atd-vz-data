@@ -10,7 +10,6 @@ from typing import Optional
 
 HASURA_ADMIN_SECRET = os.getenv("HASURA_ADMIN_SECRET", "")
 HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT", "")
-HASURA_EVENT_API = os.getenv("HASURA_EVENT_API", "")
 # The following environment variable should only be set to False for local development.
 # In production, this variable should be omitted or set explicitly to true.
 HASURA_SSL_VERIFY = os.getenv("HASURA_SSL_VERIFY", True)

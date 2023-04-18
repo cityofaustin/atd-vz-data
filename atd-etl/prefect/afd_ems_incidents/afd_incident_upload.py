@@ -2,7 +2,7 @@
 
 """
 Name: AFD Incident Uploads
-Description: This flow uploads AFD Incident Response CSVs (AFD Contact: Gus). 
+Description: This flow uploads AFD Incident Response CSVs
     The data is emailed to atd-afd-incident-data@austinmobility.io daily ~ 6:30AM. From there it
     gets forwarded to a S3 bucket via AWS Simple Email Service.
 """
@@ -23,11 +23,12 @@ from datetime import datetime, timedelta
 import psycopg2
 import psycopg2.extras
 from prefect.backend import get_key_value
+from sshtunnel import SSHTunnelForwarder
 
 pp = pprint.PrettyPrinter(indent=4)
 
 kv_data = get_key_value(key="Vision Zero Development")
-environment_variables = json.loads(kv_data)
+environment_variables_from_kv_store = json.loads(kv_data)
 
 DB_USERNAME = None
 DB_PASSWORD = None
@@ -40,20 +41,24 @@ AFD_S3_SOURCE_BUCKET = None
 AFD_S3_ARCHIVE_BUCKET = None
 AFD_S3_SOURCE_PREFIX = None
 AFD_S3_ARCHIVE_PREFIX = None
+DB_BASTION_HOST = None
+DB_RDS_HOST = None
 
 # Retrieve the db configuration
 if False:
-    DB_USERNAME = environment_variables["AFD_DB_USERNAME"]
-    DB_PASSWORD = environment_variables["AFD_DB_PASSWORD"]
-    DB_HOSTNAME = environment_variables["AFD_DB_HOSTNAME"]
-    DB_PORT = environment_variables["AFD_DB_PORT"]
-    DB_DATABASE = environment_variables["AFD_DB_DATABASE"]
-    AWS_ACCESS_KEY_ID = environment_variables["AWS_ACCESS_KEY_ID"]
-    AWS_SECRET_ACCESS_KEY = environment_variables["AWS_SECRET_ACCESS_KEY"]
-    AFD_S3_SOURCE_BUCKET = environment_variables["AFD_S3_SOURCE_BUCKET"]
-    AFD_S3_ARCHIVE_BUCKET = environment_variables["AFD_S3_ARCHIVE_BUCKET"]
-    AFD_S3_SOURCE_PREFIX = environment_variables["AFD_S3_SOURCE_PREFIX"]
-    AFD_S3_ARCHIVE_PREFIX = environment_variables["AFD_S3_ARCHIVE_PREFIX"]
+    DB_USERNAME = environment_variables_from_kv_store["AFD_DB_USERNAME"]
+    DB_PASSWORD = environment_variables_from_kv_store["AFD_DB_PASSWORD"]
+    DB_HOSTNAME = environment_variables_from_kv_store["AFD_DB_HOSTNAME"]
+    DB_PORT = environment_variables_from_kv_store["AFD_DB_PORT"]
+    DB_DATABASE = environment_variables_from_kv_store["AFD_DB_DATABASE"]
+    AWS_ACCESS_KEY_ID = environment_variables_from_kv_store["AWS_ACCESS_KEY_ID"]
+    AWS_SECRET_ACCESS_KEY = environment_variables_from_kv_store["AWS_SECRET_ACCESS_KEY"]
+    AFD_S3_SOURCE_BUCKET = environment_variables_from_kv_store["AFD_S3_SOURCE_BUCKET"]
+    AFD_S3_ARCHIVE_BUCKET = environment_variables_from_kv_store["AFD_S3_ARCHIVE_BUCKET"]
+    AFD_S3_SOURCE_PREFIX = environment_variables_from_kv_store["AFD_S3_SOURCE_PREFIX"]
+    AFD_S3_ARCHIVE_PREFIX = environment_variables_from_kv_store["AFD_S3_ARCHIVE_PREFIX"]
+    DB_BASTION_HOST = environment_variables_from_kv_store["DB_BASTION_HOST"]
+    DB_RDS_HOST = environment_variables_from_kv_store["DB_RDS_HOST"]
 else:
     DB_USERNAME = os.getenv("AFD_DB_USERNAME")
     DB_PASSWORD = os.getenv("AFD_DB_PASSWORD")
@@ -66,6 +71,8 @@ else:
     AFD_S3_ARCHIVE_BUCKET = os.getenv("AFD_S3_ARCHIVE_BUCKET")
     AFD_S3_SOURCE_PREFIX = os.getenv("AFD_S3_SOURCE_PREFIX")
     AFD_S3_ARCHIVE_PREFIX = os.getenv("AFD_S3_ARCHIVE_PREFIX")
+    DB_BASTION_HOST = os.getenv("DB_BASTION_HOST")
+    DB_RDS_HOST = os.getenv("DB_RDS_HOST")
 
 
 @task
@@ -141,8 +148,21 @@ def create_and_parse_dataframe(location):
 
 @task
 def upload_data_to_postgres(data, age_cutoff):
+
+    ssh_tunnel = SSHTunnelForwarder(
+        (DB_BASTION_HOST),
+        ssh_username="vz-etl",
+        ssh_private_key= '/root/.ssh/id_rsa', # will switch to ed25519 when we rebuild this for prefect 2
+        remote_bind_address=(DB_RDS_HOST, 5432)
+        )
+    ssh_tunnel.start()   
+
     pg = psycopg2.connect(
-        host=DB_HOSTNAME, user=DB_USERNAME, password=DB_PASSWORD, dbname=DB_DATABASE
+        host='localhost', 
+        port=ssh_tunnel.local_bind_port,
+        user=DB_USERNAME, 
+        password=DB_PASSWORD, 
+        dbname=DB_DATABASE
     )
 
     print(f"Max record age: {age_cutoff}")

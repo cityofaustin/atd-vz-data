@@ -65,7 +65,7 @@ function Location(props) {
           changes: formData,
         },
       })
-      .then(res => refetch());
+      .then(() => refetch());
 
     setEditField("");
   };

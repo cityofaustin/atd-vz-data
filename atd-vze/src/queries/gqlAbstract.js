@@ -284,8 +284,7 @@ gqlAbstractTableAggregateName (
 
     if (value === null) {
       return "-";
-    }
-    else {
+    } else {
       value = String(value);
     }
 
@@ -364,7 +363,7 @@ gqlAbstractTableAggregateName (
   generateFilters(aggregate = false) {
     let output = [];
 
-    // Aggregates do not need limit and offset filters
+    // Aggregates do not need limit, offset, or order_by filters
     if (aggregate === false) {
       if (this.config["limit"]) {
         output.push("limit: " + this.config["limit"]);
@@ -372,6 +371,18 @@ gqlAbstractTableAggregateName (
 
       if (this.config["offset"] !== null) {
         output.push("offset: " + this.config["offset"]);
+      }
+
+      if (this.config["order_by"]) {
+        let order_by = [];
+        for (let [key, value] of this.getEntries("order_by")) {
+          order_by.push(
+            this.isNestedKey(key)
+              ? this.sortifyNestedKey(key, value)
+              : `${key}: ${value}`
+          );
+        }
+        output.push(`order_by: {${order_by.join(", ")}}`);
       }
     }
 
@@ -399,18 +410,6 @@ gqlAbstractTableAggregateName (
       }
     }
 
-    if (this.config["order_by"]) {
-      let order_by = [];
-      for (let [key, value] of this.getEntries("order_by")) {
-        order_by.push(
-          this.isNestedKey(key)
-            ? this.sortifyNestedKey(key, value)
-            : `${key}: ${value}`
-        );
-      }
-      output.push(`order_by: {${order_by.join(", ")}}`);
-    }
-
     return output.join(",\n");
   }
 
@@ -435,11 +434,13 @@ gqlAbstractTableAggregateName (
           for (let [key, syntax] of this.getEntries(filterItem)) {
             // The invert_toggle_state property can be used to control if the condition is applied
             // when the switch is 'on', the default, or when the switch is off.
-            // Based on the switch state and invert_toggle state, 
-            // add to the list or remove it from the query. 
-            if (filter.hasOwnProperty('invert_toggle_state') 
-                ? !filtersState[filter.id] 
-                : filtersState[filter.id]) {
+            // Based on the switch state and invert_toggle state,
+            // add to the list or remove it from the query.
+            if (
+              filter.hasOwnProperty("invert_toggle_state")
+                ? !filtersState[filter.id]
+                : filtersState[filter.id]
+            ) {
               key === "or"
                 ? this.setOr(Object.keys(syntax), Object.values(syntax))
                 : this.setWhere(key, syntax);

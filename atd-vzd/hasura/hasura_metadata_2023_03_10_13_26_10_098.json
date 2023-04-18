@@ -1,0 +1,5485 @@
+{
+  "resource_version": 156,
+  "metadata": {
+    "version": 3,
+    "sources": [
+      {
+        "name": "default",
+        "kind": "postgres",
+        "tables": [
+          {
+            "table": {
+              "name": "atd__coordination_partners_lkp",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "recommendations_partners",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "partner_id",
+                    "table": {
+                      "name": "recommendations_partners",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd__mode_category_lkp",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "atd__recommendation_status_lkp",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "recommendations",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "recommendation_status_id",
+                    "table": {
+                      "name": "recommendations",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_apd_blueform",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "address",
+                    "case_id",
+                    "date",
+                    "est_comp_cost",
+                    "est_comp_cost_crash_based",
+                    "est_econ_cost",
+                    "form_id",
+                    "hour",
+                    "latitude",
+                    "location_id",
+                    "longitude",
+                    "position",
+                    "speed_mgmt_points"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "address",
+                    "case_id",
+                    "date",
+                    "est_comp_cost",
+                    "est_comp_cost_crash_based",
+                    "est_econ_cost",
+                    "form_id",
+                    "hour",
+                    "latitude",
+                    "location_id",
+                    "longitude",
+                    "position",
+                    "speed_mgmt_points"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "address",
+                    "case_id",
+                    "date",
+                    "est_comp_cost",
+                    "est_comp_cost_crash_based",
+                    "est_econ_cost",
+                    "form_id",
+                    "hour",
+                    "latitude",
+                    "location_id",
+                    "longitude",
+                    "position",
+                    "speed_mgmt_points"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "address",
+                    "case_id",
+                    "date",
+                    "est_comp_cost",
+                    "est_comp_cost_crash_based",
+                    "est_econ_cost",
+                    "form_id",
+                    "hour",
+                    "latitude",
+                    "location_id",
+                    "longitude",
+                    "position",
+                    "speed_mgmt_points"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ],
+            "event_triggers": [
+              {
+                "name": "blueform_location_from_latlon",
+                "definition": {
+                  "enable_manual": false,
+                  "insert": {
+                    "columns": "*"
+                  },
+                  "update": {
+                    "columns": ["latitude", "longitude"]
+                  }
+                },
+                "retry_conf": {
+                  "interval_sec": 10,
+                  "num_retries": 0,
+                  "timeout_sec": 60
+                },
+                "webhook": "https://atd-vz-api.austinmobility.io/events",
+                "headers": [
+                  {
+                    "name": "HASURA_EVENT_NAME",
+                    "value": "crash_update_noncr3_location_production"
+                  },
+                  {
+                    "name": "HASURA_EVENT_API",
+                    "value": "K476e3TUEohAxCTMTkuRPYSPqD8464u9"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_jurisdictions",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "atd_location_crash_and_cost_totals",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "cr3_est_comp_cost",
+                    "cr3_total_crashes",
+                    "location_id",
+                    "noncr3_est_comp_cost",
+                    "noncr3_total_crashes",
+                    "total_crashes",
+                    "total_est_comp_cost"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "cr3_est_comp_cost",
+                    "cr3_total_crashes",
+                    "location_id",
+                    "noncr3_est_comp_cost",
+                    "noncr3_total_crashes",
+                    "total_crashes",
+                    "total_est_comp_cost"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__agency_lkp",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "atd_txdot__asmp_level_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["asmp_level_desc", "asmp_level_id"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["asmp_level_desc", "asmp_level_id"],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__city_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "city_id",
+                    "city_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "city_id",
+                    "city_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__collsn_lkp",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "collsn_id",
+                    "collsn_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "collsn_id",
+                    "collsn_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "collsn_id",
+                    "collsn_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "collsn_id",
+                    "collsn_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__contrib_factr_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "contrib_factr_id",
+                    "contrib_factr_desc",
+                    "eff_beg_date",
+                    "eff_end_date",
+                    "other"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "contrib_factr_id",
+                    "contrib_factr_desc",
+                    "eff_beg_date",
+                    "eff_end_date",
+                    "other"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__est_comp_cost",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["est_comp_cost_amount", "est_comp_cost_id"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["est_comp_cost_amount", "est_comp_cost_id"],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__est_comp_cost_crash_based",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "est_comp_cost_id",
+                    "est_comp_cost_amount",
+                    "est_comp_cost_desc"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "est_comp_cost_id",
+                    "est_comp_cost_amount",
+                    "est_comp_cost_desc"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__est_econ_cost",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "atd_txdot__ethnicity_lkp",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": ["ethnicity_desc", "ethnicity_id"]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["ethnicity_desc", "ethnicity_id"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["ethnicity_desc", "ethnicity_id"],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["ethnicity_desc", "ethnicity_id"],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__gndr_lkp",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": ["gndr_desc", "gndr_id"]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["gndr_desc", "gndr_id"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["gndr_desc", "gndr_id"],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["gndr_desc", "gndr_id"],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__injry_sev_lkp",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "people",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "prsn_injry_sev_id",
+                    "table": {
+                      "name": "atd_txdot_person",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "injry_sev_id",
+                    "eff_beg_date",
+                    "eff_end_date",
+                    "injry_sev_desc"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "injry_sev_id",
+                    "eff_beg_date",
+                    "eff_end_date",
+                    "injry_sev_desc"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["injry_sev_desc", "injry_sev_id"],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "injry_sev_id",
+                    "eff_beg_date",
+                    "eff_end_date",
+                    "injry_sev_desc"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__intrsct_relat_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "intrsct_relat_id",
+                    "intrsct_relat_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "intrsct_relat_id",
+                    "intrsct_relat_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__light_cond_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["light_cond_desc", "light_cond_id"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["light_cond_desc", "light_cond_id"],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__movt_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["movement_id", "movement_desc"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["movement_id", "movement_desc"],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__obj_struck_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "obj_struck_id",
+                    "obj_struck_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "obj_struck_id",
+                    "obj_struck_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__prsn_type_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["prsn_type_desc", "prsn_type_id"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["prsn_type_desc", "prsn_type_id"],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__road_part_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "road_part_id",
+                    "road_part_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "road_part_id",
+                    "road_part_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__road_type_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "road_type_id",
+                    "road_type_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "road_type_id",
+                    "road_type_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__rwy_sys_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "rwy_sys_id",
+                    "rwy_sys_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "rwy_sys_id",
+                    "rwy_sys_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__street_sfx_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "street_sfx_id",
+                    "street_sfx_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__traffic_cntl_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "traffic_cntl_id",
+                    "traffic_cntl_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "traffic_cntl_id",
+                    "traffic_cntl_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__trvl_dir_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "trvl_dir_id",
+                    "trvl_dir_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "trvl_dir_id",
+                    "eff_beg_date",
+                    "eff_end_date",
+                    "trvl_dir_desc"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__veh_body_styl_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "veh_body_styl_id",
+                    "veh_body_styl_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "veh_body_styl_id",
+                    "veh_body_styl_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__veh_make_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "veh_make_id",
+                    "veh_make_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "veh_make_id",
+                    "veh_make_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__veh_mod_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "veh_mod_id",
+                    "veh_mod_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "veh_mod_id",
+                    "veh_mod_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__veh_unit_desc_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "veh_unit_desc_id",
+                    "veh_unit_desc_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["veh_unit_desc_desc", "veh_unit_desc_id"],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__wthr_cond_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "wthr_cond_id",
+                    "wthr_cond_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "wthr_cond_id",
+                    "wthr_cond_desc",
+                    "eff_beg_date",
+                    "eff_end_date"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot__y_n_lkp",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["y_n_id", "y_n_desc"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["y_n_id", "y_n_desc"],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_change_log",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "change_log_id",
+                    "id",
+                    "record_crash_id",
+                    "record_id",
+                    "record_json",
+                    "record_type",
+                    "update_timestamp",
+                    "updated_by"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "change_log_id",
+                    "id",
+                    "record_crash_id",
+                    "record_id",
+                    "record_json",
+                    "record_type",
+                    "update_timestamp",
+                    "updated_by"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_change_status",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "is_retired",
+                    "last_update",
+                    "change_status_id",
+                    "description_long",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "change_status_id",
+                    "description",
+                    "description_long",
+                    "last_update",
+                    "is_retired"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_changes",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "status",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "status_id": "change_status_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot_change_status",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "change_id",
+                    "record_id",
+                    "record_type",
+                    "record_json",
+                    "update_timestamp",
+                    "created_timestamp",
+                    "updated_by",
+                    "status_id",
+                    "affected_columns",
+                    "crash_date",
+                    "record_uqid"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "crash_date",
+                    "change_id",
+                    "record_id",
+                    "record_uqid",
+                    "status_id",
+                    "record_json",
+                    "affected_columns",
+                    "created_timestamp",
+                    "update_timestamp",
+                    "record_type",
+                    "updated_by"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_changes_view",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "record_id",
+                    "change_id",
+                    "record_json",
+                    "created_timestamp",
+                    "status_id",
+                    "crash_fatal_flag",
+                    "sus_serious_injury_cnt",
+                    "status_description",
+                    "crash_date"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "crash_date",
+                    "change_id",
+                    "record_id",
+                    "status_id",
+                    "record_json",
+                    "crash_fatal_flag",
+                    "sus_serious_injury_cnt",
+                    "created_timestamp",
+                    "status_description"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_charges",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "is_retired",
+                    "charge_cat_id",
+                    "crash_id",
+                    "prsn_nbr",
+                    "charge_id",
+                    "unit_nbr",
+                    "charge",
+                    "last_update",
+                    "citation_nbr",
+                    "updated_by"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "charge_id",
+                    "crash_id",
+                    "unit_nbr",
+                    "prsn_nbr",
+                    "charge_cat_id",
+                    "charge",
+                    "citation_nbr",
+                    "last_update",
+                    "updated_by",
+                    "is_retired"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "is_retired",
+                    "charge_cat_id",
+                    "crash_id",
+                    "prsn_nbr",
+                    "charge_id",
+                    "unit_nbr",
+                    "charge",
+                    "last_update",
+                    "citation_nbr",
+                    "updated_by"
+                  ],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "is_retired",
+                    "charge_cat_id",
+                    "crash_id",
+                    "prsn_nbr",
+                    "charge_id",
+                    "unit_nbr",
+                    "charge",
+                    "last_update",
+                    "citation_nbr",
+                    "updated_by"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_crash_locations",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "location_crashes",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "crash_id": "crash_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot_crashes",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "crash_location_id",
+                    "crash_id",
+                    "location_id",
+                    "metadata",
+                    "comments",
+                    "last_update",
+                    "is_retired"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "comments",
+                    "crash_id",
+                    "is_retired",
+                    "last_update",
+                    "location_id",
+                    "metadata",
+                    "crash_location_id"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "is_retired",
+                    "last_update",
+                    "crash_id",
+                    "crash_location_id",
+                    "metadata",
+                    "comments",
+                    "location_id"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "is_retired",
+                    "last_update",
+                    "crash_id",
+                    "crash_location_id",
+                    "metadata",
+                    "comments",
+                    "location_id"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_crash_locations_ranking",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "apd_confirmed_death_count",
+                    "crashes",
+                    "serious_injry_cnt",
+                    "location_id"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "apd_confirmed_death_count",
+                    "crashes",
+                    "serious_injry_cnt",
+                    "location_id"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_crash_status",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "is_retired",
+                    "last_update",
+                    "crash_status_id",
+                    "description_long",
+                    "description"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "is_retired",
+                    "last_update",
+                    "crash_status_id",
+                    "description_long",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "is_retired",
+                    "last_update",
+                    "crash_status_id",
+                    "description_long",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "is_retired",
+                    "last_update",
+                    "crash_status_id",
+                    "description_long",
+                    "description"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_crashes",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "city",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "rpt_city_id": "city_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__city_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "collision",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "fhe_collsn_id": "collsn_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__collsn_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "geocode_method",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "geocode_provider": "geocoder_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot_geocoders",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "light_condition",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "light_cond_id": "light_cond_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__light_cond_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "location",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "location_id": "location_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot_locations",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "object_struck",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "obj_struck_id": "obj_struck_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__obj_struck_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "recommendation",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "crash_id": "crash_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "recommendations",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "road_type",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "road_type_id": "road_type_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__road_type_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "traffic_control",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "traffic_cntl_id": "traffic_cntl_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__traffic_cntl_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "weather_condition",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "wthr_cond_id": "wthr_cond_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__wthr_cond_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "array_relationships": [
+              {
+                "name": "crash_notes",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "crash_id",
+                    "table": {
+                      "name": "crash_notes",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "fatalities",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "crash_id",
+                    "table": {
+                      "name": "fatalities",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "units",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "crash_id": "crash_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot_units",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "computed_fields": [
+              {
+                "name": "address",
+                "definition": {
+                  "function": {
+                    "name": "concat_address",
+                    "schema": "public"
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "active_school_zone_fl",
+                    "address_confirmed_primary",
+                    "address_confirmed_secondary",
+                    "adt_adj_curnt_amt",
+                    "adt_curnt_amt",
+                    "adt_curnt_year",
+                    "amend_supp_fl",
+                    "apd_confirmed_death_count",
+                    "apd_confirmed_fatality",
+                    "apd_human_update",
+                    "approach_width",
+                    "approval_date",
+                    "approved_by",
+                    "at_intrsct_fl",
+                    "atd_fatality_count",
+                    "atd_mode_category_metadata",
+                    "austin_full_purpose",
+                    "base_type_id",
+                    "bridge_detail_id",
+                    "bridge_dir_of_traffic_id",
+                    "bridge_ir_struct_func_id",
+                    "bridge_loading_in_1000_lbs",
+                    "bridge_loading_type_id",
+                    "bridge_median_id",
+                    "bridge_rte_struct_func_id",
+                    "bridge_srvc_type_on_id",
+                    "bridge_srvc_type_under_id",
+                    "case_id",
+                    "cd_degr",
+                    "changes_approved_date",
+                    "city_id",
+                    "cmv_involv_fl",
+                    "cnty_id",
+                    "control",
+                    "control_2",
+                    "cr3_file_metadata",
+                    "cr3_ocr_extraction_date",
+                    "cr3_stored_flag",
+                    "crash_date",
+                    "crash_fatal_fl",
+                    "crash_id",
+                    "crash_sev_id",
+                    "crash_speed_limit",
+                    "crash_time",
+                    "crossingnumber",
+                    "culvert_type_id",
+                    "curb_type_left_id",
+                    "curb_type_right_id",
+                    "curve_lngth",
+                    "curve_type_id",
+                    "day_of_week",
+                    "dd_degr",
+                    "death_cnt",
+                    "deck_width",
+                    "delta_left_right_id",
+                    "dfo",
+                    "entr_road_id",
+                    "est_comp_cost",
+                    "est_comp_cost_crash_based",
+                    "est_econ_cost",
+                    "feature_crossed",
+                    "fhe_collsn_id",
+                    "func_sys_id",
+                    "geocode_date",
+                    "geocode_match_metadata",
+                    "geocode_match_quality",
+                    "geocode_provider",
+                    "geocode_status",
+                    "geocoded",
+                    "harm_evnt_id",
+                    "hp_median_width",
+                    "hp_shldr_left",
+                    "hp_shldr_right",
+                    "hwy_dsgn_hrt_id",
+                    "hwy_dsgn_lane_id",
+                    "hwy_nbr",
+                    "hwy_nbr_2",
+                    "hwy_sfx",
+                    "hwy_sfx_2",
+                    "hwy_sys",
+                    "hwy_sys_2",
+                    "i_r_min_vert_clear",
+                    "id_number",
+                    "intrsct_relat_id",
+                    "investigat_agency_id",
+                    "investigat_area_id",
+                    "investigat_arrv_time",
+                    "investigat_comp_fl",
+                    "investigat_da_id",
+                    "investigat_district_id",
+                    "investigat_notify_meth",
+                    "investigat_notify_time",
+                    "investigat_region_id",
+                    "investigat_service_id",
+                    "investigator_narrative",
+                    "is_retired",
+                    "last_update",
+                    "latitude",
+                    "latitude_geocoded",
+                    "latitude_primary",
+                    "light_cond_id",
+                    "local_use",
+                    "located_fl",
+                    "location_id",
+                    "longitude",
+                    "longitude_geocoded",
+                    "longitude_primary",
+                    "median_type_id",
+                    "median_width",
+                    "medical_advisory_fl",
+                    "micromobility_device_flag",
+                    "milepoint",
+                    "milepoint_2",
+                    "mpo_id",
+                    "nbr_of_lane",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "obj_struck_id",
+                    "onsys_fl",
+                    "ori_number",
+                    "original_city_id",
+                    "othr_factr_id",
+                    "pct_combo_trk_adt",
+                    "pct_single_trk_adt",
+                    "phys_featr_1_id",
+                    "phys_featr_2_id",
+                    "pop_group_id",
+                    "poscrossing_id",
+                    "position",
+                    "poss_injry_cnt",
+                    "private_dr_fl",
+                    "qa_status",
+                    "ref_mark_displ",
+                    "ref_mark_nbr",
+                    "report_date",
+                    "road_algn_id",
+                    "road_cls_id",
+                    "road_constr_zone_fl",
+                    "road_constr_zone_wrkr_fl",
+                    "road_part_adj_id",
+                    "road_relat_id",
+                    "road_type_id",
+                    "roadbed_width",
+                    "roadway_width",
+                    "row_width_usual",
+                    "rpt_block_num",
+                    "rpt_city_id",
+                    "rpt_cris_cnty_id",
+                    "rpt_crossingnumber",
+                    "rpt_hwy_num",
+                    "rpt_hwy_sfx",
+                    "rpt_latitude",
+                    "rpt_longitude",
+                    "rpt_outside_city_limit_fl",
+                    "rpt_rdwy_sys_id",
+                    "rpt_ref_mark_dir",
+                    "rpt_ref_mark_dist_uom",
+                    "rpt_ref_mark_nbr",
+                    "rpt_ref_mark_offset_amt",
+                    "rpt_road_part_id",
+                    "rpt_sec_block_num",
+                    "rpt_sec_hwy_num",
+                    "rpt_sec_hwy_sfx",
+                    "rpt_sec_rdwy_sys_id",
+                    "rpt_sec_road_part_id",
+                    "rpt_sec_street_desc",
+                    "rpt_sec_street_name",
+                    "rpt_sec_street_pfx",
+                    "rpt_sec_street_sfx",
+                    "rpt_street_desc",
+                    "rpt_street_name",
+                    "rpt_street_pfx",
+                    "rpt_street_sfx",
+                    "rr_relat_fl",
+                    "rrco",
+                    "rural_fl",
+                    "rural_urban_type_id",
+                    "schl_bus_fl",
+                    "section",
+                    "section_2",
+                    "shldr_type_left_id",
+                    "shldr_type_right_id",
+                    "shldr_use_left_id",
+                    "shldr_use_right_id",
+                    "shldr_width_left",
+                    "shldr_width_right",
+                    "speed_mgmt_points",
+                    "standstop",
+                    "street_name",
+                    "street_name_2",
+                    "street_nbr",
+                    "street_nbr_2",
+                    "structure_number",
+                    "surf_cond_id",
+                    "surf_type_id",
+                    "surf_width",
+                    "sus_serious_injry_cnt",
+                    "temp_record",
+                    "thousand_damage_fl",
+                    "toll_road_fl",
+                    "tot_injry_cnt",
+                    "traffic_cntl_id",
+                    "trk_aadt_pct",
+                    "txdot_rptable_fl",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "wdcode_id",
+                    "wthr_cond_id",
+                    "yield"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "active_school_zone_fl",
+                    "address_confirmed_primary",
+                    "address_confirmed_secondary",
+                    "adt_adj_curnt_amt",
+                    "adt_curnt_amt",
+                    "adt_curnt_year",
+                    "amend_supp_fl",
+                    "apd_confirmed_death_count",
+                    "apd_confirmed_fatality",
+                    "apd_human_update",
+                    "approach_width",
+                    "approval_date",
+                    "approved_by",
+                    "at_intrsct_fl",
+                    "atd_fatality_count",
+                    "atd_mode_category_metadata",
+                    "austin_full_purpose",
+                    "base_type_id",
+                    "bridge_detail_id",
+                    "bridge_dir_of_traffic_id",
+                    "bridge_ir_struct_func_id",
+                    "bridge_loading_in_1000_lbs",
+                    "bridge_loading_type_id",
+                    "bridge_median_id",
+                    "bridge_rte_struct_func_id",
+                    "bridge_srvc_type_on_id",
+                    "bridge_srvc_type_under_id",
+                    "case_id",
+                    "cd_degr",
+                    "changes_approved_date",
+                    "city_id",
+                    "cmv_involv_fl",
+                    "cnty_id",
+                    "control",
+                    "control_2",
+                    "cr3_file_metadata",
+                    "cr3_ocr_extraction_date",
+                    "cr3_stored_flag",
+                    "crash_date",
+                    "crash_fatal_fl",
+                    "crash_id",
+                    "crash_sev_id",
+                    "crash_speed_limit",
+                    "crash_time",
+                    "crossingnumber",
+                    "culvert_type_id",
+                    "curb_type_left_id",
+                    "curb_type_right_id",
+                    "curve_lngth",
+                    "curve_type_id",
+                    "day_of_week",
+                    "dd_degr",
+                    "death_cnt",
+                    "deck_width",
+                    "delta_left_right_id",
+                    "dfo",
+                    "entr_road_id",
+                    "est_comp_cost",
+                    "est_comp_cost_crash_based",
+                    "est_econ_cost",
+                    "feature_crossed",
+                    "fhe_collsn_id",
+                    "func_sys_id",
+                    "geocode_date",
+                    "geocode_match_metadata",
+                    "geocode_match_quality",
+                    "geocode_provider",
+                    "geocode_status",
+                    "geocoded",
+                    "harm_evnt_id",
+                    "hp_median_width",
+                    "hp_shldr_left",
+                    "hp_shldr_right",
+                    "hwy_dsgn_hrt_id",
+                    "hwy_dsgn_lane_id",
+                    "hwy_nbr",
+                    "hwy_nbr_2",
+                    "hwy_sfx",
+                    "hwy_sfx_2",
+                    "hwy_sys",
+                    "hwy_sys_2",
+                    "i_r_min_vert_clear",
+                    "id_number",
+                    "intrsct_relat_id",
+                    "investigat_agency_id",
+                    "investigat_area_id",
+                    "investigat_arrv_time",
+                    "investigat_comp_fl",
+                    "investigat_da_id",
+                    "investigat_district_id",
+                    "investigat_notify_meth",
+                    "investigat_notify_time",
+                    "investigat_region_id",
+                    "investigat_service_id",
+                    "investigator_name",
+                    "investigator_narrative",
+                    "investigator_narrative_ocr",
+                    "is_retired",
+                    "last_update",
+                    "latitude",
+                    "latitude_geocoded",
+                    "latitude_primary",
+                    "light_cond_id",
+                    "local_use",
+                    "located_fl",
+                    "location_id",
+                    "longitude",
+                    "longitude_geocoded",
+                    "longitude_primary",
+                    "median_type_id",
+                    "median_width",
+                    "medical_advisory_fl",
+                    "micromobility_device_flag",
+                    "milepoint",
+                    "milepoint_2",
+                    "mpo_id",
+                    "nbr_of_lane",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "obj_struck_id",
+                    "onsys_fl",
+                    "ori_number",
+                    "original_city_id",
+                    "othr_factr_id",
+                    "pct_combo_trk_adt",
+                    "pct_single_trk_adt",
+                    "phys_featr_1_id",
+                    "phys_featr_2_id",
+                    "pop_group_id",
+                    "poscrossing_id",
+                    "position",
+                    "poss_injry_cnt",
+                    "private_dr_fl",
+                    "qa_status",
+                    "ref_mark_displ",
+                    "ref_mark_nbr",
+                    "report_date",
+                    "road_algn_id",
+                    "road_cls_id",
+                    "road_constr_zone_fl",
+                    "road_constr_zone_wrkr_fl",
+                    "road_part_adj_id",
+                    "road_relat_id",
+                    "road_type_id",
+                    "roadbed_width",
+                    "roadway_width",
+                    "row_width_usual",
+                    "rpt_block_num",
+                    "rpt_city_id",
+                    "rpt_cris_cnty_id",
+                    "rpt_crossingnumber",
+                    "rpt_hwy_num",
+                    "rpt_hwy_sfx",
+                    "rpt_latitude",
+                    "rpt_longitude",
+                    "rpt_outside_city_limit_fl",
+                    "rpt_rdwy_sys_id",
+                    "rpt_ref_mark_dir",
+                    "rpt_ref_mark_dist_uom",
+                    "rpt_ref_mark_nbr",
+                    "rpt_ref_mark_offset_amt",
+                    "rpt_road_part_id",
+                    "rpt_sec_block_num",
+                    "rpt_sec_hwy_num",
+                    "rpt_sec_hwy_sfx",
+                    "rpt_sec_rdwy_sys_id",
+                    "rpt_sec_road_part_id",
+                    "rpt_sec_street_desc",
+                    "rpt_sec_street_name",
+                    "rpt_sec_street_pfx",
+                    "rpt_sec_street_sfx",
+                    "rpt_street_desc",
+                    "rpt_street_name",
+                    "rpt_street_pfx",
+                    "rpt_street_sfx",
+                    "rr_relat_fl",
+                    "rrco",
+                    "rural_fl",
+                    "rural_urban_type_id",
+                    "schl_bus_fl",
+                    "section",
+                    "section_2",
+                    "shldr_type_left_id",
+                    "shldr_type_right_id",
+                    "shldr_use_left_id",
+                    "shldr_use_right_id",
+                    "shldr_width_left",
+                    "shldr_width_right",
+                    "speed_mgmt_points",
+                    "standstop",
+                    "street_name",
+                    "street_name_2",
+                    "street_nbr",
+                    "street_nbr_2",
+                    "structure_number",
+                    "surf_cond_id",
+                    "surf_type_id",
+                    "surf_width",
+                    "sus_serious_injry_cnt",
+                    "temp_record",
+                    "thousand_damage_fl",
+                    "toll_road_fl",
+                    "tot_injry_cnt",
+                    "traffic_cntl_id",
+                    "trk_aadt_pct",
+                    "txdot_rptable_fl",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "wdcode_id",
+                    "wthr_cond_id",
+                    "yield"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "active_school_zone_fl",
+                    "address_confirmed_primary",
+                    "address_confirmed_secondary",
+                    "adt_adj_curnt_amt",
+                    "adt_curnt_amt",
+                    "adt_curnt_year",
+                    "amend_supp_fl",
+                    "apd_confirmed_death_count",
+                    "apd_confirmed_fatality",
+                    "apd_human_update",
+                    "approach_width",
+                    "approval_date",
+                    "approved_by",
+                    "at_intrsct_fl",
+                    "atd_fatality_count",
+                    "atd_mode_category_metadata",
+                    "austin_full_purpose",
+                    "base_type_id",
+                    "bridge_detail_id",
+                    "bridge_dir_of_traffic_id",
+                    "bridge_ir_struct_func_id",
+                    "bridge_loading_in_1000_lbs",
+                    "bridge_loading_type_id",
+                    "bridge_median_id",
+                    "bridge_rte_struct_func_id",
+                    "bridge_srvc_type_on_id",
+                    "bridge_srvc_type_under_id",
+                    "case_id",
+                    "cd_degr",
+                    "changes_approved_date",
+                    "city_id",
+                    "cmv_involv_fl",
+                    "cnty_id",
+                    "control",
+                    "control_2",
+                    "cr3_file_metadata",
+                    "cr3_ocr_extraction_date",
+                    "cr3_stored_flag",
+                    "crash_date",
+                    "crash_fatal_fl",
+                    "crash_id",
+                    "crash_sev_id",
+                    "crash_speed_limit",
+                    "crash_time",
+                    "crossingnumber",
+                    "culvert_type_id",
+                    "curb_type_left_id",
+                    "curb_type_right_id",
+                    "curve_lngth",
+                    "curve_type_id",
+                    "day_of_week",
+                    "dd_degr",
+                    "death_cnt",
+                    "deck_width",
+                    "delta_left_right_id",
+                    "dfo",
+                    "entr_road_id",
+                    "est_comp_cost",
+                    "est_comp_cost_crash_based",
+                    "est_econ_cost",
+                    "feature_crossed",
+                    "fhe_collsn_id",
+                    "func_sys_id",
+                    "geocode_date",
+                    "geocode_match_metadata",
+                    "geocode_match_quality",
+                    "geocode_provider",
+                    "geocode_status",
+                    "geocoded",
+                    "harm_evnt_id",
+                    "hp_median_width",
+                    "hp_shldr_left",
+                    "hp_shldr_right",
+                    "hwy_dsgn_hrt_id",
+                    "hwy_dsgn_lane_id",
+                    "hwy_nbr",
+                    "hwy_nbr_2",
+                    "hwy_sfx",
+                    "hwy_sfx_2",
+                    "hwy_sys",
+                    "hwy_sys_2",
+                    "i_r_min_vert_clear",
+                    "id_number",
+                    "intrsct_relat_id",
+                    "investigat_agency_id",
+                    "investigat_area_id",
+                    "investigat_arrv_time",
+                    "investigat_comp_fl",
+                    "investigat_da_id",
+                    "investigat_district_id",
+                    "investigat_notify_meth",
+                    "investigat_notify_time",
+                    "investigat_region_id",
+                    "investigat_service_id",
+                    "investigator_narrative",
+                    "investigator_narrative_ocr",
+                    "is_retired",
+                    "last_update",
+                    "latitude",
+                    "latitude_geocoded",
+                    "latitude_primary",
+                    "light_cond_id",
+                    "local_use",
+                    "located_fl",
+                    "location_id",
+                    "longitude",
+                    "longitude_geocoded",
+                    "longitude_primary",
+                    "median_type_id",
+                    "median_width",
+                    "medical_advisory_fl",
+                    "micromobility_device_flag",
+                    "milepoint",
+                    "milepoint_2",
+                    "mpo_id",
+                    "nbr_of_lane",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "obj_struck_id",
+                    "onsys_fl",
+                    "ori_number",
+                    "original_city_id",
+                    "othr_factr_id",
+                    "pct_combo_trk_adt",
+                    "pct_single_trk_adt",
+                    "phys_featr_1_id",
+                    "phys_featr_2_id",
+                    "pop_group_id",
+                    "poscrossing_id",
+                    "position",
+                    "poss_injry_cnt",
+                    "private_dr_fl",
+                    "qa_status",
+                    "ref_mark_displ",
+                    "ref_mark_nbr",
+                    "report_date",
+                    "road_algn_id",
+                    "road_cls_id",
+                    "road_constr_zone_fl",
+                    "road_constr_zone_wrkr_fl",
+                    "road_part_adj_id",
+                    "road_relat_id",
+                    "road_type_id",
+                    "roadbed_width",
+                    "roadway_width",
+                    "row_width_usual",
+                    "rpt_block_num",
+                    "rpt_city_id",
+                    "rpt_cris_cnty_id",
+                    "rpt_crossingnumber",
+                    "rpt_hwy_num",
+                    "rpt_hwy_sfx",
+                    "rpt_latitude",
+                    "rpt_longitude",
+                    "rpt_outside_city_limit_fl",
+                    "rpt_rdwy_sys_id",
+                    "rpt_ref_mark_dir",
+                    "rpt_ref_mark_dist_uom",
+                    "rpt_ref_mark_nbr",
+                    "rpt_ref_mark_offset_amt",
+                    "rpt_road_part_id",
+                    "rpt_sec_block_num",
+                    "rpt_sec_hwy_num",
+                    "rpt_sec_hwy_sfx",
+                    "rpt_sec_rdwy_sys_id",
+                    "rpt_sec_road_part_id",
+                    "rpt_sec_street_desc",
+                    "rpt_sec_street_name",
+                    "rpt_sec_street_pfx",
+                    "rpt_sec_street_sfx",
+                    "rpt_street_desc",
+                    "rpt_street_name",
+                    "rpt_street_pfx",
+                    "rpt_street_sfx",
+                    "rr_relat_fl",
+                    "rrco",
+                    "rural_fl",
+                    "rural_urban_type_id",
+                    "schl_bus_fl",
+                    "section",
+                    "section_2",
+                    "shldr_type_left_id",
+                    "shldr_type_right_id",
+                    "shldr_use_left_id",
+                    "shldr_use_right_id",
+                    "shldr_width_left",
+                    "shldr_width_right",
+                    "speed_mgmt_points",
+                    "standstop",
+                    "street_name",
+                    "street_name_2",
+                    "street_nbr",
+                    "street_nbr_2",
+                    "structure_number",
+                    "surf_cond_id",
+                    "surf_type_id",
+                    "surf_width",
+                    "sus_serious_injry_cnt",
+                    "temp_record",
+                    "thousand_damage_fl",
+                    "toll_road_fl",
+                    "tot_injry_cnt",
+                    "traffic_cntl_id",
+                    "trk_aadt_pct",
+                    "txdot_rptable_fl",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "wdcode_id",
+                    "wthr_cond_id",
+                    "yield"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "active_school_zone_fl",
+                    "address_confirmed_primary",
+                    "address_confirmed_secondary",
+                    "adt_adj_curnt_amt",
+                    "adt_curnt_amt",
+                    "adt_curnt_year",
+                    "amend_supp_fl",
+                    "apd_confirmed_death_count",
+                    "apd_confirmed_fatality",
+                    "apd_human_update",
+                    "approach_width",
+                    "approval_date",
+                    "approved_by",
+                    "at_intrsct_fl",
+                    "atd_fatality_count",
+                    "atd_mode_category_metadata",
+                    "austin_full_purpose",
+                    "base_type_id",
+                    "bridge_detail_id",
+                    "bridge_dir_of_traffic_id",
+                    "bridge_ir_struct_func_id",
+                    "bridge_loading_in_1000_lbs",
+                    "bridge_loading_type_id",
+                    "bridge_median_id",
+                    "bridge_rte_struct_func_id",
+                    "bridge_srvc_type_on_id",
+                    "bridge_srvc_type_under_id",
+                    "case_id",
+                    "cd_degr",
+                    "changes_approved_date",
+                    "city_id",
+                    "cmv_involv_fl",
+                    "cnty_id",
+                    "control",
+                    "control_2",
+                    "cr3_file_metadata",
+                    "cr3_ocr_extraction_date",
+                    "cr3_stored_flag",
+                    "crash_date",
+                    "crash_fatal_fl",
+                    "crash_id",
+                    "crash_sev_id",
+                    "crash_speed_limit",
+                    "crash_time",
+                    "crossingnumber",
+                    "culvert_type_id",
+                    "curb_type_left_id",
+                    "curb_type_right_id",
+                    "curve_lngth",
+                    "curve_type_id",
+                    "day_of_week",
+                    "dd_degr",
+                    "death_cnt",
+                    "deck_width",
+                    "delta_left_right_id",
+                    "dfo",
+                    "entr_road_id",
+                    "est_comp_cost",
+                    "est_comp_cost_crash_based",
+                    "est_econ_cost",
+                    "feature_crossed",
+                    "fhe_collsn_id",
+                    "func_sys_id",
+                    "geocode_date",
+                    "geocode_match_metadata",
+                    "geocode_match_quality",
+                    "geocode_provider",
+                    "geocode_status",
+                    "geocoded",
+                    "harm_evnt_id",
+                    "hp_median_width",
+                    "hp_shldr_left",
+                    "hp_shldr_right",
+                    "hwy_dsgn_hrt_id",
+                    "hwy_dsgn_lane_id",
+                    "hwy_nbr",
+                    "hwy_nbr_2",
+                    "hwy_sfx",
+                    "hwy_sfx_2",
+                    "hwy_sys",
+                    "hwy_sys_2",
+                    "i_r_min_vert_clear",
+                    "id_number",
+                    "intrsct_relat_id",
+                    "investigat_agency_id",
+                    "investigat_area_id",
+                    "investigat_arrv_time",
+                    "investigat_comp_fl",
+                    "investigat_da_id",
+                    "investigat_district_id",
+                    "investigat_notify_meth",
+                    "investigat_notify_time",
+                    "investigat_region_id",
+                    "investigat_service_id",
+                    "investigator_name",
+                    "investigator_narrative",
+                    "investigator_narrative_ocr",
+                    "is_retired",
+                    "last_update",
+                    "latitude",
+                    "latitude_geocoded",
+                    "latitude_primary",
+                    "light_cond_id",
+                    "local_use",
+                    "located_fl",
+                    "location_id",
+                    "longitude",
+                    "longitude_geocoded",
+                    "longitude_primary",
+                    "median_type_id",
+                    "median_width",
+                    "medical_advisory_fl",
+                    "micromobility_device_flag",
+                    "milepoint",
+                    "milepoint_2",
+                    "mpo_id",
+                    "nbr_of_lane",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "obj_struck_id",
+                    "onsys_fl",
+                    "ori_number",
+                    "original_city_id",
+                    "othr_factr_id",
+                    "pct_combo_trk_adt",
+                    "pct_single_trk_adt",
+                    "phys_featr_1_id",
+                    "phys_featr_2_id",
+                    "pop_group_id",
+                    "poscrossing_id",
+                    "position",
+                    "poss_injry_cnt",
+                    "private_dr_fl",
+                    "qa_status",
+                    "ref_mark_displ",
+                    "ref_mark_nbr",
+                    "report_date",
+                    "road_algn_id",
+                    "road_cls_id",
+                    "road_constr_zone_fl",
+                    "road_constr_zone_wrkr_fl",
+                    "road_part_adj_id",
+                    "road_relat_id",
+                    "road_type_id",
+                    "roadbed_width",
+                    "roadway_width",
+                    "row_width_usual",
+                    "rpt_block_num",
+                    "rpt_city_id",
+                    "rpt_cris_cnty_id",
+                    "rpt_crossingnumber",
+                    "rpt_hwy_num",
+                    "rpt_hwy_sfx",
+                    "rpt_latitude",
+                    "rpt_longitude",
+                    "rpt_outside_city_limit_fl",
+                    "rpt_rdwy_sys_id",
+                    "rpt_ref_mark_dir",
+                    "rpt_ref_mark_dist_uom",
+                    "rpt_ref_mark_nbr",
+                    "rpt_ref_mark_offset_amt",
+                    "rpt_road_part_id",
+                    "rpt_sec_block_num",
+                    "rpt_sec_hwy_num",
+                    "rpt_sec_hwy_sfx",
+                    "rpt_sec_rdwy_sys_id",
+                    "rpt_sec_road_part_id",
+                    "rpt_sec_street_desc",
+                    "rpt_sec_street_name",
+                    "rpt_sec_street_pfx",
+                    "rpt_sec_street_sfx",
+                    "rpt_street_desc",
+                    "rpt_street_name",
+                    "rpt_street_pfx",
+                    "rpt_street_sfx",
+                    "rr_relat_fl",
+                    "rrco",
+                    "rural_fl",
+                    "rural_urban_type_id",
+                    "schl_bus_fl",
+                    "section",
+                    "section_2",
+                    "shldr_type_left_id",
+                    "shldr_type_right_id",
+                    "shldr_use_left_id",
+                    "shldr_use_right_id",
+                    "shldr_width_left",
+                    "shldr_width_right",
+                    "speed_mgmt_points",
+                    "standstop",
+                    "street_name",
+                    "street_name_2",
+                    "street_nbr",
+                    "street_nbr_2",
+                    "structure_number",
+                    "surf_cond_id",
+                    "surf_type_id",
+                    "surf_width",
+                    "sus_serious_injry_cnt",
+                    "temp_record",
+                    "thousand_damage_fl",
+                    "toll_road_fl",
+                    "tot_injry_cnt",
+                    "traffic_cntl_id",
+                    "trk_aadt_pct",
+                    "txdot_rptable_fl",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "wdcode_id",
+                    "wthr_cond_id",
+                    "yield"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ],
+            "event_triggers": [
+              {
+                "name": "jurisdiction_from_latlon",
+                "definition": {
+                  "enable_manual": false,
+                  "insert": {
+                    "columns": "*"
+                  },
+                  "update": {
+                    "columns": [
+                      "latitude",
+                      "latitude_geocoded",
+                      "latitude_primary",
+                      "longitude",
+                      "longitude_geocoded",
+                      "longitude_primary"
+                    ]
+                  }
+                },
+                "retry_conf": {
+                  "interval_sec": 10,
+                  "num_retries": 0,
+                  "timeout_sec": 60
+                },
+                "webhook": "https://atd-vz-api.austinmobility.io/events",
+                "headers": [
+                  {
+                    "name": "HASURA_EVENT_NAME",
+                    "value": "crash_update_jurisdiction_production"
+                  },
+                  {
+                    "name": "HASURA_EVENT_API",
+                    "value": "K476e3TUEohAxCTMTkuRPYSPqD8464u9"
+                  }
+                ]
+              },
+              {
+                "name": "location_from_latlon",
+                "definition": {
+                  "enable_manual": false,
+                  "insert": {
+                    "columns": "*"
+                  },
+                  "update": {
+                    "columns": [
+                      "latitude",
+                      "latitude_geocoded",
+                      "latitude_primary",
+                      "longitude",
+                      "longitude_geocoded",
+                      "longitude_primary"
+                    ]
+                  }
+                },
+                "retry_conf": {
+                  "interval_sec": 10,
+                  "num_retries": 0,
+                  "timeout_sec": 60
+                },
+                "webhook": "https://atd-vz-api.austinmobility.io/events",
+                "headers": [
+                  {
+                    "name": "HASURA_EVENT_API",
+                    "value": "K476e3TUEohAxCTMTkuRPYSPqD8464u9"
+                  },
+                  {
+                    "name": "HASURA_EVENT_NAME",
+                    "value": "crash_update_location_production"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_geocoders",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": ["geocoder_id", "description", "name"]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["geocoder_id", "description", "name"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["geocoder_id", "description", "name"],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["geocoder_id", "description", "name"],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_locations",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "crashes_count_cost_summary",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "location_id": "location_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "view_location_injry_count_cost_summary",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "array_relationships": [
+              {
+                "name": "crashes_by_manner_collision",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "location_id": "location_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "view_location_crashes_by_manner_collision",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "crashes_by_veh_body_style",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "location_id": "location_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "view_location_crashes_by_veh_body_style",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "address",
+                    "description",
+                    "geometry",
+                    "is_retired",
+                    "is_studylocation",
+                    "last_update",
+                    "latitude",
+                    "location_group",
+                    "location_id",
+                    "longitude",
+                    "metadata",
+                    "priority_level",
+                    "scale_factor",
+                    "shape",
+                    "unique_id"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "address",
+                    "asmp_street_level",
+                    "council_district",
+                    "description",
+                    "geometry",
+                    "is_retired",
+                    "is_studylocation",
+                    "last_update",
+                    "latitude",
+                    "level_1",
+                    "level_2",
+                    "level_3",
+                    "level_4",
+                    "level_5",
+                    "location_group",
+                    "location_id",
+                    "longitude",
+                    "metadata",
+                    "priority_level",
+                    "scale_factor",
+                    "shape",
+                    "street_level"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "address",
+                    "asmp_street_level",
+                    "council_district",
+                    "description",
+                    "geometry",
+                    "is_retired",
+                    "is_studylocation",
+                    "last_update",
+                    "latitude",
+                    "level_1",
+                    "level_2",
+                    "level_3",
+                    "level_4",
+                    "level_5",
+                    "location_group",
+                    "location_id",
+                    "longitude",
+                    "metadata",
+                    "priority_level",
+                    "scale_factor",
+                    "shape",
+                    "street_level"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "address",
+                    "asmp_street_level",
+                    "description",
+                    "geometry",
+                    "is_retired",
+                    "is_studylocation",
+                    "last_update",
+                    "latitude",
+                    "location_group",
+                    "location_id",
+                    "longitude",
+                    "metadata",
+                    "priority_level",
+                    "scale_factor",
+                    "shape",
+                    "unique_id"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_locations_with_centroids",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "atd_txdot_person",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "crash",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "crash_id": "crash_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot_crashes",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "ethnicity",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "prsn_ethnicity_id": "ethnicity_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__ethnicity_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "fatality",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "person_id": "person_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "fatalities",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "gender",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "prsn_gndr_id": "gndr_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__gndr_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "injury_severity",
+                "using": {
+                  "foreign_key_constraint_on": "prsn_injry_sev_id"
+                }
+              },
+              {
+                "name": "person_type",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "prsn_type_id": "prsn_type_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__prsn_type_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "unit",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "unit_nbr": "unit_nbr"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot_units",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "crash_id",
+                    "death_cnt",
+                    "is_retired",
+                    "last_update",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "person_id",
+                    "poss_injry_cnt",
+                    "prsn_age",
+                    "prsn_airbag_id",
+                    "prsn_alc_rslt_id",
+                    "prsn_alc_spec_type_id",
+                    "prsn_bac_test_rslt",
+                    "prsn_death_date",
+                    "prsn_death_time",
+                    "prsn_drg_rslt_id",
+                    "prsn_drg_spec_type_id",
+                    "prsn_ejct_id",
+                    "prsn_ethnicity_id",
+                    "prsn_first_name",
+                    "prsn_gndr_id",
+                    "prsn_helmet_id",
+                    "prsn_injry_sev_id",
+                    "prsn_last_name",
+                    "prsn_mid_name",
+                    "prsn_name_honorific",
+                    "prsn_name_sfx",
+                    "prsn_nbr",
+                    "prsn_occpnt_pos_id",
+                    "prsn_rest_id",
+                    "prsn_sol_fl",
+                    "prsn_taken_by",
+                    "prsn_taken_to",
+                    "prsn_type_id",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "death_cnt",
+                    "is_retired",
+                    "last_update",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "person_id",
+                    "poss_injry_cnt",
+                    "prsn_age",
+                    "prsn_airbag_id",
+                    "prsn_alc_rslt_id",
+                    "prsn_alc_spec_type_id",
+                    "prsn_bac_test_rslt",
+                    "prsn_death_date",
+                    "prsn_death_time",
+                    "prsn_drg_rslt_id",
+                    "prsn_drg_spec_type_id",
+                    "prsn_ejct_id",
+                    "prsn_ethnicity_id",
+                    "prsn_gndr_id",
+                    "prsn_helmet_id",
+                    "prsn_injry_sev_id",
+                    "prsn_nbr",
+                    "prsn_occpnt_pos_id",
+                    "prsn_rest_id",
+                    "prsn_sol_fl",
+                    "prsn_taken_by",
+                    "prsn_taken_to",
+                    "prsn_type_id",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "years_of_life_lost"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "death_cnt",
+                    "is_retired",
+                    "last_update",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "person_id",
+                    "poss_injry_cnt",
+                    "prsn_age",
+                    "prsn_airbag_id",
+                    "prsn_alc_rslt_id",
+                    "prsn_alc_spec_type_id",
+                    "prsn_bac_test_rslt",
+                    "prsn_death_date",
+                    "prsn_death_time",
+                    "prsn_drg_rslt_id",
+                    "prsn_drg_spec_type_id",
+                    "prsn_ejct_id",
+                    "prsn_ethnicity_id",
+                    "prsn_gndr_id",
+                    "prsn_helmet_id",
+                    "prsn_injry_sev_id",
+                    "prsn_nbr",
+                    "prsn_occpnt_pos_id",
+                    "prsn_rest_id",
+                    "prsn_sol_fl",
+                    "prsn_taken_by",
+                    "prsn_taken_to",
+                    "prsn_type_id",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "years_of_life_lost"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "death_cnt",
+                    "is_retired",
+                    "last_update",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "person_id",
+                    "poss_injry_cnt",
+                    "prsn_age",
+                    "prsn_airbag_id",
+                    "prsn_alc_rslt_id",
+                    "prsn_alc_spec_type_id",
+                    "prsn_bac_test_rslt",
+                    "prsn_death_date",
+                    "prsn_death_time",
+                    "prsn_drg_rslt_id",
+                    "prsn_drg_spec_type_id",
+                    "prsn_ejct_id",
+                    "prsn_ethnicity_id",
+                    "prsn_first_name",
+                    "prsn_gndr_id",
+                    "prsn_helmet_id",
+                    "prsn_injry_sev_id",
+                    "prsn_last_name",
+                    "prsn_mid_name",
+                    "prsn_name_honorific",
+                    "prsn_name_sfx",
+                    "prsn_nbr",
+                    "prsn_occpnt_pos_id",
+                    "prsn_rest_id",
+                    "prsn_sol_fl",
+                    "prsn_taken_by",
+                    "prsn_taken_to",
+                    "prsn_type_id",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_primaryperson",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "crash",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "crash_id": "crash_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot_crashes",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "ethnicity",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "prsn_ethnicity_id": "ethnicity_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__ethnicity_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "fatality",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "primaryperson_id": "primaryperson_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "fatalities",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "gender",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "prsn_gndr_id": "gndr_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__gndr_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "injury_severity",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "prsn_injry_sev_id": "injry_sev_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__injry_sev_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "person_type",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "prsn_type_id": "prsn_type_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__prsn_type_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "crash_id",
+                    "death_cnt",
+                    "drvr_city_name",
+                    "drvr_drg_cat_1_id",
+                    "drvr_lic_cls_id",
+                    "drvr_lic_type_id",
+                    "drvr_state_id",
+                    "drvr_zip",
+                    "is_retired",
+                    "last_update",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "poss_injry_cnt",
+                    "primaryperson_id",
+                    "prsn_age",
+                    "prsn_airbag_id",
+                    "prsn_alc_rslt_id",
+                    "prsn_alc_spec_type_id",
+                    "prsn_bac_test_rslt",
+                    "prsn_death_date",
+                    "prsn_death_time",
+                    "prsn_drg_rslt_id",
+                    "prsn_drg_spec_type_id",
+                    "prsn_ejct_id",
+                    "prsn_ethnicity_id",
+                    "prsn_gndr_id",
+                    "prsn_helmet_id",
+                    "prsn_injry_sev_id",
+                    "prsn_name_honorific",
+                    "prsn_nbr",
+                    "prsn_occpnt_pos_id",
+                    "prsn_rest_id",
+                    "prsn_sol_fl",
+                    "prsn_taken_by",
+                    "prsn_taken_to",
+                    "prsn_type_id",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "death_cnt",
+                    "drvr_city_name",
+                    "drvr_drg_cat_1_id",
+                    "drvr_lic_cls_id",
+                    "drvr_lic_type_id",
+                    "drvr_state_id",
+                    "drvr_zip",
+                    "is_retired",
+                    "last_update",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "poss_injry_cnt",
+                    "primaryperson_id",
+                    "prsn_age",
+                    "prsn_airbag_id",
+                    "prsn_alc_rslt_id",
+                    "prsn_alc_spec_type_id",
+                    "prsn_bac_test_rslt",
+                    "prsn_death_date",
+                    "prsn_death_time",
+                    "prsn_drg_rslt_id",
+                    "prsn_drg_spec_type_id",
+                    "prsn_ejct_id",
+                    "prsn_ethnicity_id",
+                    "prsn_gndr_id",
+                    "prsn_helmet_id",
+                    "prsn_injry_sev_id",
+                    "prsn_nbr",
+                    "prsn_occpnt_pos_id",
+                    "prsn_rest_id",
+                    "prsn_sol_fl",
+                    "prsn_taken_by",
+                    "prsn_taken_to",
+                    "prsn_type_id",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "years_of_life_lost"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "death_cnt",
+                    "drvr_city_name",
+                    "drvr_drg_cat_1_id",
+                    "drvr_lic_cls_id",
+                    "drvr_lic_type_id",
+                    "drvr_state_id",
+                    "drvr_zip",
+                    "is_retired",
+                    "last_update",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "poss_injry_cnt",
+                    "primaryperson_id",
+                    "prsn_age",
+                    "prsn_airbag_id",
+                    "prsn_alc_rslt_id",
+                    "prsn_alc_spec_type_id",
+                    "prsn_bac_test_rslt",
+                    "prsn_death_date",
+                    "prsn_death_time",
+                    "prsn_drg_rslt_id",
+                    "prsn_drg_spec_type_id",
+                    "prsn_ejct_id",
+                    "prsn_ethnicity_id",
+                    "prsn_gndr_id",
+                    "prsn_helmet_id",
+                    "prsn_injry_sev_id",
+                    "prsn_nbr",
+                    "prsn_occpnt_pos_id",
+                    "prsn_rest_id",
+                    "prsn_sol_fl",
+                    "prsn_taken_by",
+                    "prsn_taken_to",
+                    "prsn_type_id",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "years_of_life_lost"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "death_cnt",
+                    "drvr_city_name",
+                    "drvr_drg_cat_1_id",
+                    "drvr_lic_cls_id",
+                    "drvr_lic_type_id",
+                    "drvr_state_id",
+                    "drvr_zip",
+                    "is_retired",
+                    "last_update",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "poss_injry_cnt",
+                    "primaryperson_id",
+                    "prsn_age",
+                    "prsn_airbag_id",
+                    "prsn_alc_rslt_id",
+                    "prsn_alc_spec_type_id",
+                    "prsn_bac_test_rslt",
+                    "prsn_death_date",
+                    "prsn_death_time",
+                    "prsn_drg_rslt_id",
+                    "prsn_drg_spec_type_id",
+                    "prsn_ejct_id",
+                    "prsn_ethnicity_id",
+                    "prsn_gndr_id",
+                    "prsn_helmet_id",
+                    "prsn_injry_sev_id",
+                    "prsn_name_honorific",
+                    "prsn_nbr",
+                    "prsn_occpnt_pos_id",
+                    "prsn_rest_id",
+                    "prsn_sol_fl",
+                    "prsn_taken_by",
+                    "prsn_taken_to",
+                    "prsn_type_id",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_streets",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "shape",
+                    "built_status",
+                    "cad_id",
+                    "elevation_from",
+                    "elevation_to",
+                    "left_block_from",
+                    "left_block_to",
+                    "left_from_address",
+                    "left_to_address",
+                    "posted_speed_limit",
+                    "right_block_from",
+                    "right_block_to",
+                    "right_from_address",
+                    "right_to_address",
+                    "road_class",
+                    "segment_id",
+                    "speed_limit",
+                    "street_place_id",
+                    "street_id",
+                    "miles",
+                    "seconds",
+                    "shape_length",
+                    "created_date",
+                    "full_street_name",
+                    "modified_date",
+                    "created_by",
+                    "modified_by",
+                    "one_way",
+                    "prefix_direction",
+                    "prefix_type",
+                    "street_name",
+                    "street_type",
+                    "suffix_direction"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "street_id",
+                    "posted_speed_limit",
+                    "segment_id",
+                    "prefix_direction",
+                    "prefix_type",
+                    "street_name",
+                    "street_type",
+                    "suffix_direction",
+                    "left_from_address",
+                    "left_to_address",
+                    "right_from_address",
+                    "right_to_address",
+                    "left_block_from",
+                    "left_block_to",
+                    "right_block_from",
+                    "right_block_to",
+                    "full_street_name",
+                    "road_class",
+                    "speed_limit",
+                    "elevation_from",
+                    "elevation_to",
+                    "one_way",
+                    "cad_id",
+                    "street_place_id",
+                    "created_date",
+                    "created_by",
+                    "modified_by",
+                    "modified_date",
+                    "miles",
+                    "seconds",
+                    "built_status",
+                    "shape_length",
+                    "shape"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "shape",
+                    "built_status",
+                    "cad_id",
+                    "elevation_from",
+                    "elevation_to",
+                    "left_block_from",
+                    "left_block_to",
+                    "left_from_address",
+                    "left_to_address",
+                    "posted_speed_limit",
+                    "right_block_from",
+                    "right_block_to",
+                    "right_from_address",
+                    "right_to_address",
+                    "road_class",
+                    "segment_id",
+                    "speed_limit",
+                    "street_place_id",
+                    "street_id",
+                    "miles",
+                    "seconds",
+                    "shape_length",
+                    "created_date",
+                    "full_street_name",
+                    "modified_date",
+                    "created_by",
+                    "modified_by",
+                    "one_way",
+                    "prefix_direction",
+                    "prefix_type",
+                    "street_name",
+                    "street_type",
+                    "suffix_direction"
+                  ],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "shape",
+                    "built_status",
+                    "cad_id",
+                    "elevation_from",
+                    "elevation_to",
+                    "left_block_from",
+                    "left_block_to",
+                    "left_from_address",
+                    "left_to_address",
+                    "posted_speed_limit",
+                    "right_block_from",
+                    "right_block_to",
+                    "right_from_address",
+                    "right_to_address",
+                    "road_class",
+                    "segment_id",
+                    "speed_limit",
+                    "street_place_id",
+                    "street_id",
+                    "miles",
+                    "seconds",
+                    "shape_length",
+                    "created_date",
+                    "full_street_name",
+                    "modified_date",
+                    "created_by",
+                    "modified_by",
+                    "one_way",
+                    "prefix_direction",
+                    "prefix_type",
+                    "street_name",
+                    "street_type",
+                    "suffix_direction"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "atd_txdot_units",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "body_style",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "veh_body_styl_id": "veh_body_styl_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__veh_body_styl_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "contributing_factor_1",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "contrib_factr_1_id": "contrib_factr_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__contrib_factr_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "crash",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "crash_id": "crash_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot_crashes",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "make",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "veh_make_id": "veh_make_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__veh_make_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "model",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "veh_mod_id": "veh_mod_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__veh_mod_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "movement",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "movement_id": "movement_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__movt_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "travel_direction_desc",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "travel_direction": "trvl_dir_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__trvl_dir_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "unit_description",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "unit_desc_id": "veh_unit_desc_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "atd_txdot__veh_unit_desc_lkp",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "cmv_bus_type_id",
+                    "cmv_cargo_body_id",
+                    "cmv_carrier_city_name",
+                    "cmv_carrier_corp_name",
+                    "cmv_carrier_id_nbr",
+                    "cmv_carrier_id_type_id",
+                    "cmv_carrier_po_box",
+                    "cmv_carrier_state_id",
+                    "cmv_carrier_street_name",
+                    "cmv_carrier_street_nbr",
+                    "cmv_carrier_street_pfx",
+                    "cmv_carrier_street_sfx",
+                    "cmv_carrier_zip",
+                    "cmv_disabling_damage_fl",
+                    "cmv_evnt1_id",
+                    "cmv_evnt2_id",
+                    "cmv_evnt3_id",
+                    "cmv_evnt4_id",
+                    "cmv_fiveton_fl",
+                    "cmv_gvwr",
+                    "cmv_hazmat_fl",
+                    "cmv_hazmat_rel_fl",
+                    "cmv_nine_plus_pass_fl",
+                    "cmv_rgvw",
+                    "cmv_road_acc_id",
+                    "cmv_tot_axle",
+                    "cmv_tot_tire",
+                    "cmv_trlr1_disabling_dmag_id",
+                    "cmv_trlr2_disabling_dmag_id",
+                    "cmv_veh_oper_id",
+                    "cmv_veh_type_id",
+                    "contrib_factr_1_id",
+                    "contrib_factr_2_id",
+                    "contrib_factr_3_id",
+                    "contrib_factr_p1_id",
+                    "contrib_factr_p2_id",
+                    "crash_id",
+                    "death_cnt",
+                    "emer_respndr_fl",
+                    "fin_resp_name",
+                    "fin_resp_phone_nbr",
+                    "fin_resp_policy_nbr",
+                    "fin_resp_proof_id",
+                    "fin_resp_type_id",
+                    "first_harm_evt_inv_id",
+                    "force_dir_1_id",
+                    "force_dir_2_id",
+                    "hazmat_cls_1_id",
+                    "hazmat_cls_2_id",
+                    "hazmat_idnbr_1_id",
+                    "hazmat_idnbr_2_id",
+                    "is_retired",
+                    "last_update",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "owner_lessee",
+                    "ownr_city_name",
+                    "ownr_name_honorific",
+                    "ownr_state_id",
+                    "ownr_zip",
+                    "poss_injry_cnt",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "travel_direction",
+                    "trlr1_gvwr",
+                    "trlr1_rgvw",
+                    "trlr1_type_id",
+                    "trlr2_gvwr",
+                    "trlr2_rgvw",
+                    "trlr2_type_id",
+                    "unit_desc_id",
+                    "unit_id",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "veh_body_styl_id",
+                    "veh_cmv_fl",
+                    "veh_color_id",
+                    "veh_damage_description1_id",
+                    "veh_damage_description2_id",
+                    "veh_damage_direction_of_force1_id",
+                    "veh_damage_direction_of_force2_id",
+                    "veh_damage_severity1_id",
+                    "veh_damage_severity2_id",
+                    "veh_dfct_1_id",
+                    "veh_dfct_2_id",
+                    "veh_dfct_3_id",
+                    "veh_dfct_p1_id",
+                    "veh_dfct_p2_id",
+                    "veh_dmag_area_1_id",
+                    "veh_dmag_area_2_id",
+                    "veh_dmag_scl_1_id",
+                    "veh_dmag_scl_2_id",
+                    "veh_hnr_fl",
+                    "veh_inventoried_fl",
+                    "veh_lic_plate_nbr",
+                    "veh_lic_state_id",
+                    "veh_make_id",
+                    "veh_mod_id",
+                    "veh_mod_year",
+                    "veh_parked_fl",
+                    "veh_transp_dest",
+                    "veh_transp_name",
+                    "veh_trvl_dir_id",
+                    "vin"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "atd_mode_category",
+                    "autonomous_unit_id",
+                    "cmv_bus_type_id",
+                    "cmv_cargo_body_id",
+                    "cmv_carrier_city_name",
+                    "cmv_carrier_corp_name",
+                    "cmv_carrier_id_nbr",
+                    "cmv_carrier_id_type_id",
+                    "cmv_carrier_po_box",
+                    "cmv_carrier_state_id",
+                    "cmv_carrier_street_name",
+                    "cmv_carrier_street_nbr",
+                    "cmv_carrier_street_pfx",
+                    "cmv_carrier_street_sfx",
+                    "cmv_carrier_zip",
+                    "cmv_disabling_damage_fl",
+                    "cmv_evnt1_id",
+                    "cmv_evnt2_id",
+                    "cmv_evnt3_id",
+                    "cmv_evnt4_id",
+                    "cmv_fiveton_fl",
+                    "cmv_gvwr",
+                    "cmv_hazmat_fl",
+                    "cmv_hazmat_rel_fl",
+                    "cmv_nine_plus_pass_fl",
+                    "cmv_rgvw",
+                    "cmv_road_acc_id",
+                    "cmv_tot_axle",
+                    "cmv_tot_tire",
+                    "cmv_trlr1_disabling_dmag_id",
+                    "cmv_trlr2_disabling_dmag_id",
+                    "cmv_veh_oper_id",
+                    "cmv_veh_type_id",
+                    "contrib_factr_1_id",
+                    "contrib_factr_2_id",
+                    "contrib_factr_3_id",
+                    "contrib_factr_p1_id",
+                    "contrib_factr_p2_id",
+                    "crash_id",
+                    "death_cnt",
+                    "e_scooter_id",
+                    "emer_respndr_fl",
+                    "fin_resp_name",
+                    "fin_resp_phone_nbr",
+                    "fin_resp_policy_nbr",
+                    "fin_resp_proof_id",
+                    "fin_resp_type_id",
+                    "first_harm_evt_inv_id",
+                    "force_dir_1_id",
+                    "force_dir_2_id",
+                    "hazmat_cls_1_id",
+                    "hazmat_cls_2_id",
+                    "hazmat_idnbr_1_id",
+                    "hazmat_idnbr_2_id",
+                    "is_retired",
+                    "last_update",
+                    "movement_id",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "owner_lessee",
+                    "ownr_city_name",
+                    "ownr_mid_name",
+                    "ownr_name_honorific",
+                    "ownr_name_sfx",
+                    "ownr_state_id",
+                    "ownr_zip",
+                    "pbcat_pedalcyclist_id",
+                    "pbcat_pedestrian_id",
+                    "pedalcyclist_action_id",
+                    "pedestrian_action_id",
+                    "poss_injry_cnt",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "travel_direction",
+                    "trlr1_gvwr",
+                    "trlr1_rgvw",
+                    "trlr1_type_id",
+                    "trlr2_gvwr",
+                    "trlr2_rgvw",
+                    "trlr2_type_id",
+                    "unit_desc_id",
+                    "unit_id",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "veh_body_styl_id",
+                    "veh_cmv_fl",
+                    "veh_color_id",
+                    "veh_damage_description1_id",
+                    "veh_damage_description2_id",
+                    "veh_damage_direction_of_force1_id",
+                    "veh_damage_direction_of_force2_id",
+                    "veh_damage_severity1_id",
+                    "veh_damage_severity2_id",
+                    "veh_dfct_1_id",
+                    "veh_dfct_2_id",
+                    "veh_dfct_3_id",
+                    "veh_dfct_p1_id",
+                    "veh_dfct_p2_id",
+                    "veh_dmag_area_1_id",
+                    "veh_dmag_area_2_id",
+                    "veh_dmag_scl_1_id",
+                    "veh_dmag_scl_2_id",
+                    "veh_hnr_fl",
+                    "veh_inventoried_fl",
+                    "veh_lic_plate_nbr",
+                    "veh_lic_state_id",
+                    "veh_make_id",
+                    "veh_mod_id",
+                    "veh_mod_year",
+                    "veh_parked_fl",
+                    "veh_transp_dest",
+                    "veh_transp_name",
+                    "veh_trvl_dir_id",
+                    "vin"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "atd_mode_category",
+                    "cmv_bus_type_id",
+                    "cmv_cargo_body_id",
+                    "cmv_carrier_city_name",
+                    "cmv_carrier_corp_name",
+                    "cmv_carrier_id_nbr",
+                    "cmv_carrier_id_type_id",
+                    "cmv_carrier_po_box",
+                    "cmv_carrier_state_id",
+                    "cmv_carrier_street_name",
+                    "cmv_carrier_street_nbr",
+                    "cmv_carrier_street_pfx",
+                    "cmv_carrier_street_sfx",
+                    "cmv_carrier_zip",
+                    "cmv_disabling_damage_fl",
+                    "cmv_evnt1_id",
+                    "cmv_evnt2_id",
+                    "cmv_evnt3_id",
+                    "cmv_evnt4_id",
+                    "cmv_fiveton_fl",
+                    "cmv_gvwr",
+                    "cmv_hazmat_fl",
+                    "cmv_hazmat_rel_fl",
+                    "cmv_nine_plus_pass_fl",
+                    "cmv_rgvw",
+                    "cmv_road_acc_id",
+                    "cmv_tot_axle",
+                    "cmv_tot_tire",
+                    "cmv_trlr1_disabling_dmag_id",
+                    "cmv_trlr2_disabling_dmag_id",
+                    "cmv_veh_oper_id",
+                    "cmv_veh_type_id",
+                    "contrib_factr_1_id",
+                    "contrib_factr_2_id",
+                    "contrib_factr_3_id",
+                    "contrib_factr_p1_id",
+                    "contrib_factr_p2_id",
+                    "crash_id",
+                    "death_cnt",
+                    "emer_respndr_fl",
+                    "fin_resp_name",
+                    "fin_resp_phone_nbr",
+                    "fin_resp_policy_nbr",
+                    "fin_resp_proof_id",
+                    "fin_resp_type_id",
+                    "first_harm_evt_inv_id",
+                    "force_dir_1_id",
+                    "force_dir_2_id",
+                    "hazmat_cls_1_id",
+                    "hazmat_cls_2_id",
+                    "hazmat_idnbr_1_id",
+                    "hazmat_idnbr_2_id",
+                    "is_retired",
+                    "last_update",
+                    "movement_id",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "owner_lessee",
+                    "ownr_state_id",
+                    "ownr_zip",
+                    "poss_injry_cnt",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "travel_direction",
+                    "trlr1_gvwr",
+                    "trlr1_rgvw",
+                    "trlr1_type_id",
+                    "trlr2_gvwr",
+                    "trlr2_rgvw",
+                    "trlr2_type_id",
+                    "unit_desc_id",
+                    "unit_id",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "veh_body_styl_id",
+                    "veh_cmv_fl",
+                    "veh_color_id",
+                    "veh_damage_description1_id",
+                    "veh_damage_description2_id",
+                    "veh_damage_direction_of_force1_id",
+                    "veh_damage_direction_of_force2_id",
+                    "veh_damage_severity1_id",
+                    "veh_damage_severity2_id",
+                    "veh_dfct_1_id",
+                    "veh_dfct_2_id",
+                    "veh_dfct_3_id",
+                    "veh_dfct_p1_id",
+                    "veh_dfct_p2_id",
+                    "veh_dmag_area_1_id",
+                    "veh_dmag_area_2_id",
+                    "veh_dmag_scl_1_id",
+                    "veh_dmag_scl_2_id",
+                    "veh_hnr_fl",
+                    "veh_inventoried_fl",
+                    "veh_lic_plate_nbr",
+                    "veh_lic_state_id",
+                    "veh_make_id",
+                    "veh_mod_id",
+                    "veh_mod_year",
+                    "veh_parked_fl",
+                    "veh_transp_dest",
+                    "veh_transp_name",
+                    "veh_trvl_dir_id",
+                    "vin"
+                  ],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "atd_mode_category",
+                    "autonomous_unit_id",
+                    "cmv_bus_type_id",
+                    "cmv_cargo_body_id",
+                    "cmv_carrier_city_name",
+                    "cmv_carrier_corp_name",
+                    "cmv_carrier_id_nbr",
+                    "cmv_carrier_id_type_id",
+                    "cmv_carrier_po_box",
+                    "cmv_carrier_state_id",
+                    "cmv_carrier_street_name",
+                    "cmv_carrier_street_nbr",
+                    "cmv_carrier_street_pfx",
+                    "cmv_carrier_street_sfx",
+                    "cmv_carrier_zip",
+                    "cmv_disabling_damage_fl",
+                    "cmv_evnt1_id",
+                    "cmv_evnt2_id",
+                    "cmv_evnt3_id",
+                    "cmv_evnt4_id",
+                    "cmv_fiveton_fl",
+                    "cmv_gvwr",
+                    "cmv_hazmat_fl",
+                    "cmv_hazmat_rel_fl",
+                    "cmv_nine_plus_pass_fl",
+                    "cmv_rgvw",
+                    "cmv_road_acc_id",
+                    "cmv_tot_axle",
+                    "cmv_tot_tire",
+                    "cmv_trlr1_disabling_dmag_id",
+                    "cmv_trlr2_disabling_dmag_id",
+                    "cmv_veh_oper_id",
+                    "cmv_veh_type_id",
+                    "contrib_factr_1_id",
+                    "contrib_factr_2_id",
+                    "contrib_factr_3_id",
+                    "contrib_factr_p1_id",
+                    "contrib_factr_p2_id",
+                    "crash_id",
+                    "death_cnt",
+                    "e_scooter_id",
+                    "emer_respndr_fl",
+                    "fin_resp_name",
+                    "fin_resp_phone_nbr",
+                    "fin_resp_policy_nbr",
+                    "fin_resp_proof_id",
+                    "fin_resp_type_id",
+                    "first_harm_evt_inv_id",
+                    "force_dir_1_id",
+                    "force_dir_2_id",
+                    "hazmat_cls_1_id",
+                    "hazmat_cls_2_id",
+                    "hazmat_idnbr_1_id",
+                    "hazmat_idnbr_2_id",
+                    "is_retired",
+                    "last_update",
+                    "movement_id",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "owner_lessee",
+                    "ownr_city_name",
+                    "ownr_mid_name",
+                    "ownr_name_honorific",
+                    "ownr_name_sfx",
+                    "ownr_state_id",
+                    "ownr_zip",
+                    "pbcat_pedalcyclist_id",
+                    "pbcat_pedestrian_id",
+                    "pedalcyclist_action_id",
+                    "pedestrian_action_id",
+                    "poss_injry_cnt",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "travel_direction",
+                    "trlr1_gvwr",
+                    "trlr1_rgvw",
+                    "trlr1_type_id",
+                    "trlr2_gvwr",
+                    "trlr2_rgvw",
+                    "trlr2_type_id",
+                    "unit_desc_id",
+                    "unit_id",
+                    "unit_nbr",
+                    "unkn_injry_cnt",
+                    "updated_by",
+                    "veh_body_styl_id",
+                    "veh_cmv_fl",
+                    "veh_color_id",
+                    "veh_damage_description1_id",
+                    "veh_damage_description2_id",
+                    "veh_damage_direction_of_force1_id",
+                    "veh_damage_direction_of_force2_id",
+                    "veh_damage_severity1_id",
+                    "veh_damage_severity2_id",
+                    "veh_dfct_1_id",
+                    "veh_dfct_2_id",
+                    "veh_dfct_3_id",
+                    "veh_dfct_p1_id",
+                    "veh_dfct_p2_id",
+                    "veh_dmag_area_1_id",
+                    "veh_dmag_area_2_id",
+                    "veh_dmag_scl_1_id",
+                    "veh_dmag_scl_2_id",
+                    "veh_hnr_fl",
+                    "veh_inventoried_fl",
+                    "veh_lic_plate_nbr",
+                    "veh_lic_state_id",
+                    "veh_make_id",
+                    "veh_mod_id",
+                    "veh_mod_year",
+                    "veh_parked_fl",
+                    "veh_transp_dest",
+                    "veh_transp_name",
+                    "veh_trvl_dir_id",
+                    "vin"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "cr3_nonproper_crashes_on_mainlane",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "crash_fatal_fl",
+                    "cmv_involv_fl",
+                    "schl_bus_fl",
+                    "rr_relat_fl",
+                    "medical_advisory_fl",
+                    "amend_supp_fl",
+                    "active_school_zone_fl",
+                    "crash_date",
+                    "crash_time",
+                    "case_id",
+                    "local_use",
+                    "rpt_cris_cnty_id",
+                    "rpt_city_id",
+                    "rpt_outside_city_limit_fl",
+                    "thousand_damage_fl",
+                    "rpt_latitude",
+                    "rpt_longitude",
+                    "rpt_rdwy_sys_id",
+                    "rpt_hwy_num",
+                    "rpt_hwy_sfx",
+                    "rpt_road_part_id",
+                    "rpt_block_num",
+                    "rpt_street_pfx",
+                    "rpt_street_name",
+                    "rpt_street_sfx",
+                    "private_dr_fl",
+                    "toll_road_fl",
+                    "crash_speed_limit",
+                    "road_constr_zone_fl",
+                    "road_constr_zone_wrkr_fl",
+                    "rpt_street_desc",
+                    "at_intrsct_fl",
+                    "rpt_sec_rdwy_sys_id",
+                    "rpt_sec_hwy_num",
+                    "rpt_sec_hwy_sfx",
+                    "rpt_sec_road_part_id",
+                    "rpt_sec_block_num",
+                    "rpt_sec_street_pfx",
+                    "rpt_sec_street_name",
+                    "rpt_sec_street_sfx",
+                    "rpt_ref_mark_offset_amt",
+                    "rpt_ref_mark_dist_uom",
+                    "rpt_ref_mark_dir",
+                    "rpt_ref_mark_nbr",
+                    "rpt_sec_street_desc",
+                    "rpt_crossingnumber",
+                    "wthr_cond_id",
+                    "light_cond_id",
+                    "entr_road_id",
+                    "road_type_id",
+                    "road_algn_id",
+                    "surf_cond_id",
+                    "traffic_cntl_id",
+                    "investigat_notify_time",
+                    "investigat_notify_meth",
+                    "investigat_arrv_time",
+                    "report_date",
+                    "investigat_comp_fl",
+                    "investigator_name",
+                    "id_number",
+                    "ori_number",
+                    "investigat_agency_id",
+                    "investigat_area_id",
+                    "investigat_district_id",
+                    "investigat_region_id",
+                    "bridge_detail_id",
+                    "harm_evnt_id",
+                    "intrsct_relat_id",
+                    "fhe_collsn_id",
+                    "obj_struck_id",
+                    "othr_factr_id",
+                    "road_part_adj_id",
+                    "road_cls_id",
+                    "road_relat_id",
+                    "phys_featr_1_id",
+                    "phys_featr_2_id",
+                    "cnty_id",
+                    "city_id",
+                    "latitude",
+                    "longitude",
+                    "hwy_sys",
+                    "hwy_nbr",
+                    "hwy_sfx",
+                    "dfo",
+                    "street_name",
+                    "street_nbr",
+                    "control",
+                    "section",
+                    "milepoint",
+                    "ref_mark_nbr",
+                    "ref_mark_displ",
+                    "hwy_sys_2",
+                    "hwy_nbr_2",
+                    "hwy_sfx_2",
+                    "street_name_2",
+                    "street_nbr_2",
+                    "control_2",
+                    "section_2",
+                    "milepoint_2",
+                    "txdot_rptable_fl",
+                    "onsys_fl",
+                    "rural_fl",
+                    "crash_sev_id",
+                    "pop_group_id",
+                    "located_fl",
+                    "day_of_week",
+                    "hwy_dsgn_lane_id",
+                    "hwy_dsgn_hrt_id",
+                    "hp_shldr_left",
+                    "hp_shldr_right",
+                    "hp_median_width",
+                    "base_type_id",
+                    "nbr_of_lane",
+                    "row_width_usual",
+                    "roadbed_width",
+                    "surf_width",
+                    "surf_type_id",
+                    "curb_type_left_id",
+                    "curb_type_right_id",
+                    "shldr_type_left_id",
+                    "shldr_width_left",
+                    "shldr_use_left_id",
+                    "shldr_type_right_id",
+                    "shldr_width_right",
+                    "shldr_use_right_id",
+                    "median_type_id",
+                    "median_width",
+                    "rural_urban_type_id",
+                    "func_sys_id",
+                    "adt_curnt_amt",
+                    "adt_curnt_year",
+                    "adt_adj_curnt_amt",
+                    "pct_single_trk_adt",
+                    "pct_combo_trk_adt",
+                    "trk_aadt_pct",
+                    "curve_type_id",
+                    "curve_lngth",
+                    "cd_degr",
+                    "delta_left_right_id",
+                    "dd_degr",
+                    "feature_crossed",
+                    "structure_number",
+                    "i_r_min_vert_clear",
+                    "approach_width",
+                    "bridge_median_id",
+                    "bridge_loading_type_id",
+                    "bridge_loading_in_1000_lbs",
+                    "bridge_srvc_type_on_id",
+                    "bridge_srvc_type_under_id",
+                    "culvert_type_id",
+                    "roadway_width",
+                    "deck_width",
+                    "bridge_dir_of_traffic_id",
+                    "bridge_rte_struct_func_id",
+                    "bridge_ir_struct_func_id",
+                    "crossingnumber",
+                    "rrco",
+                    "poscrossing_id",
+                    "wdcode_id",
+                    "standstop",
+                    "yield",
+                    "sus_serious_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "poss_injry_cnt",
+                    "non_injry_cnt",
+                    "unkn_injry_cnt",
+                    "tot_injry_cnt",
+                    "death_cnt",
+                    "mpo_id",
+                    "investigat_service_id",
+                    "investigat_da_id",
+                    "investigator_narrative",
+                    "geocoded",
+                    "geocode_status",
+                    "latitude_geocoded",
+                    "longitude_geocoded",
+                    "latitude_primary",
+                    "longitude_primary",
+                    "geocode_date",
+                    "geocode_provider",
+                    "qa_status",
+                    "last_update",
+                    "approval_date",
+                    "approved_by",
+                    "is_retired",
+                    "updated_by",
+                    "address_confirmed_primary",
+                    "address_confirmed_secondary",
+                    "est_comp_cost",
+                    "est_econ_cost",
+                    "position",
+                    "apd_confirmed_fatality",
+                    "apd_confirmed_death_count",
+                    "micromobility_device_flag",
+                    "cr3_stored_flag",
+                    "apd_human_update",
+                    "speed_mgmt_points",
+                    "geocode_match_quality",
+                    "geocode_match_metadata",
+                    "atd_mode_category_metadata",
+                    "location_id",
+                    "changes_approved_date",
+                    "austin_full_purpose",
+                    "original_city_id",
+                    "atd_fatality_count",
+                    "temp_record",
+                    "cr3_file_metadata",
+                    "cr3_ocr_extraction_date",
+                    "investigator_narrative_ocr",
+                    "est_comp_cost_crash_based",
+                    "has_directionality",
+                    "seek_direction",
+                    "surface_street_polygon",
+                    "visualization"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "has_directionality",
+                    "is_retired",
+                    "temp_record",
+                    "crash_date",
+                    "report_date",
+                    "dfo",
+                    "latitude",
+                    "latitude_geocoded",
+                    "latitude_primary",
+                    "longitude",
+                    "longitude_geocoded",
+                    "longitude_primary",
+                    "milepoint",
+                    "milepoint_2",
+                    "pct_combo_trk_adt",
+                    "pct_single_trk_adt",
+                    "ref_mark_displ",
+                    "rpt_latitude",
+                    "rpt_longitude",
+                    "rpt_ref_mark_offset_amt",
+                    "trk_aadt_pct",
+                    "position",
+                    "visualization",
+                    "adt_adj_curnt_amt",
+                    "adt_curnt_amt",
+                    "adt_curnt_year",
+                    "apd_confirmed_death_count",
+                    "atd_fatality_count",
+                    "bridge_detail_id",
+                    "cd_degr",
+                    "city_id",
+                    "cnty_id",
+                    "control",
+                    "control_2",
+                    "crash_id",
+                    "crash_sev_id",
+                    "crash_speed_limit",
+                    "curb_type_left_id",
+                    "curb_type_right_id",
+                    "curve_lngth",
+                    "curve_type_id",
+                    "dd_degr",
+                    "death_cnt",
+                    "delta_left_right_id",
+                    "entr_road_id",
+                    "fhe_collsn_id",
+                    "func_sys_id",
+                    "geocode_provider",
+                    "harm_evnt_id",
+                    "intrsct_relat_id",
+                    "investigat_agency_id",
+                    "investigat_area_id",
+                    "investigat_da_id",
+                    "investigat_district_id",
+                    "investigat_region_id",
+                    "investigat_service_id",
+                    "light_cond_id",
+                    "median_type_id",
+                    "median_width",
+                    "mpo_id",
+                    "nonincap_injry_cnt",
+                    "non_injry_cnt",
+                    "obj_struck_id",
+                    "original_city_id",
+                    "othr_factr_id",
+                    "phys_featr_1_id",
+                    "phys_featr_2_id",
+                    "pop_group_id",
+                    "poss_injry_cnt",
+                    "qa_status",
+                    "ref_mark_nbr",
+                    "road_algn_id",
+                    "road_cls_id",
+                    "road_part_adj_id",
+                    "road_relat_id",
+                    "road_type_id",
+                    "rpt_city_id",
+                    "rpt_cris_cnty_id",
+                    "rpt_rdwy_sys_id",
+                    "rpt_road_part_id",
+                    "rpt_sec_rdwy_sys_id",
+                    "rpt_sec_road_part_id",
+                    "rural_urban_type_id",
+                    "section",
+                    "section_2",
+                    "seek_direction",
+                    "shldr_type_left_id",
+                    "shldr_type_right_id",
+                    "shldr_use_left_id",
+                    "shldr_use_right_id",
+                    "shldr_width_left",
+                    "shldr_width_right",
+                    "surf_cond_id",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "traffic_cntl_id",
+                    "unkn_injry_cnt",
+                    "wthr_cond_id",
+                    "atd_mode_category_metadata",
+                    "geocode_match_metadata",
+                    "cr3_file_metadata",
+                    "est_comp_cost",
+                    "est_comp_cost_crash_based",
+                    "est_econ_cost",
+                    "geocode_match_quality",
+                    "speed_mgmt_points",
+                    "address_confirmed_primary",
+                    "address_confirmed_secondary",
+                    "investigator_narrative",
+                    "investigator_narrative_ocr",
+                    "crash_time",
+                    "investigat_arrv_time",
+                    "investigat_notify_time",
+                    "approval_date",
+                    "changes_approved_date",
+                    "geocode_date",
+                    "last_update",
+                    "cr3_ocr_extraction_date",
+                    "active_school_zone_fl",
+                    "amend_supp_fl",
+                    "apd_confirmed_fatality",
+                    "apd_human_update",
+                    "approach_width",
+                    "approved_by",
+                    "at_intrsct_fl",
+                    "austin_full_purpose",
+                    "base_type_id",
+                    "bridge_dir_of_traffic_id",
+                    "bridge_ir_struct_func_id",
+                    "bridge_loading_in_1000_lbs",
+                    "bridge_loading_type_id",
+                    "bridge_median_id",
+                    "bridge_rte_struct_func_id",
+                    "bridge_srvc_type_on_id",
+                    "bridge_srvc_type_under_id",
+                    "case_id",
+                    "cmv_involv_fl",
+                    "cr3_stored_flag",
+                    "crash_fatal_fl",
+                    "crossingnumber",
+                    "culvert_type_id",
+                    "day_of_week",
+                    "deck_width",
+                    "feature_crossed",
+                    "geocoded",
+                    "geocode_status",
+                    "hp_median_width",
+                    "hp_shldr_left",
+                    "hp_shldr_right",
+                    "hwy_dsgn_hrt_id",
+                    "hwy_dsgn_lane_id",
+                    "hwy_nbr",
+                    "hwy_nbr_2",
+                    "hwy_sfx",
+                    "hwy_sfx_2",
+                    "hwy_sys",
+                    "hwy_sys_2",
+                    "id_number",
+                    "investigat_comp_fl",
+                    "investigat_notify_meth",
+                    "investigator_name",
+                    "i_r_min_vert_clear",
+                    "local_use",
+                    "located_fl",
+                    "location_id",
+                    "medical_advisory_fl",
+                    "micromobility_device_flag",
+                    "nbr_of_lane",
+                    "onsys_fl",
+                    "ori_number",
+                    "poscrossing_id",
+                    "private_dr_fl",
+                    "roadbed_width",
+                    "road_constr_zone_fl",
+                    "road_constr_zone_wrkr_fl",
+                    "roadway_width",
+                    "row_width_usual",
+                    "rpt_block_num",
+                    "rpt_crossingnumber",
+                    "rpt_hwy_num",
+                    "rpt_hwy_sfx",
+                    "rpt_outside_city_limit_fl",
+                    "rpt_ref_mark_dir",
+                    "rpt_ref_mark_dist_uom",
+                    "rpt_ref_mark_nbr",
+                    "rpt_sec_block_num",
+                    "rpt_sec_hwy_num",
+                    "rpt_sec_hwy_sfx",
+                    "rpt_sec_street_desc",
+                    "rpt_sec_street_name",
+                    "rpt_sec_street_pfx",
+                    "rpt_sec_street_sfx",
+                    "rpt_street_desc",
+                    "rpt_street_name",
+                    "rpt_street_pfx",
+                    "rpt_street_sfx",
+                    "rrco",
+                    "rr_relat_fl",
+                    "rural_fl",
+                    "schl_bus_fl",
+                    "standstop",
+                    "street_name",
+                    "street_name_2",
+                    "street_nbr",
+                    "street_nbr_2",
+                    "structure_number",
+                    "surface_street_polygon",
+                    "surf_type_id",
+                    "surf_width",
+                    "thousand_damage_fl",
+                    "toll_road_fl",
+                    "txdot_rptable_fl",
+                    "updated_by",
+                    "wdcode_id",
+                    "yield"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "crash_notes",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "atd_txdot_crash",
+                "using": {
+                  "foreign_key_constraint_on": "crash_id"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "id",
+                    "created_at",
+                    "updated_at",
+                    "date",
+                    "text",
+                    "crash_id",
+                    "user_email"
+                  ]
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "crash_id",
+                    "id",
+                    "text",
+                    "user_email",
+                    "created_at",
+                    "date",
+                    "updated_at"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "id",
+                    "text",
+                    "user_email",
+                    "created_at",
+                    "date",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "id",
+                    "text",
+                    "user_email",
+                    "created_at",
+                    "date",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "id",
+                    "text",
+                    "user_email",
+                    "created_at",
+                    "date",
+                    "updated_at"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "created_at",
+                    "updated_at",
+                    "date",
+                    "text",
+                    "crash_id",
+                    "user_email"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "fatalities",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "atd_txdot_crash",
+                "using": {
+                  "foreign_key_constraint_on": "crash_id"
+                }
+              },
+              {
+                "name": "atd_txdot_person",
+                "using": {
+                  "foreign_key_constraint_on": "person_id"
+                }
+              },
+              {
+                "name": "atd_txdot_primaryperson",
+                "using": {
+                  "foreign_key_constraint_on": "primaryperson_id"
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "grafana_crash_counts",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "location_notes",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "date",
+                    "user_email",
+                    "created_at",
+                    "updated_at",
+                    "text",
+                    "id",
+                    "location_id"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "location_id",
+                    "text",
+                    "user_email",
+                    "created_at",
+                    "date",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "location_id",
+                    "text",
+                    "user_email",
+                    "created_at",
+                    "date",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "location_id",
+                    "text",
+                    "user_email",
+                    "created_at",
+                    "date",
+                    "updated_at"
+                  ],
+                  "filter": {},
+                  "check": null
+                }
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "recommendations",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "atd__recommendation_status_lkp",
+                "using": {
+                  "foreign_key_constraint_on": "recommendation_status_id"
+                }
+              },
+              {
+                "name": "atd_txdot_crash",
+                "using": {
+                  "foreign_key_constraint_on": "crash_id"
+                }
+              }
+            ],
+            "array_relationships": [
+              {
+                "name": "recommendations_partners",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "recommendation_id",
+                    "table": {
+                      "name": "recommendations_partners",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "id",
+                    "created_at",
+                    "crash_id",
+                    "recommendation_status_id",
+                    "text",
+                    "created_by",
+                    "update"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "id",
+                    "recommendation_status_id",
+                    "created_by",
+                    "text",
+                    "update",
+                    "created_at"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "id",
+                    "recommendation_status_id",
+                    "created_by",
+                    "text",
+                    "update",
+                    "created_at"
+                  ],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "id",
+                    "recommendation_status_id",
+                    "created_by",
+                    "text",
+                    "update",
+                    "created_at"
+                  ],
+                  "filter": {},
+                  "check": {}
+                }
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "recommendations_partners",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "atd__coordination_partners_lkp",
+                "using": {
+                  "foreign_key_constraint_on": "partner_id"
+                }
+              },
+              {
+                "name": "recommendation",
+                "using": {
+                  "foreign_key_constraint_on": "recommendation_id"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "check": {},
+                  "columns": ["id", "recommendation_id", "partner_id"]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["id", "partner_id", "recommendation_id"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["id", "partner_id", "recommendation_id"],
+                  "filter": {}
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["id", "partner_id", "recommendation_id"],
+                  "filter": {},
+                  "check": {}
+                }
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "view_crashes_inconsistent_numbers",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "view_fatalities",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "recommendation",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "crash_id": "crash_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "recommendations",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "view_location_crashes_by_manner_collision",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["location_id", "collsn_desc", "count"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["count", "collsn_desc", "location_id"],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "view_location_crashes_by_veh_body_style",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": ["location_id", "veh_body_styl_desc", "count"],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": ["count", "location_id", "veh_body_styl_desc"],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "view_location_crashes_global",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "crash_id",
+                    "type",
+                    "location_id",
+                    "case_id",
+                    "crash_date",
+                    "crash_time",
+                    "day_of_week",
+                    "crash_sev_id",
+                    "longitude_primary",
+                    "latitude_primary",
+                    "address_confirmed_primary",
+                    "address_confirmed_secondary",
+                    "non_injry_cnt",
+                    "nonincap_injry_cnt",
+                    "poss_injry_cnt",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "death_cnt",
+                    "unkn_injry_cnt",
+                    "est_comp_cost",
+                    "collsn_desc",
+                    "travel_direction",
+                    "movement_desc",
+                    "veh_body_styl_desc",
+                    "veh_unit_desc_desc"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "crash_date",
+                    "latitude_primary",
+                    "longitude_primary",
+                    "crash_id",
+                    "crash_sev_id",
+                    "death_cnt",
+                    "nonincap_injry_cnt",
+                    "non_injry_cnt",
+                    "poss_injry_cnt",
+                    "sus_serious_injry_cnt",
+                    "tot_injry_cnt",
+                    "unkn_injry_cnt",
+                    "est_comp_cost",
+                    "address_confirmed_primary",
+                    "address_confirmed_secondary",
+                    "collsn_desc",
+                    "movement_desc",
+                    "travel_direction",
+                    "type",
+                    "veh_body_styl_desc",
+                    "veh_unit_desc_desc",
+                    "crash_time",
+                    "case_id",
+                    "day_of_week",
+                    "location_id"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "view_location_injry_count_cost_summary",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "editor",
+                "permission": {
+                  "columns": [
+                    "location_id",
+                    "total_crashes",
+                    "total_deaths",
+                    "total_serious_injuries",
+                    "est_comp_cost"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "readonly",
+                "permission": {
+                  "columns": [
+                    "total_crashes",
+                    "total_deaths",
+                    "total_serious_injuries",
+                    "est_comp_cost",
+                    "location_id"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "view_vzv_by_mode",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "view_vzv_by_month_year",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "view_vzv_by_time_of_day",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "view_vzv_demographics_age_sex_eth",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "view_vzv_header_totals",
+              "schema": "public"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "function": {
+              "name": "find_cr3_collisions_for_location",
+              "schema": "public"
+            }
+          },
+          {
+            "function": {
+              "name": "find_cr3_mainlane_crash",
+              "schema": "public"
+            }
+          },
+          {
+            "function": {
+              "name": "find_crash_in_jurisdiction",
+              "schema": "public"
+            }
+          },
+          {
+            "function": {
+              "name": "find_crash_jurisdictions",
+              "schema": "public"
+            }
+          },
+          {
+            "function": {
+              "name": "find_crashes_in_jurisdiction",
+              "schema": "public"
+            }
+          },
+          {
+            "function": {
+              "name": "find_location_for_cr3_collision",
+              "schema": "public"
+            }
+          },
+          {
+            "function": {
+              "name": "find_location_for_noncr3_collision",
+              "schema": "public"
+            }
+          },
+          {
+            "function": {
+              "name": "find_noncr3_collisions_for_location",
+              "schema": "public"
+            }
+          },
+          {
+            "function": {
+              "name": "find_noncr3_mainlane_crash",
+              "schema": "public"
+            }
+          },
+          {
+            "function": {
+              "name": "find_service_road_location_for_centerline_crash",
+              "schema": "public"
+            }
+          },
+          {
+            "function": {
+              "name": "get_location_totals",
+              "schema": "public"
+            }
+          },
+          {
+            "function": {
+              "name": "search_atd_location_crashes",
+              "schema": "public"
+            }
+          }
+        ],
+        "configuration": {
+          "connection_info": {
+            "database_url": {
+              "from_env": "HASURA_GRAPHQL_DATABASE_URL"
+            },
+            "isolation_level": "read-committed",
+            "pool_settings": {
+              "connection_lifetime": 600,
+              "idle_timeout": 180,
+              "max_connections": 50,
+              "retries": 1
+            },
+            "use_prepared_statements": true
+          }
+        }
+      }
+    ]
+  }
+}

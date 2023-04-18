@@ -5,6 +5,7 @@ import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { withApollo } from "react-apollo";
 import { format, subYears } from "date-fns";
 
+
 import {
   Card,
   CardBody,
@@ -31,6 +32,8 @@ import GridTableDoughnut from "./GridTableDoughnut";
 import GridTableHorizontalBar from "./GridTableHorizontalBar";
 import GridTableFilterBadges from "./GridTableFilterBadges";
 
+const codeName = 'jester';
+
 const GridTable = ({
   title,
   query,
@@ -44,7 +47,7 @@ const GridTable = ({
 }) => {
   // Load table filters from localStorage by title
   const savedFilterState = JSON.parse(
-    localStorage.getItem(`saved${title}Config`)
+    localStorage.getItem(`${codeName}saved${title}Config`)
   );
 
   // Return saved filters if they exist
@@ -104,7 +107,7 @@ const GridTable = ({
       dateRangeFilter,
     };
     localStorage.setItem(
-      `saved${title}Config`,
+      `${codeName}saved${title}Config`,
       JSON.stringify(stateForFilters)
     );
   });

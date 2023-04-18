@@ -84,3 +84,6 @@ atd-etl/app/**/*.json
 # vim 
 [._]*.s[a-v][a-z]
 [._]*.sw[a-p]
+
+# Zappa API deployment secrets
+zappa_settings.json

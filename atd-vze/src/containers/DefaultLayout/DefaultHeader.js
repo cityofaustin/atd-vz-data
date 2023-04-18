@@ -84,19 +84,28 @@ const DefaultHeader = props => {
             </DropdownToggle>
             <DropdownMenu right>
               <DropdownItem header tag="div" className="text-center">
-                <strong>Help</strong>
+                <strong>Support</strong>
               </DropdownItem>
               <DropdownItem
                 href="https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Vision%20Zero%20(Editor)%22%7D"
                 target="_blank"
+                rel="noreferrer"
               >
-                <i class="fa fa-bug" /> Report a bug&nbsp;&nbsp; <i className="fa fa-external-link" />
+                <i className="fa fa-bug" /> Report a bug&nbsp;&nbsp; <i className="fa fa-external-link" />
               </DropdownItem>
               <DropdownItem
                 href="https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Feature%20or%20Enhancement%20%E2%80%94%20An%20application%20I%20use%20could%20be%20improved%22%2C%22field_399%22%3A%22Vision%20Zero%20(Editor)%22%7D"
                 target="_blank"
+                rel="noreferrer"
               >
-                <i class="fa fa-wrench" /> Request an enhancement&nbsp;&nbsp; <i className="fa fa-external-link" />
+                <i className="fa fa-wrench" /> Request an enhancement&nbsp;&nbsp; <i className="fa fa-external-link" />
+              </DropdownItem>
+              <DropdownItem
+                href="https://ftp.dot.state.tx.us/pub/txdot-info/trf/crash_notifications/2023/code-sheet.pdf"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i class="fa fa-briefcase" /> CR3 code sheet&nbsp;&nbsp; <i className="fa fa-external-link" />
               </DropdownItem>
             </DropdownMenu>
         </UncontrolledDropdown>
