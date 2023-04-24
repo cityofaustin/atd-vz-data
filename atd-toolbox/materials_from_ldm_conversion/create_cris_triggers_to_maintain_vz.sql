@@ -1,20 +1,20 @@
 drop trigger if exists trg_vz_create_atd_txdot_crashes ON cris.atd_txdot_crashes;
-drop function if exists maintain_vz_schema_crash_records;
+drop function if exists cris.maintain_vz_schema_crash_records;
 
 drop trigger if exists trg_vz_create_atd_txdot_units ON cris.atd_txdot_units;
-drop function if exists maintain_vz_schema_unit_records;
+drop function if exists cris.maintain_vz_schema_unit_records;
 
 drop trigger if exists trg_vz_create_atd_txdot_person on cris.atd_txdot_person;
-drop function if exists maintain_vz_schema_person_records;
+drop function if exists cris.maintain_vz_schema_person_records;
 
 drop trigger if exists trg_vz_create_atd_txdot_primaryperson on cris.atd_txdot_primaryperson;
-drop function if exists maintain_vz_schema_primaryperson_records;
+drop function if exists cris.maintain_vz_schema_primaryperson_records;
 
 
 
 
 
-CREATE OR REPLACE FUNCTION maintain_vz_schema_crash_records()
+CREATE OR REPLACE FUNCTION cris.maintain_vz_schema_crash_records()
 RETURNS TRIGGER AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
@@ -31,14 +31,14 @@ CREATE TRIGGER trg_vz_create_atd_txdot_crashes
 AFTER INSERT OR DELETE
 ON cris.atd_txdot_crashes
 FOR EACH ROW
-EXECUTE FUNCTION maintain_vz_schema_crash_records();
+EXECUTE FUNCTION cris.maintain_vz_schema_crash_records();
 
 
 
 
 
 
-CREATE OR REPLACE FUNCTION maintain_vz_schema_unit_records()
+CREATE OR REPLACE FUNCTION cris.maintain_vz_schema_unit_records()
 RETURNS TRIGGER AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
@@ -54,16 +54,14 @@ CREATE TRIGGER trg_vz_create_atd_txdot_units
 AFTER INSERT OR DELETE
 ON cris.atd_txdot_units
 FOR EACH ROW
-EXECUTE FUNCTION maintain_vz_schema_unit_records();
+EXECUTE FUNCTION cris.maintain_vz_schema_unit_records();
 
 
 
 
 
 
-
-
-CREATE OR REPLACE FUNCTION maintain_vz_schema_person_records()
+CREATE OR REPLACE FUNCTION cris.maintain_vz_schema_person_records()
 RETURNS TRIGGER AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
@@ -79,15 +77,14 @@ CREATE TRIGGER trg_vz_create_atd_txdot_person
 AFTER INSERT OR DELETE
 ON cris.atd_txdot_person
 FOR EACH ROW
-EXECUTE FUNCTION maintain_vz_schema_person_records();
+EXECUTE FUNCTION cris.maintain_vz_schema_person_records();
 
 
 
 
 
 
-
-CREATE OR REPLACE FUNCTION maintain_vz_schema_primaryperson_records()
+CREATE OR REPLACE FUNCTION cris.maintain_vz_schema_primaryperson_records()
 RETURNS TRIGGER AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
@@ -103,4 +100,4 @@ CREATE TRIGGER trg_vz_create_atd_txdot_primaryperson
 AFTER INSERT OR DELETE
 ON cris.atd_txdot_primaryperson
 FOR EACH ROW
-EXECUTE FUNCTION maintain_vz_schema_primaryperson_records();
+EXECUTE FUNCTION cris.maintain_vz_schema_primaryperson_records();
