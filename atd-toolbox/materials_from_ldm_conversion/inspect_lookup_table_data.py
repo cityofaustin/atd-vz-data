@@ -92,17 +92,28 @@ def main():
     pg = get_pg_connection()
     cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     for table in data:
-        if table == 'STATE_ID': # the states (as in United States) is non-uniform and does not need inspection
+        # here are tables which are special cases
+        # The states (as in United States) is non-uniform and does not need inspection.
+        # The counties are equally fixed.
+        if table in ['STATE_ID', 'CNTY_ID']:
             continue
-        print(table)
-        # time.sleep(5)
+
+        # here are tbales which have a ton of changes, and i want to suppress from the report
+        # these still need to be processed!
+        if table in ['VEH_MOD_ID', 'CITY_ID', 'AGENCY_ID', "INV_DA_ID", "VEH_MAKE_ID"]:
+            continue
+
         match = re.search(r"(^.*)_ID$", table)
         name_component = match.group(1).lower()
+
+        print()
+        print("👀Looking into table: ", name_component)
+
         table_name = "atd_txdot__" + name_component + "_lkp"
         exists = table_exists(pg, table_name) 
         if exists:
             for record in data[table]:
-                print(name_component, record)
+                # print(name_component, record)
                 sql = f"""
                 select {name_component}_id as id, {name_component}_desc as description 
                 from {table_name} where {name_component}_id = {str(record['id'])};
@@ -110,11 +121,24 @@ def main():
                 cursor.execute(sql)
                 db_result = cursor.fetchone()
                 if (db_result):
-                    pass
+                    # We have a record on file with this ID
+                    if (db_result["description"] == record["description"]):
+                        # print(f"✅ Value \"{record['description']}\" with id {str(record['id'])} found in {table_name}")
+                        pass
+                    else:
+                        print(f"❌ Id {str(record['id'])} found in {table_name} has a description mismatch:")
+                        print("      CSV Value: ", record["description"])
+                        print("       DB Value: ", db_result["description"])
+                        print()
                 else:
-                    print(f"Value \"{record['description']}\" with id {str(record['id'])} not found in {table_name}")
+                    # We do not have a record on file with this ID
+                    # print(f"Value \"{record['description']}\" with id {str(record['id'])} not found in {table_name}")
+                    print(f"❓ Id {str(record['id'])} not found in {table_name}")
+                    print("      CSV Value: ", record["description"])
+                    print()
         else:
-            print(table_name, "exists:", exists)
+            # print("Missing table: ", table_name)
+            pass
 
 
 if __name__ == "__main__":
