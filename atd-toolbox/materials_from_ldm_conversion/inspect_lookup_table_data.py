@@ -100,7 +100,11 @@ def main():
 
         # here are tbales which have a ton of changes, and i want to suppress from the report
         # these still need to be processed!
-        if table in ['VEH_MOD_ID', 'CITY_ID', 'AGENCY_ID', "INV_DA_ID", "VEH_MAKE_ID"]:
+        is_core = True
+        if table in ['VEH_MOD_ID', 'CITY_ID', 'AGENCY_ID', "INV_DA_ID", "VEH_MAKE_ID",  "VEH_DAMAGE_DESCRIPTION_ID"]:
+            is_core = False
+        
+        if not is_core:
             continue
 
         match = re.search(r"(^.*)_ID$", table)
