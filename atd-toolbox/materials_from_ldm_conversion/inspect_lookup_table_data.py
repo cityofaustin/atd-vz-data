@@ -115,11 +115,13 @@ def main():
             "INV_DA_ID",
             "VEH_MAKE_ID",
             "VEH_DAMAGE_DESCRIPTION_ID",
+            "OTHR_FACTR_ID",
         ]:
             is_core = False
 
         if not is_core:
             continue
+            pass
 
         match = re.search(r"(^.*)_ID$", table)
         name_component = match.group(1).lower()
@@ -157,7 +159,7 @@ def main():
                     print("      CSV Value: ", record["description"])
                     print()
         else:
-            # print("Missing table: ", table_name)
+            print("💥 Missing table: ", table_name)
             pass
 
 
