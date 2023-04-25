@@ -2,7 +2,7 @@
 
 import csv
 import json
-
+import time
 import re
 import os
 import psycopg2
@@ -29,6 +29,35 @@ def get_pg_connection():
         sslmode=DB_SSL_REQUIREMENT,
         sslrootcert="/root/rds-combined-ca-bundle.pem",
     )
+
+def table_exists(conn, table_name):
+    """
+    Checks if a table exists in a PostgreSQL database.
+
+    Args:
+    conn (psycopg2.extensions.connection): A connection to the PostgreSQL database.
+    table_name (str): The name of the table to check for existence.
+
+    Returns:
+    bool: True if the table exists, False otherwise.
+    """
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT EXISTS (
+                    SELECT FROM information_schema.tables
+                    WHERE table_schema = 'public'
+                    AND table_name = %s
+                );
+            """, (table_name,))
+
+            result = cur.fetchone()
+            return result[0]
+
+    except Exception as e:
+        print(f"Error checking table existence: {e}")
+        return False
+
 
 def read_and_group_csv(file_path):
     grouped_data = {}
@@ -57,17 +86,36 @@ file_path = '/home/frank/atd-vz-data/atd-toolbox/materials_from_ldm_conversion/l
 data = read_and_group_csv(file_path)
 
 # Pretty-print the grouped data as JSON
-print(json.dumps(data, indent=4))
-
+# print(json.dumps(data, indent=4))
 
 def main():
     pg = get_pg_connection()
     cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     for table in data:
+        if table == 'STATE_ID': # the states (as in United States) is non-uniform and does not need inspection
+            continue
+        print(table)
+        # time.sleep(5)
         match = re.search(r"(^.*)_ID$", table)
-        table_name = "atd_txdot__" + match.group(1).lower() + "_lkp"
-        print(table_name)
-        
+        name_component = match.group(1).lower()
+        table_name = "atd_txdot__" + name_component + "_lkp"
+        exists = table_exists(pg, table_name) 
+        if exists:
+            for record in data[table]:
+                print(name_component, record)
+                sql = f"""
+                select {name_component}_id as id, {name_component}_desc as description 
+                from {table_name} where {name_component}_id = {str(record['id'])};
+                """
+                cursor.execute(sql)
+                db_result = cursor.fetchone()
+                if (db_result):
+                    pass
+                else:
+                    print(f"Value \"{record['description']}\" with id {str(record['id'])} not found in {table_name}")
+        else:
+            print(table_name, "exists:", exists)
+
 
 if __name__ == "__main__":
     main()
