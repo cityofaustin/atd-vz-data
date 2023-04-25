@@ -17,6 +17,7 @@ DB_PASS = os.getenv("DB_PASS")
 DB_NAME = os.getenv("DB_NAME")
 DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
+
 def get_pg_connection():
     """
     Returns a connection to the Postgres database
@@ -29,6 +30,7 @@ def get_pg_connection():
         sslmode=DB_SSL_REQUIREMENT,
         sslrootcert="/root/rds-combined-ca-bundle.pem",
     )
+
 
 def table_exists(conn, table_name):
     """
@@ -43,13 +45,16 @@ def table_exists(conn, table_name):
     """
     try:
         with conn.cursor() as cur:
-            cur.execute("""
+            cur.execute(
+                """
                 SELECT EXISTS (
                     SELECT FROM information_schema.tables
                     WHERE table_schema = 'public'
                     AND table_name = %s
                 );
-            """, (table_name,))
+            """,
+                (table_name,),
+            )
 
             result = cur.fetchone()
             return result[0]
@@ -62,18 +67,15 @@ def table_exists(conn, table_name):
 def read_and_group_csv(file_path):
     grouped_data = {}
 
-    with open(file_path, newline='') as csvfile:
-        csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-        
+    with open(file_path, newline="") as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=",", quotechar='"')
+
         # Skip the first row (header)
         next(csvreader)
-        
+
         for row in csvreader:
             key = row[0]
-            inner_dict = {
-                'id': int(row[1]),
-                'description': row[2]
-            }
+            inner_dict = {"id": int(row[1]), "description": row[2]}
 
             if key not in grouped_data:
                 grouped_data[key] = []
@@ -82,11 +84,16 @@ def read_and_group_csv(file_path):
 
     return grouped_data
 
-file_path = '/home/frank/atd-vz-data/atd-toolbox/materials_from_ldm_conversion/lookup_data/' + 'extract_2023_20230424123049_lookup_20230401_HAYSTRAVISWILLIAMSON.csv'
+
+file_path = (
+    "/home/frank/atd-vz-data/atd-toolbox/materials_from_ldm_conversion/lookup_data/"
+    + "extract_2023_20230424123049_lookup_20230401_HAYSTRAVISWILLIAMSON.csv"
+)
 data = read_and_group_csv(file_path)
 
 # Pretty-print the grouped data as JSON
 # print(json.dumps(data, indent=4))
+
 
 def main():
     pg = get_pg_connection()
@@ -95,15 +102,22 @@ def main():
         # here are tables which are special cases
         # The states (as in United States) is non-uniform and does not need inspection.
         # The counties are equally fixed.
-        if table in ['STATE_ID', 'CNTY_ID']:
+        if table in ["STATE_ID", "CNTY_ID"]:
             continue
 
         # here are tbales which have a ton of changes, and i want to suppress from the report
         # these still need to be processed!
         is_core = True
-        if table in ['VEH_MOD_ID', 'CITY_ID', 'AGENCY_ID', "INV_DA_ID", "VEH_MAKE_ID",  "VEH_DAMAGE_DESCRIPTION_ID"]:
+        if table in [
+            "VEH_MOD_ID",
+            "CITY_ID",
+            "AGENCY_ID",
+            "INV_DA_ID",
+            "VEH_MAKE_ID",
+            "VEH_DAMAGE_DESCRIPTION_ID",
+        ]:
             is_core = False
-        
+
         if not is_core:
             continue
 
@@ -114,7 +128,7 @@ def main():
         print("👀Looking into table: ", name_component)
 
         table_name = "atd_txdot__" + name_component + "_lkp"
-        exists = table_exists(pg, table_name) 
+        exists = table_exists(pg, table_name)
         if exists:
             for record in data[table]:
                 # print(name_component, record)
@@ -124,13 +138,15 @@ def main():
                 """
                 cursor.execute(sql)
                 db_result = cursor.fetchone()
-                if (db_result):
+                if db_result:
                     # We have a record on file with this ID
-                    if (db_result["description"] == record["description"]):
+                    if db_result["description"] == record["description"]:
                         # print(f"✅ Value \"{record['description']}\" with id {str(record['id'])} found in {table_name}")
                         pass
                     else:
-                        print(f"❌ Id {str(record['id'])} found in {table_name} has a description mismatch:")
+                        print(
+                            f"❌ Id {str(record['id'])} found in {table_name} has a description mismatch:"
+                        )
                         print("      CSV Value: ", record["description"])
                         print("       DB Value: ", db_result["description"])
                         print()
