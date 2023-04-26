@@ -98,11 +98,17 @@ data = read_and_group_csv(file_path)
 def new_table(name):
     return f"""
     create table atd_txdot__{name}_lkp (
-        {name}_id integer primary key,
-        {name}_desc varchar(255)
+        id serial primary key,
+        {name}_id integer not null,
+        {name}_desc varchar(255) not null
     );
     """
 
+
+def execute_query(pg, query):
+    cursor = pg.cursor()
+    cursor.execute(query)
+    pg.commit()
 
 def main():
     pg = get_pg_connection()
@@ -165,6 +171,7 @@ def main():
                         update = f"update {table_name} set {name_component}_desc = '{record['description']}' where {name_component}_id = {str(record['id'])};"
                         print(update)
                         changes.append(update)
+                        execute_query(pg, update)
                 else:
                     # We do not have a record on file with this ID
                     # print(f"Value \"{record['description']}\" with id {str(record['id'])} not found in {table_name}")
@@ -174,9 +181,15 @@ def main():
                     insert = f"insert into {table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{record['description']}');"
                     print(insert)
                     changes.append(insert)
+                    execute_query(pg, insert)
         else:
             print("💥 Missing table: ", table_name)
             changes.append(new_table(name_component))
+            execute_query(pg, new_table(name_component))
+            insert = f"insert into {table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{record['description']}');"
+            print(insert)
+            changes.append(insert)
+                    execute_query(pg, insert)
 
 
     print("\n".join(changes))
