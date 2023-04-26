@@ -98,6 +98,7 @@ data = read_and_group_csv(file_path)
 def main():
     pg = get_pg_connection()
     cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    changes = []
     for table in data:
         # here are tables which are special cases
         # The states (as in United States) is non-uniform and does not need inspection.
@@ -120,7 +121,7 @@ def main():
             is_core = False
 
         if not is_core:
-            continue
+            # continue
             pass
 
         match = re.search(r"(^.*)_ID$", table)
@@ -152,16 +153,23 @@ def main():
                         print("      CSV Value: ", record["description"])
                         print("       DB Value: ", db_result["description"])
                         print()
+                        update = f"update {table_name} set {name_component}_desc = '{record['description']}' where {name_component}_id = {str(record['id'])};"
+                        print(update)
+                        changes.append(update)
                 else:
                     # We do not have a record on file with this ID
                     # print(f"Value \"{record['description']}\" with id {str(record['id'])} not found in {table_name}")
                     print(f"❓ Id {str(record['id'])} not found in {table_name}")
                     print("      CSV Value: ", record["description"])
                     print()
+                    insert = f"insert into {table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{record['description']}');"
+                    print(insert)
+                    changes.append(insert)
         else:
             print("💥 Missing table: ", table_name)
             pass
 
+    print("\n".join(changes))
 
 if __name__ == "__main__":
     main()
