@@ -95,6 +95,15 @@ data = read_and_group_csv(file_path)
 # print(json.dumps(data, indent=4))
 
 
+def new_table(name):
+    return f"""
+    create table atd_txdot__{name}_lkp (
+        {name}_id integer primary key,
+        {name}_desc varchar(255)
+    );
+    """
+
+
 def main():
     pg = get_pg_connection()
     cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -167,7 +176,8 @@ def main():
                     changes.append(insert)
         else:
             print("💥 Missing table: ", table_name)
-            pass
+            changes.append(new_table(name_component))
+
 
     print("\n".join(changes))
 
