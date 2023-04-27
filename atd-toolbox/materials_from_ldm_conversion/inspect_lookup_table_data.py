@@ -124,7 +124,7 @@ def main():
         if table in ["STATE_ID", "CNTY_ID"]:
             continue
 
-        # here are tbales which have a ton of changes, and i want to suppress from the report
+        # here are tables which have a ton of changes, and i want to suppress from the report
         # these still need to be processed!
         is_core = True
         if table in [
