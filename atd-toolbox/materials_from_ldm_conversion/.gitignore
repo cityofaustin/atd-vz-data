@@ -1,3 +1,4 @@
 env
 lookup_data
 .sw*
+update_vzdb_swapspace
