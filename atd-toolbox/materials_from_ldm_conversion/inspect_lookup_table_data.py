@@ -84,6 +84,9 @@ def read_and_group_csv(file_path):
 
     return grouped_data
 
+def escape_single_quotes(input_string):
+    return input_string.replace("'", "''")
+
 
 file_path = (
     "/home/frank/atd-vz-data/atd-toolbox/materials_from_ldm_conversion/lookup_data/"
