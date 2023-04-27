@@ -171,7 +171,7 @@ def main():
                         print("      CSV Value: ", record["description"])
                         print("       DB Value: ", db_result["description"])
                         print()
-                        update = f"update {table_name} set {name_component}_desc = '{record['description']}' where {name_component}_id = {str(record['id'])};"
+                        update = f"update {table_name} set {name_component}_desc = '{escape_single_quotes(record['description'])}' where {name_component}_id = {str(record['id'])};"
                         print(update)
                         changes.append(update)
                         execute_query(pg, update)
@@ -181,7 +181,7 @@ def main():
                     print(f"❓ Id {str(record['id'])} not found in {table_name}")
                     print("      CSV Value: ", record["description"])
                     print()
-                    insert = f"insert into {table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{record['description']}');"
+                    insert = f"insert into {table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{escape_single_quotes(record['description'])}');"
                     print(insert)
                     changes.append(insert)
                     execute_query(pg, insert)
@@ -189,10 +189,10 @@ def main():
             print("💥 Missing table: ", table_name)
             changes.append(new_table(name_component))
             execute_query(pg, new_table(name_component))
-            insert = f"insert into {table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{record['description']}');"
+            insert = f"insert into {table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{escape_single_quotes(record['description'])}');"
             print(insert)
             changes.append(insert)
-                    execute_query(pg, insert)
+            execute_query(pg, insert)
 
 
     print("\n".join(changes))
