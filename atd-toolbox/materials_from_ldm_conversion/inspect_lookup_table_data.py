@@ -7,9 +7,9 @@ import re
 import os
 import psycopg2
 import psycopg2.extras
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
-load_dotenv("env")
+#load_dotenv("env")
 
 DB_HOST = os.getenv("DB_HOST")
 DB_USER = os.getenv("DB_USER")
@@ -100,7 +100,7 @@ data = read_and_group_csv(file_path)
 
 def new_table(name):
     return f"""
-    create table atd_txdot__{name}_lkp (
+    create table public.atd_txdot__{name}_lkp (
         id serial primary key,
         {name}_id integer not null,
         {name}_desc varchar(255) not null
@@ -151,49 +151,48 @@ def main():
 
         table_name = "atd_txdot__" + name_component + "_lkp"
         exists = table_exists(pg, table_name)
-        if exists:
-            for record in data[table]:
-                # print(name_component, record)
-                sql = f"""
-                select {name_component}_id as id, {name_component}_desc as description 
-                from {table_name} where {name_component}_id = {str(record['id'])};
-                """
-                cursor.execute(sql)
-                db_result = cursor.fetchone()
-                if db_result:
-                    # We have a record on file with this ID
-                    if db_result["description"] == record["description"]:
-                        # print(f"✅ Value \"{record['description']}\" with id {str(record['id'])} found in {table_name}")
-                        pass
-                    else:
-                        print(
-                            f"❌ Id {str(record['id'])} found in {table_name} has a description mismatch:"
-                        )
-                        print("      CSV Value: ", record["description"])
-                        print("       DB Value: ", db_result["description"])
-                        print()
-                        update = f"update {table_name} set {name_component}_desc = '{escape_single_quotes(record['description'])}' where {name_component}_id = {str(record['id'])};"
-                        print(update)
-                        changes.append(update)
-                        execute_query(pg, update)
+        for record in data[table]:
+            if not exists:
+                print("💥 Missing table: ", table_name)
+                changes.append(new_table(name_component))
+                execute_query(pg, new_table(name_component))
+                # insert = f"insert into public.{table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{escape_single_quotes(record['description'])}');"
+                # print(insert)
+                # changes.append(insert)
+                # execute_query(pg, insert)
+            # print(name_component, record)
+            sql = f"""
+            select {name_component}_id as id, {name_component}_desc as description 
+            from {table_name} where {name_component}_id = {str(record['id'])};
+            """
+            cursor.execute(sql)
+            db_result = cursor.fetchone()
+            if db_result:
+                # We have a record on file with this ID
+                if db_result["description"] == record["description"]:
+                    # print(f"✅ Value \"{record['description']}\" with id {str(record['id'])} found in {table_name}")
+                    pass
                 else:
-                    # We do not have a record on file with this ID
-                    # print(f"Value \"{record['description']}\" with id {str(record['id'])} not found in {table_name}")
-                    print(f"❓ Id {str(record['id'])} not found in {table_name}")
+                    print(
+                        f"❌ Id {str(record['id'])} found in {table_name} has a description mismatch:"
+                    )
                     print("      CSV Value: ", record["description"])
+                    print("       DB Value: ", db_result["description"])
                     print()
-                    insert = f"insert into {table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{escape_single_quotes(record['description'])}');"
-                    # print(insert)
-                    changes.append(insert)
-                    execute_query(pg, insert)
-        else:
-            print("💥 Missing table: ", table_name)
-            changes.append(new_table(name_component))
-            execute_query(pg, new_table(name_component))
-            insert = f"insert into {table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{escape_single_quotes(record['description'])}');"
-            # print(insert)
-            changes.append(insert)
-            execute_query(pg, insert)
+                    update = f"update public.{table_name} set {name_component}_desc = '{escape_single_quotes(record['description'])}' where {name_component}_id = {str(record['id'])};"
+                    print(update)
+                    changes.append(update)
+                    execute_query(pg, update)
+            else:
+                # We do not have a record on file with this ID
+                # print(f"Value \"{record['description']}\" with id {str(record['id'])} not found in {table_name}")
+                print(f"❓ Id {str(record['id'])} not found in {table_name}")
+                print("      CSV Value: ", record["description"])
+                print()
+                insert = f"insert into public.{table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{escape_single_quotes(record['description'])}');"
+                # print(insert)
+                changes.append(insert)
+                execute_query(pg, insert)
 
     print("\n🛠️ Here are the changes to be made:\n")
     print("\n".join(changes))
