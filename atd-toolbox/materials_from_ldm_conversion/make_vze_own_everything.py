@@ -1,10 +1,12 @@
+#!/usr/bin/env python
+
 import os
 import psycopg2
 import psycopg2.extras
 import datetime
-from dotenv import load_dotenv
 
-load_dotenv("env")
+#from dotenv import load_dotenv
+#load_dotenv("env")
 
 DB_HOST = os.getenv("DB_HOST")
 DB_USER = os.getenv("DB_USER")
@@ -13,7 +15,8 @@ DB_NAME = os.getenv("DB_NAME")
 DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 
 def main():
-    possible_schemas = ['cris', 'hdb_catalog', 'import', 'ldm', 'public', 'vz']
+    #possible_schemas = ['cris', 'hdb_catalog', 'import', 'ldm', 'public', 'vz']
+    possible_schemas = ['public'] # for our production replica
     for schema in possible_schemas:
         if check_schema_exists(schema):
             print(f"Schema {schema} exists")
