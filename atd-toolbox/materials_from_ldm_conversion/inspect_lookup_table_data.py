@@ -149,9 +149,9 @@ def main():
         print()
         print("👀Looking into table: ", name_component)
 
-        table_name = "atd_txdot__" + name_component + "_lkp"
-        exists = table_exists(pg, table_name)
         for record in data[table]:
+            table_name = "atd_txdot__" + name_component + "_lkp"
+            exists = table_exists(pg, table_name)
             if not exists:
                 print("💥 Missing table: ", table_name)
                 changes.append(new_table(name_component))
