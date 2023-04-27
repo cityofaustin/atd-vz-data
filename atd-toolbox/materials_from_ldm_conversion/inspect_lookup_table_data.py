@@ -109,6 +109,7 @@ def new_table(name):
 
 
 def execute_query(pg, query):
+    # return
     cursor = pg.cursor()
     cursor.execute(query)
     pg.commit()
@@ -182,7 +183,7 @@ def main():
                     print("      CSV Value: ", record["description"])
                     print()
                     insert = f"insert into {table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{escape_single_quotes(record['description'])}');"
-                    print(insert)
+                    # print(insert)
                     changes.append(insert)
                     execute_query(pg, insert)
         else:
@@ -190,11 +191,11 @@ def main():
             changes.append(new_table(name_component))
             execute_query(pg, new_table(name_component))
             insert = f"insert into {table_name} ({name_component}_id, {name_component}_desc) values ({str(record['id'])}, '{escape_single_quotes(record['description'])}');"
-            print(insert)
+            # print(insert)
             changes.append(insert)
             execute_query(pg, insert)
 
-
+    print("\n🛠️ Here are the changes to be made:\n")
     print("\n".join(changes))
 
 if __name__ == "__main__":
