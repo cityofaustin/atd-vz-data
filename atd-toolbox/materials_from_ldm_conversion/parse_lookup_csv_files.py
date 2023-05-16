@@ -24,14 +24,55 @@ def main():
     parser.add_argument('-c', '--create', action='store_true', help='Create a new file if set')
     args = parser.parse_args()
 
+    schemata = ['cris_lookup', 'vz_lookup']
+    drop_and_recreate_schemas(schemata)
+
     data_dict = read_csv_into_dict(args.input)
+
 
     # Print data_dict for verification
     for key in data_dict:
         print("Key: " + key)
+        table = transform_input(key)
+        print("Table: " + table)
         #print(f'{key}: {data_dict[key]}')
+        for schema in schemata:
+            create_table(schema, table)
 
-    drop_and_recreate_schemas(['cris_lookup', 'vz_lookup'])
+def create_table(schema, table_name):
+    try:
+        conn = get_pg_connection()
+        cur = conn.cursor()
+
+        cur.execute(f"""
+            CREATE TABLE {schema}.{table_name} (
+                id SERIAL PRIMARY KEY,
+                upstream_id INTEGER,
+                description TEXT,
+                active BOOLEAN DEFAULT TRUE
+            );
+        """)
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
+
+
+
+def transform_input(input_string):
+    # Transform to lowercase
+    transformed_string = input_string.lower()
+    
+    # Remove trailing "_id" if present
+    transformed_string = re.sub("_id$", "", transformed_string)
+    
+    return transformed_string
+
 
 def drop_and_recreate_schemas(schema_list):
     try:
