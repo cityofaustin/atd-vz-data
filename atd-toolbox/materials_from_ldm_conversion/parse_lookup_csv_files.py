@@ -29,12 +29,10 @@ def main():
 
     data_dict = read_csv_into_dict(args.input)
 
-    # Print data_dict for verification
     for key in data_dict:
         print("Key: " + key)
         table = transform_input(key)
         print("Table: " + table)
-        #print(f'{key}: {data_dict[key]}')
         for schema in schemata:
             create_table(schema, table)
         populate_table(schemata[0], table, data_dict[key])
@@ -77,16 +75,18 @@ def create_materialized_view(schema, view_name):
         conn = get_pg_connection()
         cur = conn.cursor()
 
+        namespace_size = 7
+
         cur.execute(f"""
             CREATE MATERIALIZED VIEW {schema}.{view_name} AS
             SELECT 
-                ('x'||substring(encode(digest(id::character varying || 'vz', 'sha1'), 'hex') from 1 for 7))::varbit::bit(28)::integer as id,
+                ('x'||substring(encode(digest(id::character varying || 'vz', 'sha1'), 'hex') from 1 for {namespace_size}))::varbit::bit({namespace_size * 4})::integer as id,
                 description
             FROM cris_lookup.{view_name}
             WHERE active IS TRUE
             UNION ALL
             SELECT 
-                ('x'||substring(encode(digest(id::character varying || 'cris', 'sha1'), 'hex') from 1 for 7))::varbit::bit(28)::integer as id,
+                ('x'||substring(encode(digest(id::character varying || 'cris', 'sha1'), 'hex') from 1 for {namespace_size}))::varbit::bit({namespace_size * 4})::integer as id,
                 description
             FROM vz_lookup.{view_name}
             WHERE active IS TRUE
