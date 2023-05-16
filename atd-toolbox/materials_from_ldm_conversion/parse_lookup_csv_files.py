@@ -39,6 +39,38 @@ def main():
             create_table(schema, table)
         populate_table(schemata[0], table, data_dict[key])
         create_materialized_view('lookup', table)
+        if check_for_duplicates('lookup', table):
+            raise Exception(f"Namespace Collision in Lookup Table: {table}")
+
+def check_for_duplicates(schema, table_name):
+    try:
+        conn = get_pg_connection()
+        cur = conn.cursor()
+
+        cur.execute(f"""
+            SELECT id
+            FROM {schema}.{table_name}
+            GROUP BY id
+            HAVING COUNT(id) > 1;
+        """)
+
+        result = cur.fetchall()
+        cur.close()
+        conn.close()
+
+        if result:
+            print("🔥 Duplicate IDs found:")
+            for row in result:
+                print(row[0])
+            return True
+        else:
+            # print("No duplicate IDs found.")
+            return False
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
+
 
 def create_materialized_view(schema, view_name):
     try:
@@ -176,4 +208,7 @@ def read_csv_into_dict(file_path):
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(e)
