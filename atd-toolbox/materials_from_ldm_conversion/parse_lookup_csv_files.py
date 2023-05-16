@@ -21,14 +21,13 @@ DB_SSL_REQUIREMENT = os.getenv("DB_SSL_REQUIREMENT")
 def main():
     parser = argparse.ArgumentParser(description="Process CRIS lookup table CSV files")
     parser.add_argument('-i', '--input', required=True, help='Input CSV file')
-    parser.add_argument('-c', '--create', action='store_true', help='Create a new file if set')
     args = parser.parse_args()
 
     schemata = ['cris_lookup', 'vz_lookup']
     drop_and_recreate_schemas(schemata)
+    drop_and_recreate_schemas(['lookup'])
 
     data_dict = read_csv_into_dict(args.input)
-
 
     # Print data_dict for verification
     for key in data_dict:
@@ -39,6 +38,36 @@ def main():
         for schema in schemata:
             create_table(schema, table)
         populate_table(schemata[0], table, data_dict[key])
+        create_materialized_view('lookup', table)
+
+def create_materialized_view(schema, view_name):
+    try:
+        conn = get_pg_connection()
+        cur = conn.cursor()
+
+        cur.execute(f"""
+            CREATE MATERIALIZED VIEW {schema}.{view_name} AS
+            SELECT 
+                ('x'||substring(encode(digest(id::character varying || 'vz', 'sha1'), 'hex') from 1 for 7))::varbit::bit(28)::integer as id,
+                description
+            FROM cris_lookup.{view_name}
+            WHERE active IS TRUE
+            UNION ALL
+            SELECT 
+                ('x'||substring(encode(digest(id::character varying || 'cris', 'sha1'), 'hex') from 1 for 7))::varbit::bit(28)::integer as id,
+                description
+            FROM vz_lookup.{view_name}
+            WHERE active IS TRUE
+        """)
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
 
 def populate_table(schema, table_name, data_list):
     try:
