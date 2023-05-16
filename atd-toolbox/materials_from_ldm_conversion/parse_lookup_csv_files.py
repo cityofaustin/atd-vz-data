@@ -38,6 +38,27 @@ def main():
         #print(f'{key}: {data_dict[key]}')
         for schema in schemata:
             create_table(schema, table)
+        populate_table(schemata[0], table, data_dict[key])
+
+def populate_table(schema, table_name, data_list):
+    try:
+        conn = get_pg_connection()
+        cur = conn.cursor()
+        
+        for data in data_list:
+            cur.execute(
+                f"INSERT INTO {schema}.{table_name} (upstream_id, description) VALUES (%s, %s);",
+                (data['id'], data['description'])
+            )
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
 
 def create_table(schema, table_name):
     try:
