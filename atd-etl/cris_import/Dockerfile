@@ -22,7 +22,12 @@ RUN ssh-keygen -t ed25519 -C "airflow@airflow" -f /root/.ssh/id_ed25519 -q -N ""
 # allow ssh to localhost
 RUN cat /root/.ssh/id_ed25519.pub > /root/.ssh/authorized_keys
 # disable the "are you sure you want to connect" prompt
-RUN printf "Host localhost\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
+RUN printf "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
+
+COPY ./ssh_keys/id_rsa /root/.ssh/id_rsa
+COPY ./ssh_keys/id_rsa.pub /root/.ssh/id_rsa.pub
+RUN chmod 600 /root/.ssh/id_rsa
+RUN chmod 600 /root/.ssh/id_rsa.pub
 
 COPY entrypoint.sh /entrypoint.sh
 
