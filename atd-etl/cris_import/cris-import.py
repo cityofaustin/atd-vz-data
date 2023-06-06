@@ -97,12 +97,29 @@ else:
     DB_BASTION_HOST = os.getenv("DB_BASTION_HOST")
     DB_RDS_HOST = os.getenv("DB_RDS_HOST")
 
+# Set up slack fail handler
+handler = slack_notifier(only_states=[Failed, TriggerFailed, Retrying])
+
+@task(
+    name="Specify where archive can be found",
+    slug="locate-zips",
+    max_retries=3,
+    retry_delay=datetime.timedelta(minutes=2),
+    state_handlers=[handler],
+)
 def specify_extract_location(file):
     zip_tmpdir = tempfile.mkdtemp()
     shutil.copy(file, zip_tmpdir)
     return zip_tmpdir
 
 
+@task(
+    name="Download archive from SFTP Endpoint",
+    slug="get-zips",
+    max_retries=3,
+    retry_delay=datetime.timedelta(minutes=2),
+    state_handlers=[handler],
+)
 def download_extract_archives():
     """
     Connect to the SFTP endpoint which receives archives from CRIS and
@@ -132,6 +149,14 @@ def download_extract_archives():
     return zip_tmpdir
 
 
+@task(
+    name="Decrypt & extract zip archives",
+    slug="decompress-zips",
+    max_retries=3,
+    retry_delay=datetime.timedelta(minutes=2),
+    nout=1,
+    state_handlers=[handler],
+)
 def unzip_archives(archives_directory):
     """
     Unzips (and decrypts) archives received from CRIS
@@ -154,7 +179,11 @@ def unzip_archives(archives_directory):
     return extracted_csv_directories
 
 
-
+@task(
+    name="Cleanup temporary directories", 
+    slug="cleanup-temporary-directories", 
+    state_handlers=[handler],
+    )
 def cleanup_temporary_directories(zip_location, pgloader_command_files, extracted_archives):
     """
     Remove directories that have accumulated during the flow's execution
@@ -184,7 +213,10 @@ def cleanup_temporary_directories(zip_location, pgloader_command_files, extracte
     return None
 
 
-
+@task(
+    name="Upload CSV files on s3 for archival", 
+    state_handlers=[handler],
+    )
 def upload_csv_files_to_s3(extract_directory):
     """
     Upload CSV files which came from CRIS exports up to S3 for archival
@@ -220,7 +252,10 @@ def upload_csv_files_to_s3(extract_directory):
     return extract_directory
 
 
-
+@task(
+    name="Remove archive from SFTP Endpoint", 
+    state_handlers=[handler],
+    )
 def remove_archives_from_sftp_endpoint(zip_location, map_state):
     """
     Delete the archives which have been processed from the SFTP endpoint
@@ -243,7 +278,12 @@ def remove_archives_from_sftp_endpoint(zip_location, map_state):
 
     return None
 
-
+@task(
+    name="pgloader CSV into DB", 
+    max_retries=2, 
+    retry_delay=datetime.timedelta(minutes=1), 
+    state_handlers=[handler],
+    )
 def pgloader_csvs_into_database(map_state):
     # Walk the directory and find all the CSV files
     pgloader_command_files_tmpdir = tempfile.mkdtemp()
@@ -300,6 +340,10 @@ $$;\n""")
     return map_state 
 
 
+@task(
+    name="Remove trailing carriage returns from imported data", 
+    state_handlers=[handler],
+    )
 def remove_trailing_carriage_returns(map_state):
 
     ssh_tunnel = SSHTunnelForwarder(
@@ -327,6 +371,10 @@ def remove_trailing_carriage_returns(map_state):
     return map_state
 
 
+@task(
+    name="Align DB Types", 
+    state_handlers=[handler],
+    )
 def align_db_typing(map_state):
 
     """
@@ -404,6 +452,10 @@ def align_db_typing(map_state):
     return map_state 
 
 
+@task(
+    name="Insert / Update records in target schema", 
+    state_handlers=[handler],
+    )
 def align_records(map_state):
 
     """
@@ -564,6 +616,9 @@ def align_records(map_state):
     return map_state
 
 
+@task(
+    name="Group CSVs into logical groups",
+)
 def group_csvs_into_logical_groups(extracted_archives, dry_run):
     files = os.listdir(str(extracted_archives))
     logical_groups = []
@@ -587,6 +642,9 @@ def group_csvs_into_logical_groups(extracted_archives, dry_run):
     return map_safe_state
 
 
+@task(
+    name="Generate a short alphanumeric string based on logical group id",
+)
 def create_import_schema_name(mapped_state):
     print(mapped_state)
     schema = 'import_' + hashlib.md5(mapped_state["logical_group_id"].encode()).hexdigest()[:12]
@@ -595,6 +653,9 @@ def create_import_schema_name(mapped_state):
     return mapped_state
 
 
+@task(
+    name="Create target import schema",
+)
 def create_target_import_schema(map_state):
     ssh_tunnel = SSHTunnelForwarder(
         (DB_BASTION_HOST),
@@ -638,6 +699,9 @@ def create_target_import_schema(map_state):
 
     return map_state
 
+@task(
+    name="Clean up import schema",
+)
 def clean_up_import_schema(map_state):
     ssh_tunnel = SSHTunnelForwarder(
         (DB_BASTION_HOST),
@@ -667,12 +731,13 @@ def clean_up_import_schema(map_state):
 
     return map_state
 
-def main():
-    pass
-    #dry_run = Parameter("dry_run", default=True, required=True)
+with Flow(
+    "CRIS Crash Import",
+) as flow:
+    dry_run = Parameter("dry_run", default=True, required=True)
 
     # get a location on disk which contains the zips from the sftp endpoint
-    #zip_location = download_extract_archives()
+    zip_location = download_extract_archives()
 
     # OR
 
@@ -684,29 +749,29 @@ def main():
 
     # iterate over the zips in that location and unarchive them into
     # a list of temporary directories containing the files of each
-    #extracted_archives = unzip_archives(zip_location) # this returns an array, but is not mapped on
+    extracted_archives = unzip_archives(zip_location) # this returns an array, but is not mapped on
 
-    #logical_groups_of_csvs = group_csvs_into_logical_groups(extracted_archives[0], dry_run)
+    logical_groups_of_csvs = group_csvs_into_logical_groups(extracted_archives[0], dry_run)
 
-    #desired_schema_name = create_import_schema_name.map(logical_groups_of_csvs)
+    desired_schema_name = create_import_schema_name.map(logical_groups_of_csvs)
 
-    #schema_name = create_target_import_schema.map(desired_schema_name)
+    schema_name = create_target_import_schema.map(desired_schema_name)
 
-    #pgloader_command_files = pgloader_csvs_into_database.map(schema_name)
+    pgloader_command_files = pgloader_csvs_into_database.map(schema_name)
 
-    #trimmed_token = remove_trailing_carriage_returns.map(pgloader_command_files)
+    trimmed_token = remove_trailing_carriage_returns.map(pgloader_command_files)
 
-    #typed_token = align_db_typing.map(trimmed_token)
+    typed_token = align_db_typing.map(trimmed_token)
 
-    #align_records_token = align_records.map(map_state=typed_token)
+    align_records_token = align_records.map(map_state=typed_token)
 
-    #clean_up_import_schema = clean_up_import_schema.map(align_records_token)
+    clean_up_import_schema = clean_up_import_schema.map(align_records_token)
 
     # remove archives from SFTP endpoint; note this isn't a map'd function, this is reduced
-    #removal_token = remove_archives_from_sftp_endpoint(zip_location, clean_up_import_schema)
+    removal_token = remove_archives_from_sftp_endpoint(zip_location, clean_up_import_schema)
 
     # push up the CSVs to s3 for archival
-    #uploaded_archives_csvs = upload_csv_files_to_s3(extracted_archives[0])
+    uploaded_archives_csvs = upload_csv_files_to_s3(extracted_archives[0])
 
     # i'm punting on this. 👇 This is oddly difficult after the map() refactor.
 
@@ -721,4 +786,9 @@ def main():
         #pgloader_command_files,
         #upstream_tasks=[align_records_token],
         #upstream_tasks=[align_records_token, removal_token],
-        #)
+    #)
+
+# I'm not sure how to make this not self-label by the hostname of the registering computer.
+# here, it only tags it with the docker container ID, so no harm, no foul, but it's noisy.
+flow.register(project_name="vision-zero")
+#flow.run(dry_run=False)
