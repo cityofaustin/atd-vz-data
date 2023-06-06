@@ -1,13 +1,8 @@
 import os
-import psycopg2
 import psycopg2.extras
-
-
-import logging
 
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
-
 
 # This library is /not/ designed for reuse in other projects. It is designed to increase the
 # readability of the `cris_import.py` prefect flow by pulling logical groups of code out
@@ -86,7 +81,6 @@ def check_if_update_is_a_non_op(
     public_key_sql,
     DB_IMPORT_SCHEMA,
 ):
-    logger = logging.getLogger(__name__)
     sql = "select (" + " and ".join(column_comparisons) + ") as skip_update\n"
     sql += f"from public.{output_map[table]}\n"
     sql += (
@@ -97,7 +91,6 @@ def check_if_update_is_a_non_op(
     sql += f"where {public_key_sql}\n"
 
     cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    logger.info(sql)
     cursor.execute(sql)
     skip_update_query = cursor.fetchone()
     if skip_update_query["skip_update"]:
@@ -248,7 +241,6 @@ def try_statement(pg, output_map, table, public_key_sql, sql, dry_run):
         cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cursor.execute(sql)
         pg.commit()
-        cursor.close()
     except Exception as error:
         print(
             f"There is likely an issue with existing data. Try looking for results in {output_map[table]} with the following WHERE clause:\n'{public_key_sql}'"
@@ -331,14 +323,10 @@ def get_linkage_constructions(key_columns, output_map, table, DB_IMPORT_SCHEMA):
 
 
 def get_imported_tables(pg, DB_IMPORT_SCHEMA):
-    logger = logging.getLogger(__name__) 
     sql = f"SELECT * FROM information_schema.tables WHERE table_schema = '{DB_IMPORT_SCHEMA}';"
-    logger.info(f"Getting imported tables from {DB_IMPORT_SCHEMA}")
-    logger.info(f"SQL: {sql}")
     cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cursor.execute(sql)
     imported_tables = cursor.fetchall()
-    logger.info("From DB - Imported tables: " + str(imported_tables))
     return imported_tables
 
 
@@ -357,7 +345,6 @@ def enforce_complete_keying(
     cursor = pg.cursor()
     cursor.execute(sql)
     pg.commit()
-    cursor.close()
 
 
 def get_output_column_types(pg, output_table):
@@ -429,7 +416,6 @@ def trim_trailing_carriage_returns(pg, DB_IMPORT_SCHEMA, column):
     """
     cursor.execute(sql)
     pg.commit()
-    cursor.close()
 
 def form_alter_statement_to_apply_column_typing(DB_IMPORT_SCHEMA, input_table, column):
     # the `USING` hackery is due to the reality of the CSV null vs "" confusion
