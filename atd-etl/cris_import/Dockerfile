@@ -17,8 +17,6 @@ RUN pip install -r /tmp/requirements.txt
 RUN apt-get install -y openssh-server
 # sshd needs this folder for connection tracking
 RUN mkdir /run/sshd
-# add sshd daemon to entrypoint
-#RUN sed -i '2i/usr/sbin/sshd' /entrypoint.sh
 # generate a keypair for ssh
 RUN ssh-keygen -t ed25519 -C "airflow@airflow" -f /root/.ssh/id_ed25519 -q -N ""
 # allow ssh to localhost
