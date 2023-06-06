@@ -27,9 +27,13 @@ from prefect.utilities.notifications import slack_notifier
 import lib.mappings as mappings
 import lib.sql as util
 import lib.graphql as graphql
-from lib.helpers_import import insert_crash_change_template as insert_change_template
 
 from sshtunnel import SSHTunnelForwarder
+
+sys.path.insert(0, "/root/cris_import/atd-vz-data/atd-etl/app")
+from process.helpers_import import (
+    insert_crash_change_template as insert_change_template,
+)
 
 SFTP_ENDPOINT = None
 ZIP_PASSWORD = None
