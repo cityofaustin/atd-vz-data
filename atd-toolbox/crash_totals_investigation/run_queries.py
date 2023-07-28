@@ -136,8 +136,8 @@ for node in result['atd_txdot_crashes_aggregate']['nodes']:
 
 
 cursor = pg.cursor(cursor_factory=RealDictCursor)
-cursor.execute("""
 
+cursor.execute("""
 select distinct crashes.crash_id
 from atd_txdot_crashes crashes
     join atd_txdot_units units on (crashes.crash_id = units.crash_id)
