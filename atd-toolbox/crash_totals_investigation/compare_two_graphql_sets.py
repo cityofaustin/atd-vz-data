@@ -68,57 +68,73 @@ query_one = gql("""
         _neq: "Y"
       }
     }
-  ) {
-    aggregate {
-      count
-      __typename
+  )    {
+    nodes {
+        crash_id
+        }
     }
-    __typename
-  }
 }
 """)
 
 
 result = client.execute(query_one)
-#result = client.execute(query_fixed)
 
-gql_set_crash_ids = set()
+gql_set_crash_ids_one = set()
 for node in result['atd_txdot_crashes_aggregate']['nodes']:
-    gql_set_crash_ids.add(node['crash_id'])
+    gql_set_crash_ids_one.add(node['crash_id'])
 
+print("GQL one set length: ", len(gql_set_crash_ids_one))
 
-
-exit;
-
-cursor = pg.cursor(cursor_factory=RealDictCursor)
-
-cursor.execute("""
-select distinct crashes.crash_id
-from atd_txdot_crashes crashes
-    join atd_txdot_units units on (crashes.crash_id = units.crash_id)
-where true 
-    and crash_date >= '2013-07-28' and crash_date <= '2023-07-28'
-    and crashes.private_dr_fl != 'Y'
-    and crashes.in_austin_full_purpose is true
-    and units.unit_desc_id = 1
-    and units.veh_body_styl_id != 71
-    and units.veh_body_styl_id != 90
+query_two = gql("""
+{
+  atd_txdot_crashes_aggregate(
+    where: {
+      crash_date: {
+        _gte: "2017-08-17",
+        _lte: "2023-08-17"
+      },
+      in_austin_full_purpose: {
+        _eq: true
+      },
+      private_dr_fl: {
+        _neq: "Y"
+      },
+      _or: [
+        { units: { unit_desc_id: { _eq: 1 }, veh_body_styl_id: { _nin: [71, 90] } } },
+        { units: { unit_desc_id: { _eq: 1 }, veh_body_styl_id: { _in: [71, 90] } } },
+        { units: { unit_desc_id: { _eq: 3 } } },
+        { units: { unit_desc_id: { _eq: 4 } } },
+        { units: { unit_desc_id: { _eq: 177 }, veh_body_styl_id: { _eq: 177 } } }
+      ]
+    }
+  )     {
+    nodes {
+        crash_id
+        }
+    }
+}
 """)
 
-rows = cursor.fetchall()
 
-sql_set_crash_ids = set()
-for row in rows:
-    sql_set_crash_ids.add(row['crash_id'])
+result = client.execute(query_two)
 
-print("GQL set length: ", len(gql_set_crash_ids))
-print("SQL set length: ", len(sql_set_crash_ids))
+gql_set_crash_ids_two = set()
+for node in result['atd_txdot_crashes_aggregate']['nodes']:
+    gql_set_crash_ids_two.add(node['crash_id'])
 
-gql_not_sql = gql_set_crash_ids.difference(sql_set_crash_ids)
-sql_not_gql = sql_set_crash_ids.difference(gql_set_crash_ids)
+print("GQL two set length: ", len(gql_set_crash_ids_two))
 
-print("GQL not SQL count: ", len(gql_not_sql))
-print("SQL not GQL count: ", len(sql_not_gql))
 
-print("GQL not SQL: ", gql_not_sql)
-print("SQL not GQL: ", sql_not_gql)
+print("GQL 1 set length: ", len(gql_set_crash_ids_one))
+print("GQL 2 set length: ", len(gql_set_crash_ids_two))
+
+one_not_two = gql_set_crash_ids_one.difference(gql_set_crash_ids_two)
+two_not_one = gql_set_crash_ids_two.difference(gql_set_crash_ids_one)
+
+print("one not two count: ", len(one_not_two))
+print("two not one count: ", len(two_not_one))
+
+print("one not two: ", one_not_two)
+print("two not one: ", two_not_one)
+
+
