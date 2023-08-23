@@ -53,29 +53,45 @@ client = Client(transport=transport, fetch_schema_from_transport=True)
 
 query = gql("""
 {
-atd_txdot_crashes_aggregate(
+  view_fatalities(
     where: {
-        crash_date: {_gte: "2013-07-28", _lte: "2023-07-28"},
-        in_austin_full_purpose: {_eq: true},
-        private_dr_fl: {_neq: "Y"},
-        _or: [
-                {_and: [
-                            {units: {unit_desc_id: {_eq: 1}}}, 
-                            {_and:  [
-                                    {units: {veh_body_styl_id: {_neq: 71}}},
-                                    {units: {veh_body_styl_id: {_neq: 90}}}
-                                    ]
-                            }
-                        ]
-                }
-            ]}
-    )
-    {
-    nodes {
-        crash_id
+      crash_date: {
+        _gte: "2014-07-28",
+        _lte: "2023-07-28"
+      },
+      _or: [
+        {
+          person: {
+            unit: {
+              unit_desc_id: {
+                _eq: 1
+              },
+              veh_body_styl_id: {
+                _nin: [71, 90]
+              }
+            }
+          }
+        },
+        {
+          primaryperson: {
+            unit: {
+              unit_desc_id: {
+                _eq: 1
+              },
+              veh_body_styl_id: {
+                _nin: [71, 90]
+              }
+            }
+          }
         }
+      ]
     }
-
+  ) {
+    crash_id
+    ytd_fatal_crash
+    ytd_fatality
+    crash_date
+  }
 }
 """)
 
@@ -160,26 +176,44 @@ result = client.execute(query)
 #result = client.execute(query_fixed)
 
 gql_set_crash_ids = set()
-for node in result['atd_txdot_crashes_aggregate']['nodes']:
+for node in result['view_fatalities']:
     gql_set_crash_ids.add(node['crash_id'])
 
 
 cursor = pg.cursor(cursor_factory=RealDictCursor)
 
 cursor.execute("""
-SELECT distinct crashes.crash_id
-FROM atd_txdot_crashes crashes
+with all_people as (
+select person.prsn_nbr, 
+  person.crash_id, 
+  person.unit_nbr, 
+  person.prsn_injry_sev_id,
+  'nonprimary' as class 
+from atd_txdot_person person
+where person.prsn_injry_sev_id = 4
+union
+select primaryperson.prsn_nbr, 
+  primaryperson.crash_id, 
+  primaryperson.unit_nbr, 
+  primaryperson.prsn_injry_sev_id, 
+  'primary' as class 
+from atd_txdot_primaryperson primaryperson
+where primaryperson.prsn_injry_sev_id = 4
+)
+select crashes.crash_id, units.unit_nbr, people.prsn_nbr, people.prsn_injry_sev_id
+--select count(distinct(crashes.crash_id))
+from atd_txdot_crashes crashes
   left join atd_txdot_units units on (crashes.crash_id = units.crash_id)
-WHERE true 
-  and crashes.crash_id IN 
-    (
-      select crash_id 
-      from view_fatalities 
-    )
+  left join all_people people on 
+    (people.crash_id = crashes.crash_id 
+    and people.unit_nbr = units.unit_nbr)
+where true
   and crashes.crash_date >= '2014-07-28' 
   and crashes.crash_date <= '2023-07-28'
   and units.unit_desc_id  = 1
-  and units.veh_body_styl_id not in (71,90);
+  and units.veh_body_styl_id not in (71,90)
+  and people.prsn_injry_sev_id = 4
+  and crashes.in_austin_full_purpose is true
 """)
 
 rows = cursor.fetchall()
