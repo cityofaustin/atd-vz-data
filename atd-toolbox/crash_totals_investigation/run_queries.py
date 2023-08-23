@@ -51,6 +51,34 @@ headers = {
 transport = RequestsHTTPTransport(url=secrets["graphql-endpoint"], headers=headers)
 client = Client(transport=transport, fetch_schema_from_transport=True)
 
+query = gql("""
+{
+atd_txdot_crashes_aggregate(
+    where: {
+        crash_date: {_gte: "2013-07-28", _lte: "2023-07-28"},
+        in_austin_full_purpose: {_eq: true},
+        private_dr_fl: {_neq: "Y"},
+        _or: [
+                {_and: [
+                            {units: {unit_desc_id: {_eq: 1}}}, 
+                            {_and:  [
+                                    {units: {veh_body_styl_id: {_neq: 71}}},
+                                    {units: {veh_body_styl_id: {_neq: 90}}}
+                                    ]
+                            }
+                        ]
+                }
+            ]}
+    )
+    {
+    nodes {
+        crash_id
+        }
+    }
+
+}
+""")
+
 
 
 query_original = gql("""
@@ -126,8 +154,9 @@ query_fixed = gql("""
 }
 """)
 
+result = client.execute(query)
 #result = client.execute(query_original)
-result = client.execute(query_simplified)
+#result = client.execute(query_simplified)
 #result = client.execute(query_fixed)
 
 gql_set_crash_ids = set()
@@ -138,16 +167,19 @@ for node in result['atd_txdot_crashes_aggregate']['nodes']:
 cursor = pg.cursor(cursor_factory=RealDictCursor)
 
 cursor.execute("""
-select distinct crashes.crash_id
-from atd_txdot_crashes crashes
-    join atd_txdot_units units on (crashes.crash_id = units.crash_id)
-where true 
-    and crash_date >= '2013-07-28' and crash_date <= '2023-07-28'
-    and crashes.private_dr_fl != 'Y'
-    and crashes.in_austin_full_purpose is true
-    and units.unit_desc_id = 1
-    and units.veh_body_styl_id != 71
-    and units.veh_body_styl_id != 90
+SELECT distinct crashes.crash_id
+FROM atd_txdot_crashes crashes
+  left join atd_txdot_units units on (crashes.crash_id = units.crash_id)
+WHERE true 
+  and crashes.crash_id IN 
+    (
+      select crash_id 
+      from view_fatalities 
+    )
+  and crashes.crash_date >= '2014-07-28' 
+  and crashes.crash_date <= '2023-07-28'
+  and units.unit_desc_id  = 1
+  and units.veh_body_styl_id not in (71,90);
 """)
 
 rows = cursor.fetchall()
