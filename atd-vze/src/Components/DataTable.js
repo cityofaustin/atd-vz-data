@@ -127,7 +127,7 @@ const DataTable = ({
                           fieldValue === null ||
                           typeof fieldValue === "undefined"
                         )
-                          return "";
+                          return "NO DATA";
 
                         // make sure there is a lookup object in the config
                         if (!selectOptions || !fieldConfigObject.lookupOptions)
@@ -167,7 +167,9 @@ const DataTable = ({
                                     name={field}
                                     id={field}
                                     onChange={e => handleInputChange(e)}
-                                    defaultValue={fieldValue}
+                                    defaultValue={
+                                      fieldValue === null ? "" : fieldValue
+                                    }
                                     type="select"
                                   >
                                     {selectOptions.map(option => (
@@ -177,6 +179,7 @@ const DataTable = ({
                                         {option[`${lookupPrefix}_desc`]}
                                       </option>
                                     ))}
+                                    <option value={""}>NO DATA</option>
                                   </Input>
                                 )}
                                 {fieldUiType === "text" && (
@@ -198,7 +201,15 @@ const DataTable = ({
                                 </button>
                               </form>
                             ) : (
-                              fieldValueDisplay
+                              <div
+                                className={
+                                  fieldValueDisplay === "NO DATA"
+                                    ? "text-muted"
+                                    : ""
+                                }
+                              >
+                                {fieldValueDisplay}
+                              </div>
                             )}
                           </td>
                           <td>
