@@ -7,7 +7,6 @@ import { useAuth0 } from "../../auth/authContext";
 import {
   AppAside,
   AppFooter,
-  AppHeader,
   AppSidebar,
   AppSidebarFooter,
   AppSidebarForm,
@@ -40,11 +39,9 @@ const DefaultLayout = props => {
 
   return (
     <div className="app">
-      <AppHeader fixed>
-        <Suspense fallback={loading()}>
-          <DefaultHeader onLogout={e => signOut(e)} />
-        </Suspense>
-      </AppHeader>
+      <Suspense fallback={loading()}>
+        <DefaultHeader onLogout={e => signOut(e)} />
+      </Suspense>
       <div className="app-body">
         <AppSidebar fixed display="lg">
           <AppSidebarHeader />
