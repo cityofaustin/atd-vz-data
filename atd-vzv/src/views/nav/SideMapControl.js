@@ -435,7 +435,7 @@ const SideMapControl = ({ type }) => {
           </Row>
         ))}
         <SideMapControlDateRange type={type} />
-        <SideMapTimeOfDayChart filters={mapOtherFilters.timeOfDay} />
+        <SideMapTimeOfDayChart timeWindowConfig={mapOtherFilters.timeOfDay} />
       </Card>
       <SideMapControlOverlays />
       <SideMapFooter />

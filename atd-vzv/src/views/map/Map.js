@@ -6,7 +6,10 @@ import MapPolygonFilter from "./MapPolygonFilter";
 import MapCompassSpinner from "./MapCompassSpinner";
 import { createMapDataUrl, useMapEventHandler } from "./helpers";
 import { mapInit, travisCountyBboxGeoJSON, mapNavBbox } from "./mapData";
-import { crashGeoJSONEndpointUrl } from "../../views/summary/queries/socrataQueries";
+import {
+  crashGeoJSONEndpointUrl,
+  mapRequestFields,
+} from "../../views/summary/queries/socrataQueries";
 import {
   baseSourceAndLayer,
   fatalitiesDataLayer,
@@ -101,6 +104,7 @@ const Map = () => {
       filters,
       dateRange,
       mapPolygon,
+      mapRequestFields,
       mapTimeWindow
     );
 

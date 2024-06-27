@@ -9,13 +9,20 @@ import { Container, Button } from "reactstrap";
 import { HorizontalBar } from "react-chartjs-2";
 import { colors } from "../../constants/colors";
 
-export const SideMapTimeOfDayChart = ({ filters }) => {
+const fieldsToRequest = [
+  "death_cnt",
+  "sus_serious_injry_cnt",
+  "crash_id",
+  "crash_date",
+];
+
+export const SideMapTimeOfDayChart = ({ timeWindowConfig }) => {
   const chartRef = useRef();
 
   const defaultBarColor = colors.dark;
   const inactiveBarColor = colors.white;
 
-  const [chartData, setChartData] = useState(null);
+  const [crashes, setCrashes] = useState(null);
   const [timeWindowData, setTimeWindowData] = useState([]);
   const [timeWindowPercentages, setTimeWindowPercentages] = useState([]);
   const [barColors, setBarColors] = useState(defaultBarColor);
@@ -33,36 +40,47 @@ export const SideMapTimeOfDayChart = ({ filters }) => {
       crashEndpointUrl,
       mapFilters,
       dateRange,
-      mapPolygon
+      mapPolygon,
+      fieldsToRequest
     );
+
     !!apiUrl &&
       axios.get(apiUrl).then((res) => {
-        setChartData(res.data);
+        setCrashes(res.data);
       });
   }, [dateRange, mapPolygon, mapFilters]);
 
   useMemo(() => {
-    const crashes = chartData;
     // When chartData is set, accumulate time window data
     if (!!crashes) {
-      const crashTimeWindowAccumulatorArray = Object.keys(filters).map(
-        (filter) => 0
+      // For each window of time in the config, add fatalities and serious injuries to initial count of 0
+      const crashTimeWindows = Object.values(timeWindowConfig).map(
+        (windowArray) => windowArray
       );
-      const crashTimeWindows = Object.values(filters).map((filter) => filter);
+      const crashTimeWindowAccumulatorArray = Object.keys(timeWindowConfig).map(
+        () => 0
+      );
+
       const crashTimeTotals = crashes.reduce((accumulator, crash) => {
         crashTimeWindows.forEach((timeWindow, i) => {
           const crashDate = crash.crash_date;
           const crashHour = parseInt(format(new Date(crashDate), "H"));
-          crashHour >= timeWindow[0] &&
-            crashHour <= timeWindow[1] &&
-            accumulator[i]++;
+
+          const crashFatalities = parseInt(crash.death_cnt);
+          const seriousInjuries = parseInt(crash.sus_serious_injry_cnt);
+          const isCrashInTimeWindow =
+            crashHour >= timeWindow[0] && crashHour <= timeWindow[1];
+
+          if (isCrashInTimeWindow) {
+            accumulator[i] = accumulator[i] + crashFatalities + seriousInjuries;
+          }
         });
         return accumulator;
       }, crashTimeWindowAccumulatorArray);
 
       setTimeWindowData(crashTimeTotals);
     }
-  }, [chartData, filters]);
+  }, [crashes, timeWindowConfig]);
 
   useMemo(() => {
     // When timeWindowData is set, calc percentages
@@ -86,12 +104,12 @@ export const SideMapTimeOfDayChart = ({ filters }) => {
 
   const handleBarClick = (elems) => {
     // Store bar label, if click is within a bar
-    const timeWindow = elems.length > 0 ? elems[0]._model.label : null;
+    const timeWindowLabel = elems.length > 0 ? elems[0]._model.label : null;
     const index = elems.length > 0 ? elems[0]._index : null;
 
     // If valid click, set mapTimeWindow state
-    if (!!timeWindow) {
-      const timeWindowArray = filters[timeWindow];
+    if (!!timeWindowLabel) {
+      const timeWindowArray = timeWindowConfig[timeWindowLabel];
       const timeWindowStart = timeWindowArray[0];
       const timeWindowEnd = timeWindowArray[1];
       const timeWindowFilterString = ` AND date_extract_hh(crash_date) between ${timeWindowStart} and ${timeWindowEnd} AND date_extract_mm(crash_date) between 0 and 59`;
@@ -100,7 +118,7 @@ export const SideMapTimeOfDayChart = ({ filters }) => {
 
     // Style unselected bars as inactive
     if (index !== null) {
-      const newBarColors = Object.keys(filters).map((filter, i) =>
+      const newBarColors = Object.keys(timeWindowConfig).map((_, i) =>
         i === index ? defaultBarColor : inactiveBarColor
       );
       setBarColors(newBarColors);
@@ -113,7 +131,7 @@ export const SideMapTimeOfDayChart = ({ filters }) => {
   };
 
   const createChartTimeLabels = () =>
-    Object.keys(filters).map((label) => label);
+    Object.keys(timeWindowConfig).map((label) => label);
 
   const isMapTimeWindowSet = !!mapTimeWindow;
 

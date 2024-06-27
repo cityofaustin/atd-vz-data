@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { mapRequestFields } from "../summary/queries/socrataQueries";
 import { format } from "date-fns";
 
 const convertDateToSocrataFormat = (date, suffix) =>
@@ -39,6 +38,7 @@ export const createMapDataUrl = (
   filters,
   dateRange,
   mapPolygon,
+  fieldsToRequest,
   mapTimeWindow = ""
 ) => {
   const whereFilterString = generateWhereFilters(filters);
@@ -53,7 +53,7 @@ export const createMapDataUrl = (
   // Return null to prevent populating map with unfiltered data
   return filterCount === 0
     ? null
-    : `${endpoint}?$select=${mapRequestFields.join(",")}` +
+    : `${endpoint}?$select=${fieldsToRequest.join(",")}` +
         `&$limit=100000` +
         `&$where=crash_date between '${startDate}' and '${endDate}'` +
         // if there is a polygon selected, add as filter
