@@ -26,6 +26,13 @@ object_relationships:
         remote_table:
           name: crashes_list_view
           schema: public
+  - name: recommendation
+    using:
+      foreign_key_constraint_on:
+        column: crash_id
+        table:
+          name: recommendations
+          schema: public
 array_relationships:
   - name: change_logs
     using:
@@ -44,6 +51,13 @@ array_relationships:
         insertion_order: null
         remote_table:
           name: charges_cris
+          schema: public
+  - name: crash_notes
+    using:
+      foreign_key_constraint_on:
+        column: crash_id
+        table:
+          name: crash_notes
           schema: public
   - name: people_list_view
     using:

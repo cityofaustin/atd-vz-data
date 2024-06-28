@@ -1,26 +1,9 @@
 import { gql } from "apollo-boost";
 
-export const GET_NOTES = gql`
-  query FindNotes($recordId: Int) {
-    crash_notes(
-      where: { crash_id: { _eq: $recordId } }
-      order_by: { date: desc }
-    ) {
-      id
-      created_at
-      updated_at
-      date
-      text
-      user_email
-      crash_id
-    }
-  }
-`;
-
 export const INSERT_NOTE = gql`
-  mutation InsertNote($note: String!, $recordId: Int!, $userEmail: String) {
+  mutation InsertNote($note: String!, $crashPk: Int!, $userEmail: String) {
     insert_crash_notes(
-      objects: { text: $note, crash_id: $recordId, user_email: $userEmail }
+      objects: { text: $note, crash_id: $crashPk, user_email: $userEmail }
     ) {
       returning {
         crash_id

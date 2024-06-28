@@ -2,7 +2,7 @@ table:
   name: crash_notes
   schema: public
 object_relationships:
-  - name: atd_txdot_crash
+  - name: crash
     using:
       foreign_key_constraint_on: crash_id
 insert_permissions:

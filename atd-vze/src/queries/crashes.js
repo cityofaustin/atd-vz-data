@@ -265,6 +265,35 @@ export const GET_CRASH = gql`
         record_type
         record_json
       }
+      recommendation {
+        id
+        created_at
+        rec_text
+        created_by
+        crash_id
+        rec_update
+        atd__recommendation_status_lkp {
+          rec_status_desc
+        }
+        recommendations_partners {
+          id
+          partner_id
+          recommendation_id
+          atd__coordination_partners_lkp {
+            id
+            coord_partner_desc
+          }
+        }
+      }
+      crash_notes(order_by: { date: desc }) {
+        id
+        created_at
+        updated_at
+        date
+        text
+        user_email
+        crash_id
+      }
     }
   }
 `;

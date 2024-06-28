@@ -5,7 +5,7 @@ object_relationships:
   - name: atd__recommendation_status_lkp
     using:
       foreign_key_constraint_on: recommendation_status_id
-  - name: atd_txdot_crash
+  - name: crash
     using:
       foreign_key_constraint_on: crash_id
 array_relationships:

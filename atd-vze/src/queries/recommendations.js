@@ -1,27 +1,7 @@
 import { gql } from "apollo-boost";
 
-export const GET_RECOMMENDATIONS = gql`
-  query FindRecommendations($crashId: Int) {
-    recommendations(where: { crash_id: { _eq: $crashId } }) {
-      id
-      created_at
-      rec_text
-      created_by
-      crash_id
-      rec_update
-      atd__recommendation_status_lkp {
-        rec_status_desc
-      }
-      recommendations_partners {
-        id
-        partner_id
-        recommendation_id
-        atd__coordination_partners_lkp {
-          id
-          coord_partner_desc
-        }
-      }
-    }
+export const GET_RECOMMENDATION_LOOKUPS = gql`
+  query FindRecommendationLookups {
     atd__coordination_partners_lkp(order_by: { coord_partner_desc: asc }) {
       id
       coord_partner_desc
@@ -37,7 +17,7 @@ export const INSERT_RECOMMENDATION = gql`
   mutation InsertRecommendation(
     $text: String
     $update: String
-    $crashId: Int
+    $crashPk: Int
     $userEmail: String
     $recommendation_status_id: Int
     $partner_id: Int
@@ -46,7 +26,7 @@ export const INSERT_RECOMMENDATION = gql`
       objects: {
         rec_text: $text
         rec_update: $update
-        crash_id: $crashId
+        crash_id: $crashPk
         created_by: $userEmail
         recommendation_status_id: $recommendation_status_id
         recommendations_partners: { data: { partner_id: $partner_id } }
