@@ -1,0 +1,13 @@
+services:
+  import:
+    build: .
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+    env_file:
+      - env
+    deploy:
+      resources:
+        limits:
+          memory: 4G

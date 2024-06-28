@@ -1,0 +1,394 @@
+[
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "crash_id",
+    "target table name": "crashes_edits",
+    "target column name": "crash_id",
+    "note": "primary key"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "longitude_primary",
+    "target table name": "crashes_edits",
+    "target column name": "longitude",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "latitude_primary",
+    "target table name": "crashes_edits",
+    "target column name": "latitude",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "city_id",
+    "target table name": "crashes_edits",
+    "target column name": "rpt_city_id",
+    "note": "use rpt_city_id instead. need to migrate city_id to that field. we can populate all city ids into the rpt city id if they are different"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "crash_speed_limit",
+    "target table name": "crashes_edits",
+    "target column name": "crash_speed_limit",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "road_type_id",
+    "target table name": "-",
+    "target column name": "-",
+    "note": "this field was dropped / is not supported in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "traffic_cntl_id",
+    "target table name": "crashes_edits",
+    "target column name": "traffic_cntl_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "crash_sev_id",
+    "target table name": "-",
+    "target column name": "-",
+    "note": "ignore this field. it is a calculated field in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "atd_fatality_count",
+    "target table name": "-",
+    "target column name": "-",
+    "note": "ignore this field. it is a calculated field in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "apd_confirmed_death_count",
+    "target table name": "-",
+    "target column name": "-",
+    "note": "ignore this field. it is a calculated field in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "tot_injry_cnt",
+    "target table name": "-",
+    "target column name": "-",
+    "note": "ignore this field. it is a calculated field in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "sus_serious_injry_cnt",
+    "target table name": "-",
+    "target column name": "-",
+    "note": "ignore this field. it is a calculated field in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "address_confirmed_primary",
+    "target table name": "-",
+    "target column name": "-",
+    "note": "this field needs special handling because it is now a calculated field in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "address_confirmed_secondary",
+    "target table name": "-",
+    "target column name": "-",
+    "note": "this field needs special handling because it  is now a calculated field in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "private_dr_fl",
+    "target table name": "crashes_edits",
+    "target column name": "private_dr_fl",
+    "note": "this field is a boolean type in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "road_constr_zone_fl",
+    "target table name": "crashes_edits",
+    "target column name": "road_constr_zone_fl",
+    "note": "this field is a boolean type in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "case_id",
+    "target table name": "crashes_edits",
+    "target column name": "case_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "sus_serious_injry_cnt",
+    "target table name": "-",
+    "target column name": "-",
+    "note": "ignore this field. it is a calculated field in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "intrsct_relat_id",
+    "target table name": "crashes_edits",
+    "target column name": "intrsct_relat_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "rpt_outside_city_limit_fl",
+    "target table name": "-",
+    "target column name": "-",
+    "note": "ignore this field. this field was dropped / is not supported in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_crashes",
+    "old column name": "law_enforcement_num",
+    "target table name": "crashes_edits",
+    "target column name": "law_enforcement_fatality_num",
+    "note": "note that this field does not exist in the new *cris* schema (it's a custom VZ field)"
+  },
+  {
+    "old table name": "atd_txdot_units",
+    "old column name": "crash_id",
+    "target table name": "units_edits",
+    "target column name": "cris_crash_id",
+    "note": "classic primary key (with unit_nbr)"
+  },
+  {
+    "old table name": "atd_txdot_units",
+    "old column name": "unit_nbr",
+    "target table name": "units_edits",
+    "target column name": "unit_nbr",
+    "note": "primary key (with cris_crash_id)"
+  },
+  {
+    "old table name": "atd_txdot_units",
+    "old column name": "travel_direction",
+    "target table name": "units_edits",
+    "target column name": "veh_trvl_dir_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_units",
+    "old column name": "movement_id",
+    "target table name": "units_edits",
+    "target column name": "movement_id",
+    "note": "note that this field does not exist in the new *cris* schema (it's a custom VZ field)"
+  },
+  {
+    "old table name": "atd_txdot_units",
+    "old column name": "sus_serious_injry_cnt",
+    "target table name": "-",
+    "target column name": "-",
+    "note": "ignore this field. it is a calculated field in the new data model"
+  },
+  {
+    "old table name": "atd_txdot_units",
+    "old column name": "unit_desc_id",
+    "target table name": "units_edits",
+    "target column name": "unit_desc_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_units",
+    "old column name": "veh_body_styl_id",
+    "target table name": "units_edits",
+    "target column name": "veh_body_styl_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "crash_id",
+    "target table name": "people_edits",
+    "target column name": "cris_crash_id",
+    "note": "primary key (with unit_nbr and prsn_nbr)"
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "unit_nbr",
+    "target table name": "people_edits",
+    "target column name": "unit_nbr",
+    "note": "primary key (with unit_nbr and prsn_nbr)"
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "prsn_nbr",
+    "target table name": "people_edits",
+    "target column name": "prsn_nbr",
+    "note": "primary key (with unit_nbr and prsn_nbr)"
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "prsn_type_id",
+    "target table name": "people_edits",
+    "target column name": "prsn_type_id",
+    "note": "was previously used as a primary key "
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "prsn_occpnt_pos_id",
+    "target table name": "people_edits",
+    "target column name": "prsn_occpnt_pos_id",
+    "note": "was previously used as a primary key "
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "prsn_injry_sev_id",
+    "target table name": "people_edits",
+    "target column name": "prsn_injry_sev_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "prsn_age",
+    "target table name": "people_edits",
+    "target column name": "prsn_age",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "prsn_name_honorific",
+    "target table name": "people_edits",
+    "target column name": "prsn_name_honorific",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "prsn_last_name",
+    "target table name": "people_edits",
+    "target column name": "prsn_last_name",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "prsn_first_name",
+    "target table name": "people_edits",
+    "target column name": "prsn_first_name",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "prsn_mid_name",
+    "target table name": "people_edits",
+    "target column name": "prsn_mid_name",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "prsn_gndr_id",
+    "target table name": "people_edits",
+    "target column name": "prsn_gndr_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "prsn_ethnicity_id",
+    "target table name": "people_edits",
+    "target column name": "prsn_ethnicity_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_person",
+    "old column name": "peh_fl",
+    "target table name": "people_edits",
+    "target column name": "prsn_exp_homelessness",
+    "note": "note that this field has been renamed AND it does not exist in the new *cris* schema (it's a custom VZ field)"
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "crash_id",
+    "target table name": "people_edits",
+    "target column name": "cris_crash_id",
+    "note": "primary key (with unit_nbr and prsn_nbr)"
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "unit_nbr",
+    "target table name": "people_edits",
+    "target column name": "unit_nbr",
+    "note": "primary key (with unit_nbr and prsn_nbr)"
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "prsn_nbr",
+    "target table name": "people_edits",
+    "target column name": "prsn_nbr",
+    "note": "primary key (with unit_nbr and prsn_nbr)"
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "prsn_type_id",
+    "target table name": "people_edits",
+    "target column name": "prsn_type_id",
+    "note": "was previously used as a primary key "
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "prsn_occpnt_pos_id",
+    "target table name": "people_edits",
+    "target column name": "prsn_occpnt_pos_id",
+    "note": "was previously used as a primary key "
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "prsn_injry_sev_id",
+    "target table name": "people_edits",
+    "target column name": "prsn_injry_sev_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "prsn_age",
+    "target table name": "people_edits",
+    "target column name": "prsn_age",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "prsn_name_honorific",
+    "target table name": "people_edits",
+    "target column name": "prsn_name_honorific",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "prsn_last_name",
+    "target table name": "people_edits",
+    "target column name": "prsn_last_name",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "prsn_first_name",
+    "target table name": "people_edits",
+    "target column name": "prsn_first_name",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "prsn_mid_name",
+    "target table name": "people_edits",
+    "target column name": "prsn_mid_name",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "prsn_gndr_id",
+    "target table name": "people_edits",
+    "target column name": "prsn_gndr_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "prsn_ethnicity_id",
+    "target table name": "people_edits",
+    "target column name": "prsn_ethnicity_id",
+    "note": null
+  },
+  {
+    "old table name": "atd_txdot_primaryperson",
+    "old column name": "peh_fl",
+    "target table name": "people_edits",
+    "target column name": "prsn_exp_homelessness",
+    "note": "note that this field has been renamed AND it does not exist in the new *cris* schema (it's a custom VZ field)"
+  }
+]

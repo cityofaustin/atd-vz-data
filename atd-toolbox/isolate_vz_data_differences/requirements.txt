@@ -1,0 +1,3 @@
+psycopg2-binary==2.9.9
+tqdm==4.66.4
+visidata==3.0.2

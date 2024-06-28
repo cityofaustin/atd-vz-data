@@ -1,0 +1,290 @@
+{
+  "atd_txdot_crashes": [
+    {
+      "old column name": "crash_id",
+      "target table name": "crashes_edits",
+      "target column name": "crash_id"
+    },
+    {
+      "old column name": "longitude_primary",
+      "target table name": "crashes_edits",
+      "target column name": "longitude"
+    },
+    {
+      "old column name": "latitude_primary",
+      "target table name": "crashes_edits",
+      "target column name": "latitude"
+    },
+    {
+      "old column name": "city_id",
+      "target table name": "crashes_edits",
+      "target column name": "city_id"
+    },
+    {
+      "old column name": "crash_speed_limit",
+      "target table name": "crashes_edits",
+      "target column name": "crash_speed_limit"
+    },
+    {
+      "old column name": "road_type_id",
+      "target table name": "-",
+      "target column name": "-"
+    },
+    {
+      "old column name": "traffic_cntl_id",
+      "target table name": "crashes_edits",
+      "target column name": "traffic_cntl_id"
+    },
+    {
+      "old column name": "crash_sev_id",
+      "target table name": "-",
+      "target column name": "-"
+    },
+    {
+      "old column name": "atd_fatality_count",
+      "target table name": "-",
+      "target column name": "-"
+    },
+    {
+      "old column name": "apd_confirmed_death_count",
+      "target table name": "-",
+      "target column name": "-"
+    },
+    {
+      "old column name": "tot_injry_cnt",
+      "target table name": "-",
+      "target column name": "-"
+    },
+    {
+      "old column name": "sus_serious_injry_cnt",
+      "target table name": "-",
+      "target column name": "-"
+    },
+    {
+      "old column name": "address_confirmed_primary",
+      "target table name": "-",
+      "target column name": "-"
+    },
+    {
+      "old column name": "address_confirmed_secondary",
+      "target table name": "-",
+      "target column name": "-"
+    },
+    {
+      "old column name": "private_dr_fl",
+      "target table name": "crashes_edits",
+      "target column name": "private_dr_fl"
+    },
+    {
+      "old column name": "road_constr_zone_fl",
+      "target table name": "crashes_edits",
+      "target column name": "road_constr_zone_fl"
+    },
+    {
+      "old column name": "case_id",
+      "target table name": "crashes_edits",
+      "target column name": "case_id"
+    },
+    {
+      "old column name": "sus_serious_injry_cnt",
+      "target table name": "-",
+      "target column name": "-"
+    },
+    {
+      "old column name": "intrsct_relat_id",
+      "target table name": "crashes_edits",
+      "target column name": "intrsct_relat_id"
+    },
+    {
+      "old column name": "rpt_outside_city_limit_fl",
+      "target table name": "-",
+      "target column name": "-"
+    },
+    {
+      "old column name": "law_enforcement_num",
+      "target table name": "crashes_edits",
+      "target column name": "law_enforcement_fatality_num"
+    }
+  ],
+  "atd_txdot_units": [
+    {
+      "old column name": "crash_id",
+      "target table name": "units_edits",
+      "target column name": "crash_id"
+    },
+    {
+      "old column name": "unit_nbr",
+      "target table name": "units_edits",
+      "target column name": "unit_nbr"
+    },
+    {
+      "old column name": "travel_direction",
+      "target table name": "units_edits",
+      "target column name": "veh_trvl_dir_id"
+    },
+    {
+      "old column name": "movement_id",
+      "target table name": "units_edits",
+      "target column name": "movement_id"
+    },
+    {
+      "old column name": "sus_serious_injry_cnt",
+      "target table name": "-",
+      "target column name": "-"
+    },
+    {
+      "old column name": "unit_desc_id",
+      "target table name": "units_edits",
+      "target column name": "unit_desc_id"
+    },
+    {
+      "old column name": "veh_body_styl_id",
+      "target table name": "units_edits",
+      "target column name": "veh_body_styl_id"
+    }
+  ],
+  "atd_txdot_person": [
+    {
+      "old column name": "crash_id",
+      "target table name": "people_edits",
+      "target column name": "crash_id"
+    },
+    {
+      "old column name": "unit_nbr",
+      "target table name": "people_edits",
+      "target column name": "unit_nbr"
+    },
+    {
+      "old column name": "prsn_nbr",
+      "target table name": "people_edits",
+      "target column name": "prsn_nbr"
+    },
+    {
+      "old column name": "prsn_type_id",
+      "target table name": "people_edits",
+      "target column name": "prsn_type_id"
+    },
+    {
+      "old column name": "prsn_occpnt_pos_id",
+      "target table name": "people_edits",
+      "target column name": "prsn_occpnt_pos_id"
+    },
+    {
+      "old column name": "prsn_injry_sev_id",
+      "target table name": "people_edits",
+      "target column name": "prsn_injry_sev_id"
+    },
+    {
+      "old column name": "prsn_age",
+      "target table name": "people_edits",
+      "target column name": "prsn_age"
+    },
+    {
+      "old column name": "prsn_name_honorific",
+      "target table name": "people_edits",
+      "target column name": "prsn_name_honorific"
+    },
+    {
+      "old column name": "prsn_last_name",
+      "target table name": "people_edits",
+      "target column name": "prsn_last_name"
+    },
+    {
+      "old column name": "prsn_first_name",
+      "target table name": "people_edits",
+      "target column name": "prsn_first_name"
+    },
+    {
+      "old column name": "prsn_mid_name",
+      "target table name": "people_edits",
+      "target column name": "prsn_mid_name"
+    },
+    {
+      "old column name": "prsn_gndr_id",
+      "target table name": "people_edits",
+      "target column name": "prsn_gndr_id"
+    },
+    {
+      "old column name": "prsn_ethnicity_id",
+      "target table name": "people_edits",
+      "target column name": "prsn_ethnicity_id"
+    },
+    {
+      "old column name": "peh_fl",
+      "target table name": "people_edits",
+      "target column name": "prsn_exp_homelessness"
+    }
+  ],
+  "atd_txdot_primaryperson": [
+    {
+      "old column name": "crash_id",
+      "target table name": "people_edits",
+      "target column name": "crash_id"
+    },
+    {
+      "old column name": "unit_nbr",
+      "target table name": "people_edits",
+      "target column name": "unit_nbr"
+    },
+    {
+      "old column name": "prsn_nbr",
+      "target table name": "people_edits",
+      "target column name": "prsn_nbr"
+    },
+    {
+      "old column name": "prsn_type_id",
+      "target table name": "people_edits",
+      "target column name": "prsn_type_id"
+    },
+    {
+      "old column name": "prsn_occpnt_pos_id",
+      "target table name": "people_edits",
+      "target column name": "prsn_occpnt_pos_id"
+    },
+    {
+      "old column name": "prsn_injry_sev_id",
+      "target table name": "people_edits",
+      "target column name": "prsn_injry_sev_id"
+    },
+    {
+      "old column name": "prsn_age",
+      "target table name": "people_edits",
+      "target column name": "prsn_age"
+    },
+    {
+      "old column name": "prsn_name_honorific",
+      "target table name": "people_edits",
+      "target column name": "prsn_name_honorific"
+    },
+    {
+      "old column name": "prsn_last_name",
+      "target table name": "people_edits",
+      "target column name": "prsn_last_name"
+    },
+    {
+      "old column name": "prsn_first_name",
+      "target table name": "people_edits",
+      "target column name": "prsn_first_name"
+    },
+    {
+      "old column name": "prsn_mid_name",
+      "target table name": "people_edits",
+      "target column name": "prsn_mid_name"
+    },
+    {
+      "old column name": "prsn_gndr_id",
+      "target table name": "people_edits",
+      "target column name": "prsn_gndr_id"
+    },
+    {
+      "old column name": "prsn_ethnicity_id",
+      "target table name": "people_edits",
+      "target column name": "prsn_ethnicity_id"
+    },
+    {
+      "old column name": "peh_fl",
+      "target table name": "people_edits",
+      "target column name": "prsn_exp_homelessness"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+DATABASE_CONNECTION=postgres://visionzero:visionzero@host.docker.internal:5432/atd_vz_data
