@@ -18,7 +18,6 @@ import {
   isReadOnly,
 } from "../../auth/authContext";
 
-import CrashCollapses from "./CrashCollapses";
 import CrashMap from "./Maps/CrashMap";
 import CrashEditCoordsMap from "./Maps/CrashEditCoordsMap";
 import Widget02 from "../Widgets/Widget02";
@@ -30,11 +29,13 @@ import Notes from "../../Components/Notes/Notes";
 import { createCrashDataMap } from "./crashDataMap";
 import Recommendations from "./Recommendations/Recommendations";
 import Page404 from "../Pages/Page404/Page404";
+import UnitDetailsCard from "./UnitDetailsCard";
+import PeopleDetailsCard from "./PeopleDetailsCard";
+import ChargesDetailsCard from "./ChargesDetailsCard";
 
 import "./crash.scss";
 
-import { GET_CRASH, UPDATE_CRASH } from "../../queries/crashes";
-import { GET_PEOPLE } from "../../queries/people";
+import { GET_CRASH_OLD, UPDATE_CRASH, GET_CRASH } from "../../queries/crashes";
 import {
   GET_NOTES,
   INSERT_NOTE,
@@ -44,24 +45,17 @@ import {
 
 function Crash(props) {
   const crashId = props.match.params.id;
-  const { loading, error, data, refetch } = useQuery(GET_CRASH, {
+  const { loading, error, data } = useQuery(GET_CRASH_OLD, {
     variables: { crashId },
   });
   const {
-    loading: peopleLoading,
-    error: peopleError,
-    data: peopleData,
-  } = useQuery(GET_PEOPLE, {
+    loading: crashLoading,
+    error: crashError,
+    data: crashData,
+    refetch: crashRefetch,
+  } = useQuery(GET_CRASH, {
     variables: { crashId },
   });
-  const primaryPersonYearsOfLifeLost =
-    peopleData?.primary_person_years_of_life_lost?.aggregate?.sum
-      ?.years_of_life_lost || 0;
-  const personYearsOfLifeLost =
-    peopleData?.person_years_of_life_lost?.aggregate?.sum?.years_of_life_lost ||
-    0;
-  const totalYearsOfLifeLost =
-    primaryPersonYearsOfLifeLost + personYearsOfLifeLost;
 
   const [editField, setEditField] = useState("");
   const [formData, setFormData] = useState({});
@@ -75,27 +69,9 @@ function Crash(props) {
   const shouldShowFatalityRecommendations =
     (isAdmin(roles) || isItSupervisor(roles)) && isCrashFatal;
 
-  if (loading || peopleLoading) return "Loading...";
+  if (loading || crashLoading) return "Loading...";
+  if (crashError) return `Error! ${crashError.message}`;
   if (error) return `Error! ${error.message}`;
-  if (peopleError) return `Error! ${peopleError.message}`;
-
-  const createGeocoderAddressString = data => {
-    const geocoderAddressFields = [
-      "rpt_block_num",
-      "rpt_street_pfx",
-      "street_name",
-      "rpt_street_pfx",
-    ];
-    let geocoderAddressString = "";
-    geocoderAddressFields.forEach(field => {
-      if (data?.atd_txdot_crashes?.[0]?.[field] !== null) {
-        geocoderAddressString = geocoderAddressString.concat(
-          data?.atd_txdot_crashes?.[0]?.[field] + " "
-        );
-      }
-    });
-    return geocoderAddressString;
-  };
 
   const handleInputChange = e => {
     const newFormState = Object.assign(formData, {
@@ -118,59 +94,43 @@ function Crash(props) {
       .mutate({
         mutation: UPDATE_CRASH,
         variables: {
-          crashId: crashId,
+          id: crashPk,
           changes: { ...formData, ...secondaryFormData },
         },
       })
-      .then(res => refetch());
+      .then(res => crashRefetch());
 
     setEditField("");
   };
 
-  const handleButtonClick = (e, buttonParams, data) => {
-    e.preventDefault();
+  const { temp_record: tempRecord } = !!data?.atd_txdot_crashes[0]
+    ? data?.atd_txdot_crashes[0]
+    : {};
 
-    // Expose the field to mutate defined in crashDataMap
-    // and the value from data using the dataPath, then mutate
-    const fieldToUpdate = buttonParams.field;
-    const fieldValue =
-      data[buttonParams.dataTableName][0][buttonParams.dataPath];
-    const buttonFormData = { [fieldToUpdate]: fieldValue };
-
-    props.client
-      .mutate({
-        mutation: UPDATE_CRASH,
-        variables: {
-          crashId: crashId,
-          changes: { ...formData, ...buttonFormData },
-        },
-      })
-      .then(res => refetch());
+  const crashRecord = {
+    crash: crashData?.crashes?.[0] || { crash_injury_metrics_view: {} },
   };
+  const crashPk = crashRecord?.crash?.id;
 
   const {
-    atd_fatality_count: deathCount,
-    sus_serious_injry_cnt: seriousInjuryCount,
-    latitude_primary: latitude,
-    longitude_primary: longitude,
-    address_confirmed_primary: primaryAddress,
-    address_confirmed_secondary: secondaryAddress,
+    crash_injury_metrics_view: { vz_fatality_count: deathCount },
+    crash_injury_metrics_view: { sus_serious_injry_count: seriousInjuryCount },
+    crashes_list_view: { is_manual_geocode: isManualGeocode },
+    address_primary: primaryAddress,
+    address_secondary: secondaryAddress,
+    crash_injury_metrics_view: { years_of_life_lost: yearsOfLifeLost },
+    investigator_narrative: investigatorNarrative,
     cr3_stored_flag: cr3StoredFlag,
-    temp_record: tempRecord,
-    geocode_method: geocodeMethod,
     cr3_file_metadata: cr3FileMetadata,
-    investigator_narrative_ocr: investigatorNarrative,
-  } = !!data?.atd_txdot_crashes[0] ? data?.atd_txdot_crashes[0] : {};
+    latitude,
+    longitude,
+    location_id: locationId,
+  } = crashRecord.crash;
 
-  const mapGeocoderAddress = createGeocoderAddressString(data);
-
-  const hasLocation =
-    data &&
-    data?.atd_txdot_crashes.length > 0 &&
-    data?.atd_txdot_crashes[0]["location_id"];
+  const hasLocation = crashRecord.crash["location_id"];
   const hasCoordinates = !!latitude && !!longitude;
 
-  return !data?.atd_txdot_crashes?.length ? (
+  return !crashData ? (
     <Page404 />
   ) : (
     <div className="animated fadeIn">
@@ -208,9 +168,7 @@ function Crash(props) {
         </Col>
         <Col xs="12" sm="6" md="4">
           <Widget02
-            header={`${
-              totalYearsOfLifeLost === null ? "--" : totalYearsOfLifeLost
-            }`}
+            header={`${yearsOfLifeLost || 0}`}
             mainText="Years of Life Lost"
             icon="fa fa-hourglass-end"
             color="info"
@@ -225,20 +183,16 @@ function Crash(props) {
                 <Col>
                   Crash Location (ID:{" "}
                   {(hasLocation && (
-                    <Link
-                      to={`/locations/${
-                        data.atd_txdot_crashes[0]["location_id"]
-                      }`}
-                    >
-                      {data.atd_txdot_crashes[0]["location_id"]}
-                    </Link>
+                    <Link to={`/locations/${locationId}`}>{locationId}</Link>
                   )) ||
                     "unassigned"}
                   )
                   <br />
                   Geocode Provider:{" "}
                   {hasCoordinates
-                    ? geocodeMethod.name
+                    ? isManualGeocode
+                      ? "Manual Q/A"
+                      : "TxDOT CRIS"
                     : "No Primary Coordinates"}
                 </Col>
                 <Col>
@@ -265,13 +219,13 @@ function Crash(props) {
                 </Alert>
               )}
               {!isEditingCoords ? (
-                <CrashMap data={data.atd_txdot_crashes[0]} />
+                <CrashMap latitude={latitude} longitude={longitude} />
               ) : (
                 <CrashEditCoordsMap
-                  data={data.atd_txdot_crashes[0]}
-                  mapGeocoderAddress={mapGeocoderAddress}
-                  crashId={crashId}
-                  refetchCrashData={refetch}
+                  latitude={latitude}
+                  longitude={longitude}
+                  crashPk={crashPk}
+                  refetchCrashData={crashRefetch}
                   setIsEditingCoords={setIsEditingCoords}
                 />
               )}
@@ -281,7 +235,7 @@ function Crash(props) {
         <Col xs="12" md="6" className="mb-4">
           <CrashDiagram
             crashId={crashId}
-            isCr3Stored={cr3StoredFlag === "Y"}
+            isCr3Stored={cr3StoredFlag}
             isTempRecord={tempRecord}
             cr3FileMetadata={cr3FileMetadata}
           />
@@ -298,7 +252,17 @@ function Crash(props) {
       )}
       <Row>
         <Col>
-          <CrashCollapses data={data} props={props} />
+          <UnitDetailsCard
+            data={crashRecord.crash.units}
+            refetch={crashRefetch}
+            {...props}
+          />
+          <PeopleDetailsCard
+            data={crashRecord.crash.people_list_view}
+            refetch={crashRefetch}
+            {...props}
+          />
+          <ChargesDetailsCard data={crashRecord.crash.charges_cris} />
         </Col>
       </Row>
       {shouldShowFatalityRecommendations && (
@@ -323,17 +287,16 @@ function Crash(props) {
       <Row>
         <DataTable
           dataMap={createCrashDataMap(tempRecord)}
-          dataTable={"atd_txdot_crashes"}
+          dataTable="crash"
           formData={formData}
           setEditField={setEditField}
           editField={editField}
           handleInputChange={handleInputChange}
           handleFieldUpdate={handleFieldUpdate}
-          handleButtonClick={handleButtonClick}
-          data={data}
+          data={crashRecord}
         />
-        <Col md="6">
-          <CrashChangeLog data={data} />
+        <Col md="12">
+          <CrashChangeLog data={crashRecord?.crash?.change_logs} />
         </Col>
       </Row>
     </div>

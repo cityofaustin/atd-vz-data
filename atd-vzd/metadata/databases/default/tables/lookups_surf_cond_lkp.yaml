@@ -1,0 +1,25 @@
+table:
+  name: surf_cond_lkp
+  schema: lookups
+array_relationships:
+  - name: crashes_cris
+    using:
+      foreign_key_constraint_on:
+        column: surf_cond_id
+        table:
+          name: crashes_cris
+          schema: public
+  - name: crashes_edits
+    using:
+      foreign_key_constraint_on:
+        column: surf_cond_id
+        table:
+          name: crashes_edits
+          schema: public
+  - name: crashess
+    using:
+      foreign_key_constraint_on:
+        column: surf_cond_id
+        table:
+          name: crashes
+          schema: public

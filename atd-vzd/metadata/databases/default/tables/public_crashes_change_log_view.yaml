@@ -1,0 +1,43 @@
+table:
+  name: crashes_change_log_view
+  schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - crash_id
+        - id
+        - record_id
+        - record_json
+        - created_by
+        - operation_type
+        - record_type
+        - created_at
+      filter: {}
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - crash_id
+        - id
+        - record_id
+        - record_json
+        - created_by
+        - operation_type
+        - record_type
+        - created_at
+      filter: {}
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - crash_id
+        - id
+        - record_id
+        - record_json
+        - created_by
+        - operation_type
+        - record_type
+        - created_at
+      filter: {}
+    comment: ""

@@ -1721,10 +1721,10 @@ delete_permissions:
       filter:
         temp_record:
           _eq: true
-    comment: "Allow for the deletion of temp records only"
+    comment: Allow for the deletion of temp records only
   - role: vz-admin
     permission:
       filter:
         temp_record:
           _eq: true
-    comment: "Allow for the deletion of temp records only"
+    comment: Allow for the deletion of temp records only

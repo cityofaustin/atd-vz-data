@@ -1,0 +1,59 @@
+table:
+  name: charges_cris
+  schema: public
+object_relationships:
+  - name: crashes_cri
+    using:
+      foreign_key_constraint_on: crash_id
+  - name: people_cri
+    using:
+      foreign_key_constraint_on: person_id
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - charge_cat_id
+        - crash_id
+        - id
+        - person_id
+        - prsn_nbr
+        - unit_nbr
+        - charge
+        - citation_nbr
+        - created_by
+        - cris_schema_version
+        - created_at
+      filter: {}
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - charge_cat_id
+        - crash_id
+        - id
+        - person_id
+        - prsn_nbr
+        - unit_nbr
+        - charge
+        - citation_nbr
+        - created_by
+        - cris_schema_version
+        - created_at
+      filter: {}
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - charge_cat_id
+        - crash_id
+        - id
+        - person_id
+        - prsn_nbr
+        - unit_nbr
+        - charge
+        - citation_nbr
+        - created_by
+        - cris_schema_version
+        - created_at
+      filter: {}
+    comment: ""

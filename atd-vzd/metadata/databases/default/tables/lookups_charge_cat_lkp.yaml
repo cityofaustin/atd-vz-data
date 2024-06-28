@@ -1,0 +1,11 @@
+table:
+  name: charge_cat_lkp
+  schema: lookups
+array_relationships:
+  - name: charges_cris
+    using:
+      foreign_key_constraint_on:
+        column: charge_cat_id
+        table:
+          name: charges_cris
+          schema: public

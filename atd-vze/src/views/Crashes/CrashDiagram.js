@@ -14,7 +14,12 @@ import axios from "axios";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { isDev } from "../../helpers/environment";
 
-const CrashDiagram = props => {
+const CrashDiagram = ({
+  crashId,
+  isCr3Stored,
+  isTempRecord,
+  cr3FileMetadata,
+}) => {
   const [rotation, setRotation] = useState(0);
 
   // Set S3 folder for diagram depending on environment
@@ -22,7 +27,7 @@ const CrashDiagram = props => {
     process.env.NODE_ENV === "production" || isDev ? "production" : "staging";
 
   const requestCR3 = () => {
-    const requestUrl = `${process.env.REACT_APP_CR3_API_DOMAIN}/cr3/download/${props.crashId}`;
+    const requestUrl = `${process.env.REACT_APP_CR3_API_DOMAIN}/cr3/download/${crashId}`;
     const token = window.localStorage.getItem("id_token");
 
     axios
@@ -51,7 +56,7 @@ const CrashDiagram = props => {
         <Row className="d-flex align-items-center">
           <Col>Crash Diagram</Col>
           <Col className="d-flex justify-content-end">
-            {props.isCr3Stored ? (
+            {isCr3Stored ? (
               <Button color="primary" onClick={requestCR3}>
                 Download CR-3 PDF
               </Button>
@@ -62,7 +67,7 @@ const CrashDiagram = props => {
         </Row>
       </CardHeader>
       <CardBody className="py-0">
-        {!!props.cr3FileMetadata && props.cr3FileMetadata.diagram_s3_file ? (
+        {cr3FileMetadata?.diagram_s3_file ? (
           <TransformWrapper
             defaultScale={1}
             options={{
@@ -110,7 +115,7 @@ const CrashDiagram = props => {
                           maxWidth: "100%",
                           transform: `rotate(${rotation}deg)`,
                         }}
-                        src={`https://atd-vision-zero-website.s3.amazonaws.com/cr3_crash_diagrams/${s3Folder}/${props.cr3FileMetadata.diagram_s3_file}`}
+                        src={`https://atd-vision-zero-website.s3.amazonaws.com/cr3_crash_diagrams/${s3Folder}/${cr3FileMetadata.diagram_s3_file}`}
                         alt="crash diagram"
                       />
                     </TransformComponent>
@@ -119,27 +124,27 @@ const CrashDiagram = props => {
               </>
             )}
           </TransformWrapper>
-        ) : props.isTempRecord ? (
-          <div className="mt-2">
-            CR-3 PDFs, diagrams and narratives are not available for temporary
-            records. Using the case id, check the{" "}
-            <a
-              href={"https://cris.dot.state.tx.us/"}
-              target={"_blank"}
-              rel="noopener noreferrer"
-            >
-              CRIS website
-            </a>{" "}
-            for the latest status of this crash.
-          </div>
         ) : (
+          // ) : props.isTempRecord ? (
+          //   <div className="mt-2">
+          //     CR-3 PDFs, diagrams and narratives are not available for temporary
+          //     records. Using the case id, check the{" "}
+          //     <a
+          //       href={"https://cris.dot.state.tx.us/"}
+          //       target={"_blank"}
+          //       rel="noopener noreferrer"
+          //     >
+          //       CRIS website
+          //     </a>{" "}
+          //     for the latest status of this crash.
+          //   </div>
           <div className="mt-2">
             The crash diagram and investigator narrative are not available at
             this time.
           </div>
         )}
       </CardBody>
-      {!!props.cr3FileMetadata && props.cr3FileMetadata.diagram_s3_file ? (
+      {!!cr3FileMetadata && cr3FileMetadata.diagram_s3_file ? (
         <CardFooter className="py-0">
           <form>
             <Row className="form-group d-flex align-items-center mb-0">

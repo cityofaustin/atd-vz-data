@@ -1,0 +1,214 @@
+table:
+  name: units_edits
+  schema: public
+object_relationships:
+  - name: crashes_cri
+    using:
+      foreign_key_constraint_on: crash_id
+  - name: units_cri
+    using:
+      foreign_key_constraint_on: id
+array_relationships:
+  - name: change_log_units_edits
+    using:
+      foreign_key_constraint_on:
+        column: record_id
+        table:
+          name: change_log_units_edits
+          schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - atd_mode_category
+        - autonomous_unit_id
+        - contrib_factr_1_id
+        - contrib_factr_2_id
+        - contrib_factr_3_id
+        - contrib_factr_p1_id
+        - contrib_factr_p2_id
+        - crash_id
+        - e_scooter_id
+        - first_harm_evt_inv_id
+        - id
+        - movement_id
+        - pbcat_pedalcyclist_id
+        - pbcat_pedestrian_id
+        - pedalcyclist_action_id
+        - pedestrian_action_id
+        - rpt_autonomous_level_engaged_id
+        - unit_desc_id
+        - unit_nbr
+        - veh_body_styl_id
+        - veh_damage_description1_id
+        - veh_damage_description2_id
+        - veh_damage_direction_of_force1_id
+        - veh_damage_direction_of_force2_id
+        - veh_damage_severity1_id
+        - veh_damage_severity2_id
+        - veh_make_id
+        - veh_mod_id
+        - veh_mod_year
+        - veh_trvl_dir_id
+        - created_by
+        - updated_by
+        - vin
+        - created_at
+        - updated_at
+      filter: {}
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - atd_mode_category
+        - autonomous_unit_id
+        - contrib_factr_1_id
+        - contrib_factr_2_id
+        - contrib_factr_3_id
+        - contrib_factr_p1_id
+        - contrib_factr_p2_id
+        - crash_id
+        - e_scooter_id
+        - first_harm_evt_inv_id
+        - id
+        - movement_id
+        - pbcat_pedalcyclist_id
+        - pbcat_pedestrian_id
+        - pedalcyclist_action_id
+        - pedestrian_action_id
+        - rpt_autonomous_level_engaged_id
+        - unit_desc_id
+        - unit_nbr
+        - veh_body_styl_id
+        - veh_damage_description1_id
+        - veh_damage_description2_id
+        - veh_damage_direction_of_force1_id
+        - veh_damage_direction_of_force2_id
+        - veh_damage_severity1_id
+        - veh_damage_severity2_id
+        - veh_make_id
+        - veh_mod_id
+        - veh_mod_year
+        - veh_trvl_dir_id
+        - created_by
+        - updated_by
+        - vin
+        - created_at
+        - updated_at
+      filter: {}
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - atd_mode_category
+        - autonomous_unit_id
+        - contrib_factr_1_id
+        - contrib_factr_2_id
+        - contrib_factr_3_id
+        - contrib_factr_p1_id
+        - contrib_factr_p2_id
+        - crash_id
+        - e_scooter_id
+        - first_harm_evt_inv_id
+        - id
+        - movement_id
+        - pbcat_pedalcyclist_id
+        - pbcat_pedestrian_id
+        - pedalcyclist_action_id
+        - pedestrian_action_id
+        - rpt_autonomous_level_engaged_id
+        - unit_desc_id
+        - unit_nbr
+        - veh_body_styl_id
+        - veh_damage_description1_id
+        - veh_damage_description2_id
+        - veh_damage_direction_of_force1_id
+        - veh_damage_direction_of_force2_id
+        - veh_damage_severity1_id
+        - veh_damage_severity2_id
+        - veh_make_id
+        - veh_mod_id
+        - veh_mod_year
+        - veh_trvl_dir_id
+        - created_by
+        - updated_by
+        - vin
+        - created_at
+        - updated_at
+      filter: {}
+    comment: ""
+update_permissions:
+  - role: editor
+    permission:
+      columns:
+        - atd_mode_category
+        - autonomous_unit_id
+        - contrib_factr_1_id
+        - contrib_factr_2_id
+        - contrib_factr_3_id
+        - contrib_factr_p1_id
+        - contrib_factr_p2_id
+        - crash_id
+        - e_scooter_id
+        - first_harm_evt_inv_id
+        - movement_id
+        - pbcat_pedalcyclist_id
+        - pbcat_pedestrian_id
+        - pedalcyclist_action_id
+        - pedestrian_action_id
+        - rpt_autonomous_level_engaged_id
+        - unit_desc_id
+        - unit_nbr
+        - updated_by
+        - veh_body_styl_id
+        - veh_damage_description1_id
+        - veh_damage_description2_id
+        - veh_damage_direction_of_force1_id
+        - veh_damage_direction_of_force2_id
+        - veh_damage_severity1_id
+        - veh_damage_severity2_id
+        - veh_make_id
+        - veh_mod_id
+        - veh_mod_year
+        - veh_trvl_dir_id
+        - vin
+      filter: {}
+      check: null
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - atd_mode_category
+        - autonomous_unit_id
+        - contrib_factr_1_id
+        - contrib_factr_2_id
+        - contrib_factr_3_id
+        - contrib_factr_p1_id
+        - contrib_factr_p2_id
+        - crash_id
+        - e_scooter_id
+        - first_harm_evt_inv_id
+        - movement_id
+        - pbcat_pedalcyclist_id
+        - pbcat_pedestrian_id
+        - pedalcyclist_action_id
+        - pedestrian_action_id
+        - rpt_autonomous_level_engaged_id
+        - unit_desc_id
+        - unit_nbr
+        - updated_by
+        - veh_body_styl_id
+        - veh_damage_description1_id
+        - veh_damage_description2_id
+        - veh_damage_direction_of_force1_id
+        - veh_damage_direction_of_force2_id
+        - veh_damage_severity1_id
+        - veh_damage_severity2_id
+        - veh_make_id
+        - veh_mod_id
+        - veh_mod_year
+        - veh_trvl_dir_id
+        - vin
+      filter: {}
+      check: {}
+    comment: ""

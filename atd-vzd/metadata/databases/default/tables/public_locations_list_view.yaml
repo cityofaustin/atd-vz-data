@@ -1,0 +1,40 @@
+table:
+  name: locations_list_view
+  schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - crash_count
+        - total_est_comp_cost
+        - location_id
+        - sus_serious_injry_count
+        - vz_fatality_count
+        - description
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - crash_count
+        - total_est_comp_cost
+        - location_id
+        - sus_serious_injry_count
+        - vz_fatality_count
+        - description
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - crash_count
+        - total_est_comp_cost
+        - location_id
+        - sus_serious_injry_count
+        - vz_fatality_count
+        - description
+      filter: {}
+      allow_aggregations: true
+    comment: ""

@@ -15,7 +15,8 @@ import { colors } from "../../styles/colors";
 function LocationCrashes(props) {
   // Our initial query configuration
   let queryConf = {
-    table: "atd_txdot_crashes",
+    table: "crashes_list_view",
+    dateField: "crash_timestamp",
     single_item: "crashes",
     showDateRange: true,
     columns: crashGridTableColumns,
@@ -36,35 +37,15 @@ function LocationCrashes(props) {
   // Configuration for aggregate queries that drive <GridTableWidgets />
   const aggregateQueryConfig = [
     {
-      table: "atd_txdot_crashes_aggregate",
+      table: "crashes_list_view_aggregate",
       columns: [
         `count`,
-        `sum { apd_confirmed_death_count
-               est_comp_cost_crash_based }`,
+        `sum { vz_fatality_count
+               est_comp_cost_crash_based
+               years_of_life_lost 
+               sus_serious_injry_count
+            }`,
       ],
-    },
-    {
-      table: "atd_txdot_primaryperson_aggregate",
-      columns: [
-        `count`,
-        `sum { sus_serious_injry_cnt
-               years_of_life_lost }`,
-      ],
-      key: "crash",
-    },
-    {
-      table: "atd_txdot_person_aggregate",
-      columns: [
-        `count`,
-        `sum { sus_serious_injry_cnt
-               years_of_life_lost }`,
-      ],
-      key: "crash",
-    },
-    {
-      table: "atd_txdot_units_aggregate",
-      columns: [`count`],
-      key: "crash",
     },
   ];
 
@@ -78,10 +59,10 @@ function LocationCrashes(props) {
       icon: "fa fa-heartbeat",
       color: "danger",
       dataPath: [
-        "atd_txdot_crashes_aggregate",
+        "crashes_list_view_aggregate",
         "aggregate",
         "sum",
-        "apd_confirmed_death_count",
+        "vz_fatality_count",
       ],
       sum: false, // Is the data a sum of multiple aggregates
     },
@@ -90,64 +71,38 @@ function LocationCrashes(props) {
       icon: "fa fa-medkit",
       color: "warning",
       dataPath: [
-        [
-          "atd_txdot_primaryperson_aggregate",
-          "aggregate",
-          "sum",
-          "sus_serious_injry_cnt",
-        ],
-        [
-          "atd_txdot_person_aggregate",
-          "aggregate",
-          "sum",
-          "sus_serious_injry_cnt",
-        ],
+        "crashes_list_view_aggregate",
+        "aggregate",
+        "sum",
+        "sus_serious_injry_count",
       ],
-      sum: true,
+      sum: false,
     },
     {
       mainText: "Years of Life Lost",
       icon: "fa fa-hourglass-end",
       color: "info",
       dataPath: [
-        [
-          "atd_txdot_primaryperson_aggregate",
-          "aggregate",
-          "sum",
-          "years_of_life_lost",
-        ],
-        [
-          "atd_txdot_person_aggregate",
-          "aggregate",
-          "sum",
-          "years_of_life_lost",
-        ],
+        "crashes_list_view_aggregate",
+        "aggregate",
+        "sum",
+        "years_of_life_lost",
       ],
-      sum: true,
+      sum: false,
     },
     {
       mainText: "CR3 Crashes",
       icon: "fa fa-cab",
       color: "primary",
-      dataPath: ["atd_txdot_crashes_aggregate", "aggregate", "count"],
+      dataPath: ["crashes_list_view_aggregate", "aggregate", "count"],
       sum: false,
-    },
-    {
-      mainText: "Total People (Primary + Non-Primary)",
-      icon: "fa fa-user",
-      color: "success",
-      dataPath: [
-        ["atd_txdot_primaryperson_aggregate", "aggregate", "count"],
-        ["atd_txdot_person_aggregate", "aggregate", "count"],
-      ],
-      sum: true,
     },
     {
       mainText: "Total Comprehensive Cost",
       icon: "fa fa-usd",
       color: "dark",
       dataPath: [
-        "atd_txdot_crashes_aggregate",
+        "crashes_list_view_aggregate",
         "aggregate",
         "sum",
         "est_comp_cost_crash_based",
@@ -160,7 +115,7 @@ function LocationCrashes(props) {
   const chartConfig = [
     {
       type: "horizontal",
-      totalRecordsPath: ["atd_txdot_crashes_aggregate", "aggregate", "count"],
+      totalRecordsPath: ["crashes_list_view_aggregate", "aggregate", "count"],
       alert: "No crashes at this particular location",
       labels: [
         "ONE MOTOR VEHICLE - GOING STRAIGHT",
@@ -208,10 +163,8 @@ function LocationCrashes(props) {
       ],
       title: "Number of Collisions",
       header: "Manner of Collisions - Most Frequent",
-      table: "atd_txdot_crashes",
-      nestedKey: "collision",
-      // Using lodash.get(), array is arg that translates to collision.collsn_desc
-      nestedPath: ["collsn_desc"],
+      table: "crashes_list_view",
+      keyName: "collsn_desc",
       // Is value of table.nestedKey.nestedPath a single record or array of objects
       isSingleRecord: true,
       // Top n types
@@ -221,7 +174,7 @@ function LocationCrashes(props) {
     },
     {
       type: "horizontal",
-      totalRecordsPath: ["atd_txdot_crashes_aggregate", "aggregate", "count"],
+      totalRecordsPath: ["crashes_list_view_aggregate", "aggregate", "count"],
       alert: "No crashes at this particular location",
       labels: [
         "MOTOR VEHICLE",
@@ -235,10 +188,10 @@ function LocationCrashes(props) {
       ],
       title: "Types of Vehicles - Count Distribution",
       header: "Types of Vehicles - Count Distribution",
-      table: "atd_txdot_crashes",
-      nestedKey: "units",
+      table: "crashes_list_view",
+      keyName: "units",
       // Using lodash.get(), array is arg that translates to unit.unit_description.veh_unit_desc_desc
-      nestedPath: ["unit_description", "veh_unit_desc_desc"],
+      nestedPath: ["unit_desc_lkp", "label"],
       // Is value of table.nestedKey.nestedPath a single record or array of objects
       isSingleRecord: false,
       // Top n types

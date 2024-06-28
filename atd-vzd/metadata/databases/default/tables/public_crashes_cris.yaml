@@ -1,0 +1,54 @@
+table:
+  name: crashes_cris
+  schema: public
+object_relationships:
+  - name: crashes
+    using:
+      foreign_key_constraint_on:
+        column: id
+        table:
+          name: crashes
+          schema: public
+  - name: crashes_edit
+    using:
+      foreign_key_constraint_on:
+        column: id
+        table:
+          name: crashes_edits
+          schema: public
+array_relationships:
+  - name: change_log_crashes_cris
+    using:
+      foreign_key_constraint_on:
+        column: record_id
+        table:
+          name: change_log_crashes_cris
+          schema: public
+  - name: charges_cris
+    using:
+      foreign_key_constraint_on:
+        column: crash_id
+        table:
+          name: charges_cris
+          schema: public
+  - name: people_cris
+    using:
+      foreign_key_constraint_on:
+        column: cris_crash_id
+        table:
+          name: people_cris
+          schema: public
+  - name: units_cris
+    using:
+      foreign_key_constraint_on:
+        column: crash_id
+        table:
+          name: units_cris
+          schema: public
+  - name: units_edits
+    using:
+      foreign_key_constraint_on:
+        column: crash_id
+        table:
+          name: units_edits
+          schema: public

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/react-hooks";
 
 import {
@@ -12,39 +12,33 @@ import {
 
 import RelatedRecordsTable from "./RelatedRecordsTable";
 
-import { primaryPersonDataMap, personDataMap } from "./personDataMap";
+import { primaryPersonDataMap, personDataMap } from "./peopleDataMap";
 import { GET_PERSON_LOOKUPS } from "../../queries/lookups";
-import {
-  GET_PEOPLE,
-  UPDATE_PRIMARYPERSON,
-  UPDATE_PERSON,
-} from "../../queries/people";
+import { UPDATE_PERSON } from "../../queries/people";
 
-const PeopleDetailsCard = ({ isExpanded, toggleAccordion, ...props }) => {
-  const crashId = props.match.params.id;
+const PeopleDetailsCard = ({ data, refetch, ...props }) => {
+  const [isOpen, setIsOpen] = useState(true);
 
-  const { data: lookupSelectOptions } = useQuery(GET_PERSON_LOOKUPS);
-  const { data, refetch } = useQuery(GET_PEOPLE, {
-    variables: { crashId },
-  });
+  const { data: lookupSelectOptions, loading, error } = useQuery(
+    GET_PERSON_LOOKUPS
+  );
+
+  const primaryPersonData = data.filter(
+    person => person.is_primary_person === true
+  );
+
+  const personData = data.filter(person => person.is_primary_person === false);
 
   const personMutation = {
     mutation: UPDATE_PERSON,
     variables: {
-      crashId: crashId,
       personId: "",
       changes: {},
     },
   };
 
-  const primaryPersonMutation = {
-    mutation: UPDATE_PRIMARYPERSON,
-    variables: {
-      crashId: crashId,
-      personId: "",
-      changes: {},
-    },
-  };
+  if (loading) return "Loading...";
+  if (error) return `Error! ${error.message}`;
 
   return (
     <Card className="mb-0">
@@ -53,47 +47,35 @@ const PeopleDetailsCard = ({ isExpanded, toggleAccordion, ...props }) => {
           block
           color="link"
           className="text-left m-0 p-0"
-          onClick={() => toggleAccordion(1)}
-          aria-expanded={isExpanded}
-          aria-controls="collapseOne"
+          onClick={() => setIsOpen(!isOpen)}
         >
           <h5 className="m-0 p-0">
-            <i className="fa fa-group" /> People{" "}
-            <Badge color="secondary float-right">
-              {
-                data.atd_txdot_primaryperson.concat(data.atd_txdot_person)
-                  .length
-              }
-            </Badge>
+            <i className="fa fa-group" /> People
+            <Badge color="secondary float-right">{data.length}</Badge>
           </h5>
         </Button>
       </CardHeader>
-      <Collapse
-        isOpen={isExpanded}
-        data-parent="#accordion"
-        id="collapseOne"
-        aria-labelledby="headingOne"
-      >
+      <Collapse isOpen={isOpen}>
         <CardBody>
           <RelatedRecordsTable
             fieldConfig={primaryPersonDataMap[0]}
-            data={data.atd_txdot_primaryperson}
+            data={primaryPersonData}
             sortField={"unit_nbr"}
-            tableName={"atd_txdot_primaryperson"}
-            keyField={"primaryperson_id"}
+            tableName={"people_list_view"}
+            keyField={"id"}
             lookupOptions={lookupSelectOptions}
-            mutation={primaryPersonMutation}
+            mutation={personMutation}
             refetch={refetch}
             {...props}
           />
 
-          {data.atd_txdot_person.length > 0 && (
+          {personData.length > 0 && (
             <RelatedRecordsTable
               fieldConfig={personDataMap[0]}
-              data={data.atd_txdot_person}
-              sortField={"person_id"}
-              tableName={"atd_txdot_person"}
-              keyField={"person_id"}
+              data={personData}
+              sortField={"unit_nbr"}
+              tableName={"people_list_view"}
+              keyField={"id"}
               lookupOptions={lookupSelectOptions}
               mutation={personMutation}
               refetch={refetch}

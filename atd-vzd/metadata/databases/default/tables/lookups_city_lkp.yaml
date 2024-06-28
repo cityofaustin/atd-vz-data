@@ -1,0 +1,50 @@
+table:
+  name: city_lkp
+  schema: lookups
+array_relationships:
+  - name: crashes_cris
+    using:
+      foreign_key_constraint_on:
+        column: rpt_city_id
+        table:
+          name: crashes_cris
+          schema: public
+  - name: crashes_edits
+    using:
+      foreign_key_constraint_on:
+        column: rpt_city_id
+        table:
+          name: crashes_edits
+          schema: public
+  - name: crashess
+    using:
+      foreign_key_constraint_on:
+        column: rpt_city_id
+        table:
+          name: crashes
+          schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""

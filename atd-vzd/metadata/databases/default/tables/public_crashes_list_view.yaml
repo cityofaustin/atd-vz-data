@@ -1,0 +1,192 @@
+table:
+  name: crashes_list_view
+  schema: public
+object_relationships:
+  - name: recommendation
+    using:
+      manual_configuration:
+        column_mapping:
+          crash_id: crash_id
+        insertion_order: null
+        remote_table:
+          name: recommendations
+          schema: public
+array_relationships:
+  - name: units
+    using:
+      manual_configuration:
+        column_mapping:
+          crash_id: cris_crash_id
+        insertion_order: null
+        remote_table:
+          name: units
+          schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - cris_fatality_count
+        - fatality_count
+        - law_enf_fatality_count
+        - nonincap_injry_count
+        - non_injry_count
+        - poss_injry_count
+        - sus_serious_injry_count
+        - unkn_injry_count
+        - vz_fatality_count
+        - years_of_life_lost
+        - active_school_zone_fl
+        - at_intrsct_fl
+        - has_no_cris_coordinates
+        - in_austin_full_purpose
+        - is_manual_geocode
+        - onsys_fl
+        - private_dr_fl
+        - road_constr_zone_fl
+        - rr_relat_fl
+        - schl_bus_fl
+        - toll_road_fl
+        - council_district
+        - crash_id
+        - crash_injry_sev_id
+        - crash_speed_limit
+        - est_comp_cost_crash_based
+        - id
+        - intrsct_relat_id
+        - light_cond_id
+        - obj_struck_id
+        - traffic_cntl_id
+        - wthr_cond_id
+        - latitude
+        - longitude
+        - address_primary
+        - address_secondary
+        - case_id
+        - collsn_desc
+        - crash_day_of_week
+        - crash_injry_sev_desc
+        - location_id
+        - rpt_block_num
+        - rpt_sec_block_num
+        - rpt_sec_street_name
+        - rpt_sec_street_pfx
+        - rpt_street_name
+        - rpt_street_pfx
+        - crash_timestamp
+        - crash_date_ct
+        - crash_time_ct
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - cris_fatality_count
+        - fatality_count
+        - law_enf_fatality_count
+        - nonincap_injry_count
+        - non_injry_count
+        - poss_injry_count
+        - sus_serious_injry_count
+        - unkn_injry_count
+        - vz_fatality_count
+        - years_of_life_lost
+        - active_school_zone_fl
+        - at_intrsct_fl
+        - has_no_cris_coordinates
+        - in_austin_full_purpose
+        - is_manual_geocode
+        - onsys_fl
+        - private_dr_fl
+        - road_constr_zone_fl
+        - rr_relat_fl
+        - schl_bus_fl
+        - toll_road_fl
+        - council_district
+        - crash_id
+        - crash_injry_sev_id
+        - crash_speed_limit
+        - est_comp_cost_crash_based
+        - id
+        - intrsct_relat_id
+        - light_cond_id
+        - obj_struck_id
+        - traffic_cntl_id
+        - wthr_cond_id
+        - latitude
+        - longitude
+        - address_primary
+        - address_secondary
+        - case_id
+        - collsn_desc
+        - crash_day_of_week
+        - crash_injry_sev_desc
+        - location_id
+        - rpt_block_num
+        - rpt_sec_block_num
+        - rpt_sec_street_name
+        - rpt_sec_street_pfx
+        - rpt_street_name
+        - rpt_street_pfx
+        - crash_timestamp
+        - crash_date_ct
+        - crash_time_ct
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - cris_fatality_count
+        - fatality_count
+        - law_enf_fatality_count
+        - nonincap_injry_count
+        - non_injry_count
+        - poss_injry_count
+        - sus_serious_injry_count
+        - unkn_injry_count
+        - vz_fatality_count
+        - years_of_life_lost
+        - active_school_zone_fl
+        - at_intrsct_fl
+        - has_no_cris_coordinates
+        - in_austin_full_purpose
+        - is_manual_geocode
+        - onsys_fl
+        - private_dr_fl
+        - road_constr_zone_fl
+        - rr_relat_fl
+        - schl_bus_fl
+        - toll_road_fl
+        - council_district
+        - crash_id
+        - crash_injry_sev_id
+        - crash_speed_limit
+        - est_comp_cost_crash_based
+        - id
+        - intrsct_relat_id
+        - light_cond_id
+        - obj_struck_id
+        - traffic_cntl_id
+        - wthr_cond_id
+        - latitude
+        - longitude
+        - address_primary
+        - address_secondary
+        - case_id
+        - collsn_desc
+        - crash_day_of_week
+        - crash_injry_sev_desc
+        - location_id
+        - rpt_block_num
+        - rpt_sec_block_num
+        - rpt_sec_street_name
+        - rpt_sec_street_pfx
+        - rpt_street_name
+        - rpt_street_pfx
+        - crash_timestamp
+        - crash_date_ct
+        - crash_time_ct
+      filter: {}
+      allow_aggregations: true
+    comment: ""

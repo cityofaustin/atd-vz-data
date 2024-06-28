@@ -1,0 +1,43 @@
+table:
+  name: movt_lkp
+  schema: lookups
+array_relationships:
+  - name: units
+    using:
+      foreign_key_constraint_on:
+        column: movement_id
+        table:
+          name: units
+          schema: public
+  - name: units_edits
+    using:
+      foreign_key_constraint_on:
+        column: movement_id
+        table:
+          name: units_edits
+          schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""

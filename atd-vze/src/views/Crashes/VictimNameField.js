@@ -1,8 +1,5 @@
 import React from "react";
 import { Button, Input, Form, Row, Col, Label } from "reactstrap";
-import { useQuery } from "@apollo/react-hooks";
-
-import { GET_PERSON_NAMES } from "../../queries/people";
 
 // This component should be role-restricted to users with Admin or IT Supervisor permissions
 // Role check currently happens in the shouldRenderVictimName function of personDataMap
@@ -18,30 +15,18 @@ const VictimNameField = ({
   editRow,
   row,
   field,
+  refetch,
+  isReadOnly,
   ...props
 }) => {
-  const crashId = props.match.params.id;
-
-  const personId =
-    tableName === "atd_txdot_primaryperson"
-      ? row.primaryperson_id
-      : row.person_id;
-
-  const { data, refetch } = useQuery(GET_PERSON_NAMES, {
-    variables: { crashId, personId },
-  });
-
-  const personData =
-    tableName === "atd_txdot_primaryperson"
-      ? data?.atd_txdot_primaryperson?.[0]
-      : data?.atd_txdot_person?.[0];
+  const personId = row.id;
 
   // Format name by concatenating first, middle, last or returning NO DATA
   const formatName = () => {
     var concatenatedName = "";
     Object.keys(nameFieldConfig.subfields).forEach(field => {
-      if (personData?.[field] != null) {
-        concatenatedName = concatenatedName.concat(" ", personData?.[field]);
+      if (row?.[field] != null) {
+        concatenatedName = concatenatedName.concat(" ", row?.[field]);
       }
     });
     const isNameBlank = concatenatedName === "";
@@ -59,15 +44,12 @@ const VictimNameField = ({
           <Row>
             {Object.keys(nameFieldConfig.subfields).map(field => {
               return (
-                <Col
-                  key={`${tableName}-field-${field}${personId}`}
-                  className={"m-1 p-0"}
-                >
+                <Col key={`$field-${field}${personId}`} className={"m-1 p-0"}>
                   <Label className={"text-muted m-0 p-0"}>
                     {nameFieldConfig.subfields[field].label}
                   </Label>
                   <Input
-                    defaultValue={personData[field]}
+                    defaultValue={row[field]}
                     onChange={e => handleInputChange(e, field)}
                     // Make input render in uppercase
                     style={{ textTransform: "uppercase" }}
@@ -116,7 +98,7 @@ const VictimNameField = ({
         </span>
       )}
 
-      {!isEditing && (
+      {!isEditing && !isReadOnly && (
         <Button
           block
           color="secondary"

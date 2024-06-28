@@ -1,0 +1,3 @@
+table:
+  name: person_injury_metrics_view
+  schema: public

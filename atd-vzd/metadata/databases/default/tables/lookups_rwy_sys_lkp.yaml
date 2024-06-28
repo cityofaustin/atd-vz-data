@@ -1,0 +1,71 @@
+table:
+  name: rwy_sys_lkp
+  schema: lookups
+array_relationships:
+  - name: crashesCrisByRptSecRdwySysId
+    using:
+      foreign_key_constraint_on:
+        column: rpt_sec_rdwy_sys_id
+        table:
+          name: crashes_cris
+          schema: public
+  - name: crashesEditsByRptSecRdwySysId
+    using:
+      foreign_key_constraint_on:
+        column: rpt_sec_rdwy_sys_id
+        table:
+          name: crashes_edits
+          schema: public
+  - name: crashesUnifiedsByRptSecRdwySysId
+    using:
+      foreign_key_constraint_on:
+        column: rpt_sec_rdwy_sys_id
+        table:
+          name: crashes
+          schema: public
+  - name: crashes_cris
+    using:
+      foreign_key_constraint_on:
+        column: rpt_rdwy_sys_id
+        table:
+          name: crashes_cris
+          schema: public
+  - name: crashes_edits
+    using:
+      foreign_key_constraint_on:
+        column: rpt_rdwy_sys_id
+        table:
+          name: crashes_edits
+          schema: public
+  - name: crashess
+    using:
+      foreign_key_constraint_on:
+        column: rpt_rdwy_sys_id
+        table:
+          name: crashes
+          schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""

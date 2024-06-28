@@ -1,0 +1,18 @@
+table:
+  name: mode_category_lkp
+  schema: lookups
+array_relationships:
+  - name: units
+    using:
+      foreign_key_constraint_on:
+        column: atd_mode_category
+        table:
+          name: units
+          schema: public
+  - name: units_edits
+    using:
+      foreign_key_constraint_on:
+        column: atd_mode_category
+        table:
+          name: units_edits
+          schema: public
