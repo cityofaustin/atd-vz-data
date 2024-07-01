@@ -1,0 +1,2 @@
+extracts/*
+!extracts/*.md

@@ -111,6 +111,7 @@
 - "!include public_crashes_cris.yaml"
 - "!include public_crashes_edits.yaml"
 - "!include public_crashes_list_view.yaml"
+- "!include public_cris_import_log.yaml"
 - "!include public_ems__incidents.yaml"
 - "!include public_engineering_areas.yaml"
 - "!include public_fatalities.yaml"

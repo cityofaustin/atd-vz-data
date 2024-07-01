@@ -20,9 +20,11 @@ select_permissions:
         - active_school_zone_fl
         - at_intrsct_fl
         - case_id
-        - crash_timestamp
+        - cr3_processed_at
+        - cr3_stored_fl
         - crash_id
         - crash_speed_limit
+        - crash_timestamp
         - created_at
         - created_by
         - fhe_collsn_id
@@ -80,9 +82,11 @@ select_permissions:
         - active_school_zone_fl
         - at_intrsct_fl
         - case_id
-        - crash_timestamp
+        - cr3_processed_at
+        - cr3_stored_fl
         - crash_id
         - crash_speed_limit
+        - crash_timestamp
         - created_at
         - created_by
         - fhe_collsn_id
@@ -140,9 +144,11 @@ select_permissions:
         - active_school_zone_fl
         - at_intrsct_fl
         - case_id
-        - crash_timestamp
+        - cr3_processed_at
+        - cr3_stored_fl
         - crash_id
         - crash_speed_limit
+        - crash_timestamp
         - created_at
         - created_by
         - fhe_collsn_id

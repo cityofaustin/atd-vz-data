@@ -4,85 +4,19 @@ import os
 import time
 from zoneinfo import ZoneInfo
 
-import requests
+from utils.graphql import (
+    make_hasura_request,
+    UPSERT_RECORD_MUTATIONS,
+    COLUMN_METADATA_QUERY,
+    CHARGES_DELETE_MUTATION,
+)
+from utils.logging import get_logger
+from utils.settings import CSV_UPLOAD_BATCH_SIZE
+
+logger = get_logger()
 
 
-FILE_DIR = "cris_csvs"
-HASURA_ENDPOINT = "http://localhost:8084/v1/graphql"
-UPLOAD_BATCH_SIZE = 1000
-
-COLUMN_METADATA_QUERY = """
-query ColumnMetadata {
-  _column_metadata(where: {is_imported_from_cris: {_eq: true}}) {
-    column_name
-    record_type
-  }
-}
-"""
-
-CRASH_UPSERT_MUTATION = """
-mutation UpsertCrashes($objects: [crashes_cris_insert_input!]!) {
-  insert_crashes_cris(
-    objects: $objects, 
-    on_conflict: {
-        constraint: crashes_cris_crash_id_key,
-        update_columns: [$updateColumns]
-    }) {
-    affected_rows
-  }
-}
-"""
-
-UNIT_UPSERT_MUTATION = """
-mutation UpsertUnits($objects: [units_cris_insert_input!]!) {
-  insert_units_cris(
-    objects: $objects, 
-    on_conflict: {
-        constraint: unique_units_cris,
-        update_columns: [$updateColumns]
-    }) {
-    affected_rows
-  }
-}
-"""
-
-PERSON_UPSERT_MUTATION = """
-mutation UpsertPeople($objects: [people_cris_insert_input!]!) {
-  insert_people_cris(
-    objects: $objects, 
-    on_conflict: {
-        constraint: unique_people_cris,
-        update_columns: [$updateColumns]
-    }) {
-    affected_rows
-  }
-}"""
-
-CHARGES_DELETE_MUTATION = """
-mutation DeleteCharges($crash_ids: [Int!]!) {
-  delete_charges_cris(where: {cris_crash_id: {_in: $crash_ids}}) {
-    affected_rows
-  }
-}
-"""
-
-CHARGES_INSERT_MUTATION = """
-mutation InsertCharges($objects: [charges_cris_insert_input!]!) {
-  insert_charges_cris(objects: $objects) {
-    affected_rows
-  }
-}
-"""
-
-mutations = {
-    "crashes": CRASH_UPSERT_MUTATION,
-    "units": UNIT_UPSERT_MUTATION,
-    "persons": PERSON_UPSERT_MUTATION,
-    "charges": CHARGES_INSERT_MUTATION,
-}
-
-# list of fields to check to determine if a crash victim
-# was experiencing homelessness
+"""list of fields to check when setting the prsn_exp_homelessness flag"""
 peh_fields = [
     "drvr_street_nbr",
     "drvr_street_pfx",
@@ -94,7 +28,8 @@ peh_fields = [
     "drvr_zip",
 ]
 
-# remove when crash_sev_id != 4 (fatal)
+"""list of fields which contain people's names - these fields will be nullified
+except in cases of fatal injury"""
 name_fields = [
     "prsn_first_name",
     "prsn_mid_name",
@@ -102,14 +37,16 @@ name_fields = [
 ]
 
 
-class HasuraAPIError(Exception):
-    pass
-
-
 def get_cris_columns(column_metadata, table_name):
-    """
-    return an array of strings which is the column names for every column we want to handle from the
-    CRIS import and the given table name
+    """Get the list of column names for every column we want to handle in the CRIS csv.
+
+    Args:
+        column_metadata (list): A list of dicts from the `_column_metadata` DB table, each with
+         a `column_name` and `record_type` attribute
+        table_name (str): the name of the CRIS table/record type to handle
+
+    Returns:
+        list: a list of of column name strings
     """
     table_key = table_name
     if "person" in table_key:
@@ -120,35 +57,56 @@ def get_cris_columns(column_metadata, table_name):
 
 
 def make_upsert_mutation(table_name, cris_columns):
-    """Sets the column names in the upsert on conflict array"""
-    upsert_mutation = mutations[table_name]
+    """Retrieves the graphql query string for a record mutation
+
+    Args:
+        table_name (str): `crashes`, `units`, `charges`, or `people`
+        cris_columns (list): a list of column names that should updated if a given record
+            already exists. Essentially this is a list of all columns except the table's
+            primary key. It enables upserting.
+            See: https://hasura.io/docs/latest/mutations/postgres/upsert/
+
+    Returns:
+        str: the graphql query string
+    """
+    upsert_mutation = UPSERT_RECORD_MUTATIONS[table_name]
     update_columns = cris_columns.copy()
     return upsert_mutation.replace("$updateColumns", ", ".join(update_columns))
 
 
-def make_hasura_request(*, query, endpoint, variables=None):
-    payload = {"query": query, "variables": variables}
-    res = requests.post(endpoint, json=payload)
-    res.raise_for_status()
-    data = res.json()
-    try:
-        return data["data"]
-    except KeyError as err:
-        raise HasuraAPIError(data) from err
-
-
 def get_file_meta(filename):
-    """
+    """Parse file metadata out of the CRIS CSV filename.
+
+    If CRIS changes this naming convention it causes headaches.
+
     Returns:
-        schema_year, extract_id, table_name
+         list: [<schema_year:str>, <extract_id:str>, <table_name:str>]
+            - schema_year: the CRIS schema year of the records
+            - table_name: the record type (crash, unit, person, priamryperson, charges)
+            - extract_id: the unique extract ID of the file
     """
     filename_parts = filename.split("_")
     return filename_parts[1], filename_parts[2], filename_parts[3]
 
 
-def get_files_todo():
-    files_todo = []
-    for filename in os.listdir(FILE_DIR):
+def get_csvs_todo(extract_dir):
+    """Construct a list of CSV file metadata for each CSV in the given directory
+
+    Args:
+        extract_dir (str): The full path to the directory which contains the CSV files
+
+    Raises:
+        ValueError: If an unsupported CRIS schema version is detected
+
+    Returns:
+        list: A list of dicts where entry contains important file metadata:
+            - schema_year: the CRIS schema year of the records
+            - table_name: the record type (crash, unit, person, priamryperson, charges)
+            - path: the full path to the CSV
+            - extract_id: the unique extract ID of the file
+    """
+    csvs_todo = []
+    for filename in os.listdir(extract_dir):
         if not filename.endswith(".csv"):
             continue
         schema_year, extract_id, table_name = get_file_meta(filename)
@@ -157,56 +115,92 @@ def get_files_todo():
         if table_name not in ("crash", "unit", "person", "primaryperson", "charges"):
             continue
 
+        if not int(schema_year) > 2000 or not int(schema_year) < 2024:
+            raise ValueError(f"Unexpected CRIS schema year provided: {schema_year}")
+
         file = {
             "schema_year": schema_year,
             "table_name": table_name,
-            "path": os.path.join(FILE_DIR, filename),
+            "path": os.path.join(extract_dir, filename),
             "extract_id": extract_id,
         }
-        files_todo.append(file)
-    return files_todo
+        csvs_todo.append(file)
+    return csvs_todo
 
 
 def load_csv(filename):
+    """Read a CSV file into a list of dicts"""
     with open(filename, "r") as fin:
         reader = csv.DictReader(fin)
         return [row for row in reader]
 
 
-def lower_case_keys(list_of_dicts):
-    return [{key.lower(): value for key, value in row.items()} for row in list_of_dicts]
+def lower_case_keys(records):
+    """Copy a list of record dicts by making each key lower case"""
+    return [{key.lower(): value for key, value in record.items()} for record in records]
 
 
-def remove_unsupported_columns(rows, cris_columns):
+def remove_unsupported_columns(records, columns_to_keep):
+    """Copy a list of dicts by excluding all attributes not defined in <columns_to_keep>"""
     return [
-        {key: val for key, val in row.items() if key in cris_columns} for row in rows
+        {key: val for key, val in record.items() if key in columns_to_keep}
+        for record in records
     ]
 
 
-def handle_empty_strings(rows):
-    for row in rows:
-        for key, val in row.items():
+def set_empty_strings_to_none(records):
+    """Traverse every record property and set '' to None"""
+    for record in records:
+        for key, val in record.items():
             if val == "":
-                row[key] = None
-    return rows
+                record[key] = None
+    return records
 
 
 def set_default_values(records, key_values):
+    """Assign default values to a list of dicts
+
+    Args:
+        records (list): list of record dicts
+        key_values (dict): a dict of keys with their default values in the form of { <key>: <value> }
+
+    Returns:
+        None: records are updated in place
+    """
     for record in records:
         for key, value in key_values.items():
             record[key] = value
 
 
 def combine_date_time_fields(
-    rows, *, date_field_name, time_field_name, output_field_name, is_am_pm_format
+    records,
+    *,
+    date_field_name,
+    time_field_name,
+    output_field_name,
+    is_am_pm_format,
+    tz="America/Chicago",
 ):
     """Combine a date and time field and format as ISO string. The new ISO
     string is stored in the output_field_name.
+
+    Args:
+        record (list): list of CRIS record dicts
+        date_field_name (str): the name of the attribute which holds the date value
+        time_field_name (str): the name of the attribute which holds the time value
+        output_field_name (str): the name of attribute to which the date-time will be assigned
+        is_am_pm_format (bool): indictates which flavor of timestamp is provided. if true,
+            the input format is expected to match, e.g. '12:15 PM', otherwise a 24hr clock
+            is expected. We are handling quirky formatting in the CRIS extract data.
+        tz (string): The IANA time zone name of the input time value. Defaluts to America/Chicago
+
+    Returns:
+        None: records are updated in-place
     """
-    tzinfo = ZoneInfo("America/Chicago")
-    for row in rows:
-        input_date_string = row[date_field_name]
-        input_time_string = row[time_field_name]
+    tzinfo = ZoneInfo(tz)
+    for record in records:
+        input_date_string = record[date_field_name]
+        input_time_string = record[time_field_name]
 
         if not input_date_string or not input_time_string:
             continue
@@ -240,7 +234,7 @@ def combine_date_time_fields(
         )
         # save the ISO string with tz offset
         crash_date_iso = dt.isoformat()
-        row[output_field_name] = crash_date_iso
+        record[output_field_name] = crash_date_iso
 
 
 def chunks(lst, n):
@@ -250,8 +244,8 @@ def chunks(lst, n):
 
 
 def set_peh_field(record):
-    """Determine if a person was experiencing homeless based on
-    reportin conventions used by law enforcement crash investigator"""
+    """Assign the `prsn_exp_homelessness` flag based on reporting conventions used by
+    law enforcement crash investigators"""
     for field in peh_fields:
         record_val = record[field]
         for search_term in ["homeless", "unhoused", "transient"]:
@@ -262,48 +256,69 @@ def set_peh_field(record):
 
 
 def nullify_name_fields(records):
+    """Assigns `None` to all name fields where prsn_injry_sev_id is not 4 (fatality)"""
     for record in records:
         if record["prsn_injry_sev_id"] != "4":
             for field in name_fields:
                 record[field] = None
-    return
 
 
 def rename_crash_id(records):
-    """rename cris's crash_id column to cris_crash_id"""
+    """Rename CRIS's `crash_id` column to `cris_crash_id`. Records are modified in-place.
+
+    This is necessary for all record types except crashes, because the `crash_id`
+    column on these tables references the `crash.id` custom ID column.
+    """
     for record in records:
         record["cris_crash_id"] = record.pop("Crash_ID")
 
 
-def main():
+def process_csvs(extract_dir):
+    """Main function for loading CRIS CSVs into the database. This function handles
+    one unzipped CRIS extract, which itself may contain multiple schema years.
+
+    Args:
+        extract_dir (str): The full path to the directory which contains the
+            unzipped CSV files to be processed
+
+    Returns:
+        None
+    """
+    total_crash_count = 0
     overall_start_tme = time.time()
 
-    print("Fetching column metadata...")
-    column_metadata = make_hasura_request(
-        endpoint=HASURA_ENDPOINT, query=COLUMN_METADATA_QUERY
-    )["_column_metadata"]
+    logger.debug("Fetching column metadata")
+    column_metadata = make_hasura_request(query=COLUMN_METADATA_QUERY)[
+        "_column_metadata"
+    ]
 
-    files_todo = get_files_todo()
+    csvs_to_import = get_csvs_todo(extract_dir)
 
-    extract_ids = list(set([f["extract_id"] for f in files_todo]))
+    extract_ids = list(set([f["extract_id"] for f in csvs_to_import]))
     # assumes extract ids are sortable oldest > newest by filename. todo: is that right?
     extract_ids.sort()
     for extract_id in extract_ids:
-        print(f"processing extract id: {extract_id}")
+        logger.info(f"Processing CSVs for extract ID: {extract_id}")
         # get schema years that match this extract ID
         schema_years = list(
-            set([f["schema_year"] for f in files_todo if f["extract_id"] == extract_id])
+            set(
+                [
+                    f["schema_year"]
+                    for f in csvs_to_import
+                    if f["extract_id"] == extract_id
+                ]
+            )
         )
         schema_years.sort()
         for schema_year in schema_years:
-            print(f"processing schema year: {schema_year}")
+            logger.debug(f"Processing schema year: {schema_year}")
             for table_name in ["crashes", "units", "persons", "charges"]:
                 cris_columns = get_cris_columns(column_metadata, table_name)
 
                 file = next(
                     (
                         f
-                        for f in files_todo
+                        for f in csvs_to_import
                         if f["extract_id"] == extract_id
                         and f["schema_year"] == schema_year
                         and table_name.startswith(f["table_name"])
@@ -316,7 +331,7 @@ def main():
                         f"No {table_name} file found in extract. This should never happen!"
                     )
 
-                print(f"processing {table_name}")
+                logger.debug(f"processing {table_name}")
 
                 records = load_csv(file["path"])
 
@@ -327,6 +342,7 @@ def main():
                 records = lower_case_keys(records)
 
                 if table_name == "crashes":
+                    total_crash_count += len(records)
                     combine_date_time_fields(
                         records,
                         date_field_name="crash_date",
@@ -341,7 +357,7 @@ def main():
                     p_person_file = next(
                         (
                             f
-                            for f in files_todo
+                            for f in csvs_to_import
                             if f["extract_id"] == extract_id
                             and f["schema_year"] == schema_year
                             and f["table_name"].startswith("primaryperson")
@@ -381,13 +397,12 @@ def main():
                     crash_ids = list(
                         set([int(record["cris_crash_id"]) for record in records])
                     )
-                    print(f"Deleting charges for {len(crash_ids)} total crashes...")
+                    logger.debug(
+                        f"Deleting charges in batches for {len(crash_ids)} total crashes"
+                    )
                     for chunk in chunks(crash_ids, delete_charges_batch_size):
-                        print(
-                            f"deleting charges for {delete_charges_batch_size} crashes..."
-                        )
+                        logger.debug(f"Deleting {delete_charges_batch_size} crashes")
                         make_hasura_request(
-                            endpoint=HASURA_ENDPOINT,
                             query=CHARGES_DELETE_MUTATION,
                             variables={"crash_ids": crash_ids},
                         )
@@ -402,28 +417,26 @@ def main():
                         },
                     )
 
-                records = handle_empty_strings(
-                    remove_unsupported_columns(
-                        records,
-                        cris_columns,
-                    )
+                records = remove_unsupported_columns(
+                    records,
+                    cris_columns,
                 )
+
+                records = set_empty_strings_to_none(records)
 
                 upsert_mutation = make_upsert_mutation(table_name, cris_columns)
 
-                for chunk in chunks(records, UPLOAD_BATCH_SIZE):
-                    print(f"uploading {len(chunk)} {table_name}...")
+                for chunk in chunks(records, CSV_UPLOAD_BATCH_SIZE):
+                    logger.info(f"Uploading {len(chunk)} {table_name}")
                     start_time = time.time()
                     make_hasura_request(
-                        endpoint=HASURA_ENDPOINT,
                         query=upsert_mutation,
                         variables={"objects": chunk},
                     )
-                    print(f"✅ done in {round(time.time() - start_time, 3)} seconds")
+                    logger.debug(
+                        f"✅ done in {round(time.time() - start_time, 3)} seconds"
+                    )
 
-    print(
-        f"🎉 Entire import completed in {round((time.time() - overall_start_tme)/60, 2)} minutes"
+    logger.info(
+        f"✅ {total_crash_count} crashes imported in {round((time.time() - overall_start_tme)/60, 2)} minutes"
     )
-
-
-main()

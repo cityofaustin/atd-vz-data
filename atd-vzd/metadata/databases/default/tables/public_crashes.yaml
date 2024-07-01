@@ -71,12 +71,11 @@ select_permissions:
         - at_intrsct_fl
         - case_id
         - council_district
-        - cr3_file_metadata
-        - cr3_ocr_extraction_date
-        - cr3_stored_flag
-        - crash_timestamp
+        - cr3_processed_at
+        - cr3_stored_fl
         - crash_id
         - crash_speed_limit
+        - crash_timestamp
         - created_at
         - created_by
         - engineering_area
@@ -86,7 +85,6 @@ select_permissions:
         - intrsct_relat_id
         - investigat_agency_id
         - investigator_narrative
-        - investigator_narrative_ocr
         - latitude
         - law_enforcement_fatality_num
         - light_cond_id
@@ -142,12 +140,11 @@ select_permissions:
         - at_intrsct_fl
         - case_id
         - council_district
-        - cr3_file_metadata
-        - cr3_ocr_extraction_date
-        - cr3_stored_flag
-        - crash_timestamp
+        - cr3_processed_at
+        - cr3_stored_fl
         - crash_id
         - crash_speed_limit
+        - crash_timestamp
         - created_at
         - created_by
         - engineering_area
@@ -157,7 +154,6 @@ select_permissions:
         - intrsct_relat_id
         - investigat_agency_id
         - investigator_narrative
-        - investigator_narrative_ocr
         - latitude
         - law_enforcement_fatality_num
         - light_cond_id
@@ -213,12 +209,11 @@ select_permissions:
         - at_intrsct_fl
         - case_id
         - council_district
-        - cr3_file_metadata
-        - cr3_ocr_extraction_date
-        - cr3_stored_flag
-        - crash_timestamp
+        - cr3_processed_at
+        - cr3_stored_fl
         - crash_id
         - crash_speed_limit
+        - crash_timestamp
         - created_at
         - created_by
         - engineering_area
@@ -228,7 +223,6 @@ select_permissions:
         - intrsct_relat_id
         - investigat_agency_id
         - investigator_narrative
-        - investigator_narrative_ocr
         - latitude
         - law_enforcement_fatality_num
         - light_cond_id

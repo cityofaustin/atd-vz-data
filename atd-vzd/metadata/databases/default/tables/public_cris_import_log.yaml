@@ -1,0 +1,3 @@
+table:
+  name: cris_import_log
+  schema: public

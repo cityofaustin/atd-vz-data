@@ -90,6 +90,8 @@ def make_column_sql(columns, full_table_name):
             elif full_table_name == "charges":
                 fk_table_name = "people"
             fk_cascade = "on update cascade on delete cascade"
+        elif constraint and "not null default false" in constraint and "_edits" in full_table_name:
+            constraint = ""
 
         sql = f"{column_name} {data_type} {constraint}".strip()
         if fk_table_name:

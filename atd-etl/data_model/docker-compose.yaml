@@ -1,0 +1,9 @@
+services:
+  cris_import:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    network_mode: host
+    entrypoint: /bin/bash

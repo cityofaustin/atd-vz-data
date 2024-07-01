@@ -47,7 +47,7 @@ create table public.people_edits (
     prsn_drg_rslt_id integer references lookups.substnc_tst_result_lkp (id) on update cascade on delete cascade,
     prsn_drg_spec_type_id integer references lookups.specimen_type_lkp (id) on update cascade on delete cascade,
     prsn_ethnicity_id integer references lookups.drvr_ethncty_lkp (id) on update cascade on delete cascade,
-    prsn_exp_homelessness boolean not null default false,
+    prsn_exp_homelessness boolean,
     prsn_first_name text,
     prsn_gndr_id integer references lookups.gndr_lkp (id) on update cascade on delete cascade,
     prsn_helmet_id integer references lookups.helmet_lkp (id) on update cascade on delete cascade,

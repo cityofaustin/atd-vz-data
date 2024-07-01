@@ -162,8 +162,7 @@ export const GET_CRASH = gql`
       toll_road_fl
       law_enforcement_fatality_num
       investigator_narrative
-      cr3_stored_flag
-      cr3_file_metadata
+      cr3_stored_fl
       crash_injury_metrics_view {
         vz_fatality_count
         sus_serious_injry_count

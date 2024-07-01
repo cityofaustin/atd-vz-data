@@ -179,6 +179,17 @@ select
     public.crashes.crash_id,
     public.crashes.case_id,
     public.crashes.crash_timestamp,
+    to_char(
+        public.crashes.crash_timestamp at time zone 'US/Central', 'YYY:MM:DD'
+    ) as crash_date_ct,
+    to_char(
+        public.crashes.crash_timestamp at time zone 'US/Central', 'HH24:MI:SS'
+    ) as crash_time_ct,
+    upper(
+        to_char(
+            public.crashes.crash_timestamp at time zone 'US/Central', 'dy'
+        )
+    ) as crash_day_of_week,
     public.crashes.address_primary,
     public.crashes.address_secondary,
     public.crashes.private_dr_fl,
@@ -221,18 +232,7 @@ select
     lookups.injry_sev_lkp.label as crash_injry_sev_desc,
     lookups.collsn_lkp.label as collsn_desc,
     geocode_status.is_manual_geocode,
-    geocode_status.has_no_cris_coordinates,
-    to_char(
-        public.crashes.crash_timestamp at time zone 'US/Central', 'YYY:MM:DD'
-    ) as crash_date_ct,
-    to_char(
-        public.crashes.crash_timestamp at time zone 'US/Central', 'HH24:MI:SS'
-    ) as crash_time_ct,
-    upper(
-        to_char(
-            public.crashes.crash_timestamp at time zone 'US/Central', 'dy'
-        )
-    ) as crash_day_of_week
+    geocode_status.has_no_cris_coordinates
 from
     public.crashes
 left join
