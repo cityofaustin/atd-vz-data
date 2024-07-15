@@ -38,16 +38,11 @@ VAULT_ID = os.getenv("OP_VAULT_ID")
 def main():
     secrets = get_secrets()
 
-    # 😢 why not `global variable = value`??
-    global SFTP_ENDPOINT
     global ZIP_PASSWORD
 
     global AWS_ACCESS_KEY_ID
     global AWS_SECRET_ACCESS_KEY
-    global AWS_CSV_ARCHIVE_BUCKET_NAME
-    global AWS_CSV_ARCHIVE_PATH
 
-    global DB_HOST
     global DB_USER
     global DB_PASS
     global DB_NAME
@@ -63,15 +58,11 @@ def main():
 
     global S3_EXTRACT_BUCKET
 
-    SFTP_ENDPOINT = secrets["SFTP_endpoint"]
     ZIP_PASSWORD = secrets["archive_extract_password"]
 
     AWS_ACCESS_KEY_ID = secrets["aws_access_key"]
     AWS_SECRET_ACCESS_KEY = secrets["aws_secret_key"]
-    AWS_CSV_ARCHIVE_BUCKET_NAME = secrets["s3_archive_bucket_name"]
-    AWS_CSV_ARCHIVE_PATH = secrets["s3_archive_path"]
 
-    DB_HOST = secrets["database_host"]
     DB_USER = secrets["database_username"]
     DB_PASS = secrets["database_password"]
     DB_NAME = secrets["database_name"]
@@ -112,7 +103,8 @@ def main():
             align_records_token = align_records(typed_token)
             clean_up_import_schema(align_records_token)
         mark_extract_as_imported(archive_id)
-        move_extract_into_processed(filename_in_s3)
+        if not local_mode:
+            move_extract_into_processed(filename_in_s3)
 
 
 def move_extract_into_processed(extract):
@@ -179,11 +171,6 @@ def mark_extract_as_imported(id):
 
 def get_secrets():
     REQUIRED_SECRETS = {
-        "SFTP_endpoint": {
-            "opitem": "Vision Zero CRIS Import",
-            "opfield": f"Common.SFTP Endpoint",
-            "opvault": VAULT_ID,
-        },
         "sftp_endpoint_private_key": {
             "opitem": "SFTP Endpoint Key",
             "opfield": ".private key",
@@ -239,16 +226,6 @@ def get_secrets():
             "opfield": f"{DEPLOYMENT_ENVIRONMENT}.AWS Secret key",
             "opvault": VAULT_ID,
         },
-        "s3_archive_bucket_name": {
-            "opitem": "Vision Zero CRIS Import",
-            "opfield": f"{DEPLOYMENT_ENVIRONMENT}.S3 Archive Bucket Name",
-            "opvault": VAULT_ID,
-        },
-        "s3_archive_path": {
-            "opitem": "Vision Zero CRIS Import",
-            "opfield": f"{DEPLOYMENT_ENVIRONMENT}.S3 Archive Path",
-            "opvault": VAULT_ID,
-        },
         "graphql_endpoint": {
             "opitem": "Vision Zero CRIS Import",
             "opfield": f"{DEPLOYMENT_ENVIRONMENT}.GraphQL Endpoint",
@@ -290,7 +267,40 @@ def specify_extract_location():
     zip_tmpdir = tempfile.mkdtemp()
 
     for file_to_copy in zip_files:
+        filename_no_path = os.path.basename(file_to_copy)
         shutil.copy(file_to_copy, zip_tmpdir)
+
+    with SshKeyTempDir() as key_directory:
+        write_key_to_file(
+            key_directory + "/id_ed25519", DB_BASTION_HOST_SSH_PRIVATE_KEY + "\n"
+        )
+        ssh_tunnel = SSHTunnelForwarder(
+            (DB_BASTION_HOST),
+            ssh_username=DB_BASTION_HOST_SSH_USERNAME,
+            ssh_private_key=f"{key_directory}/id_ed25519",
+            remote_bind_address=(DB_RDS_HOST, 5432),
+        )
+        ssh_tunnel.start()
+
+        pg = psycopg2.connect(
+            host="localhost",
+            port=ssh_tunnel.local_bind_port,
+            user=DB_USER,
+            password=DB_PASS,
+            dbname=DB_NAME,
+            sslmode=DB_SSL_REQUIREMENT,
+            sslrootcert="/root/rds-combined-ca-bundle.pem",
+        )
+        cursor = pg.cursor()
+        cursor.execute(
+            """
+                INSERT INTO cris_import_log (object_path, object_name)
+                VALUES (%s, %s)
+                """,
+            ("local/development", filename_no_path),
+        )
+        pg.commit()
+        pg.close()
 
     return zip_tmpdir
 
