@@ -1,4 +1,0 @@
-boto3==1.*
-pdf2image==1.*
-pytesseract==0.*
-requests==2.*

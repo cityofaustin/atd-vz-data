@@ -1,9 +1,0 @@
-services:
-  cris-import:
-    build: .
-    volumes:
-      - .:/app
-    env_file:
-      - ./env
-    environment:
-      - ENVIRONMENT=development
