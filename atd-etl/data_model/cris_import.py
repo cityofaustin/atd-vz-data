@@ -29,7 +29,8 @@ def main(cli_args):
         return
 
     for extract in extracts_todo:
-        log_entry_id = create_log_entry(**extract)
+        if not cli_args.no_db:
+            log_entry_id = create_log_entry(**extract)
         extract_dir = get_extract_dir(extract["extract_name"])
         if cli_args.s3_download:
             download_extract_from_s3(
