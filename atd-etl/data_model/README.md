@@ -1,3 +1,11 @@
+# this is a special version of the ETL
+
+...t is not meant to be merged!
+
+It adds one new flag to the etl:
+
+- `--skip-db`: you can process pdfs and upload them to S3 without updating any CR3 metadata in the db. It also skips the import log entry. you cannot use this with `--csv`
+
 # CRIS Import ETL
 
 This ETL manages the processing and importing of TxDOT CRIS data into the Vision Zero database.
