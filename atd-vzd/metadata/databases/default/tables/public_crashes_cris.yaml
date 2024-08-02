@@ -27,7 +27,7 @@ array_relationships:
   - name: charges_cris
     using:
       foreign_key_constraint_on:
-        column: crash_id
+        column: crash_pk
         table:
           name: charges_cris
           schema: public
@@ -41,75 +41,18 @@ array_relationships:
   - name: units_cris
     using:
       foreign_key_constraint_on:
-        column: crash_id
+        column: crash_pk
         table:
           name: units_cris
           schema: public
   - name: units_edits
     using:
       foreign_key_constraint_on:
-        column: crash_id
+        column: crash_pk
         table:
           name: units_edits
           schema: public
 insert_permissions:
-  - role: editor
-    permission:
-      check: {}
-      columns:
-        - active_school_zone_fl
-        - at_intrsct_fl
-        - case_id
-        - crash_speed_limit
-        - crash_timestamp
-        - created_by
-        - cris_schema_version
-        - fhe_collsn_id
-        - intrsct_relat_id
-        - investigat_agency_id
-        - investigator_narrative
-        - is_temp_record
-        - latitude
-        - light_cond_id
-        - longitude
-        - medical_advisory_fl
-        - obj_struck_id
-        - onsys_fl
-        - private_dr_fl
-        - road_constr_zone_fl
-        - road_constr_zone_wrkr_fl
-        - rpt_block_num
-        - rpt_city_id
-        - rpt_cris_cnty_id
-        - rpt_hwy_num
-        - rpt_rdwy_sys_id
-        - rpt_ref_mark_dir
-        - rpt_ref_mark_dist_uom
-        - rpt_ref_mark_offset_amt
-        - rpt_road_part_id
-        - rpt_sec_block_num
-        - rpt_sec_hwy_num
-        - rpt_sec_rdwy_sys_id
-        - rpt_sec_road_part_id
-        - rpt_sec_street_desc
-        - rpt_sec_street_name
-        - rpt_sec_street_pfx
-        - rpt_sec_street_sfx
-        - rpt_street_desc
-        - rpt_street_name
-        - rpt_street_pfx
-        - rpt_street_sfx
-        - rr_relat_fl
-        - schl_bus_fl
-        - surf_cond_id
-        - surf_type_id
-        - thousand_damage_fl
-        - toll_road_fl
-        - traffic_cntl_id
-        - txdot_rptable_fl
-        - updated_by
-        - wthr_cond_id
-    comment: ""
   - role: vz-admin
     permission:
       check: {}
@@ -168,13 +111,13 @@ insert_permissions:
         - wthr_cond_id
     comment: ""
 select_permissions:
-  - role: editor
+  - role: vz-admin
     permission:
       columns:
         - active_school_zone_fl
         - at_intrsct_fl
         - case_id
-        - crash_id
+        - cris_crash_id
         - crash_speed_limit
         - crash_timestamp
         - created_at
@@ -229,64 +172,12 @@ select_permissions:
         - wthr_cond_id
       filter: {}
     comment: ""
+update_permissions:
   - role: vz-admin
     permission:
       columns:
-        - active_school_zone_fl
-        - at_intrsct_fl
-        - case_id
-        - crash_id
-        - crash_speed_limit
-        - crash_timestamp
-        - created_at
-        - created_by
-        - cris_schema_version
-        - fhe_collsn_id
-        - id
-        - intrsct_relat_id
-        - investigat_agency_id
-        - investigator_narrative
-        - is_temp_record
-        - latitude
-        - light_cond_id
-        - longitude
-        - medical_advisory_fl
-        - obj_struck_id
-        - onsys_fl
-        - private_dr_fl
-        - road_constr_zone_fl
-        - road_constr_zone_wrkr_fl
-        - rpt_block_num
-        - rpt_city_id
-        - rpt_cris_cnty_id
-        - rpt_hwy_num
-        - rpt_rdwy_sys_id
-        - rpt_ref_mark_dir
-        - rpt_ref_mark_dist_uom
-        - rpt_ref_mark_offset_amt
-        - rpt_road_part_id
-        - rpt_sec_block_num
-        - rpt_sec_hwy_num
-        - rpt_sec_rdwy_sys_id
-        - rpt_sec_road_part_id
-        - rpt_sec_street_desc
-        - rpt_sec_street_name
-        - rpt_sec_street_pfx
-        - rpt_sec_street_sfx
-        - rpt_street_desc
-        - rpt_street_name
-        - rpt_street_pfx
-        - rpt_street_sfx
-        - rr_relat_fl
-        - schl_bus_fl
-        - surf_cond_id
-        - surf_type_id
-        - thousand_damage_fl
-        - toll_road_fl
-        - traffic_cntl_id
-        - txdot_rptable_fl
-        - updated_at
+        - is_deleted
         - updated_by
-        - wthr_cond_id
       filter: {}
+      check: {}
     comment: ""

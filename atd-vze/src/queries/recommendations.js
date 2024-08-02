@@ -26,14 +26,14 @@ export const INSERT_RECOMMENDATION = gql`
       objects: {
         rec_text: $text
         rec_update: $update
-        crash_id: $crashPk
+        crash_pk: $crashPk
         created_by: $userEmail
         recommendation_status_id: $recommendation_status_id
         recommendations_partners: { data: { partner_id: $partner_id } }
       }
     ) {
       returning {
-        crash_id
+        crash_pk
         rec_update
         rec_text
         created_at
@@ -49,7 +49,7 @@ export const UPDATE_RECOMMENDATION = gql`
     $changes: recommendations_set_input
   ) {
     update_recommendations_by_pk(pk_columns: { id: $id }, _set: $changes) {
-      crash_id
+      crash_pk
       rec_text
       rec_update
     }

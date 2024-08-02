@@ -97,7 +97,7 @@ export const GET_CRASH = gql`
         }
       }
       people_list_view {
-        crash_id
+        crash_pk
         id
         unit_nbr
         is_primary_person
@@ -137,7 +137,7 @@ export const GET_CRASH = gql`
       }
       change_logs(order_by: { created_at: desc }) {
         id
-        crash_id
+        crash_pk
         created_at
         created_by
         operation_type
@@ -150,7 +150,7 @@ export const GET_CRASH = gql`
         created_at
         rec_text
         created_by
-        crash_id
+        crash_pk
         rec_update
         atd__recommendation_status_lkp {
           rec_status_desc
@@ -172,7 +172,7 @@ export const GET_CRASH = gql`
         date
         text
         user_email
-        crash_id
+        crash_pk
       }
     }
   }
@@ -183,14 +183,14 @@ export const UPDATE_CRASH = gql`
     update_crashes_edits(where: { id: { _eq: $id } }, _set: $changes) {
       affected_rows
       returning {
-        crash_id
+        cris_crash_id
       }
     }
   }
 `;
 
 export const crashQueryExportFields = `
-crash_id
+cris_crash_id
 case_id
 crash_timestamp
 crash_day_of_week

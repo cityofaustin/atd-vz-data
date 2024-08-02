@@ -22,7 +22,7 @@ mutation UpsertCrashes($objects: [crashes_cris_insert_input!]!) {
   insert_crashes_cris(
     objects: $objects, 
     on_conflict: {
-        constraint: crashes_cris_crash_id_key,
+        constraint: crashes_cris_cris_crash_id_key,
         update_columns: [$updateColumns]
     }) {
     affected_rows
@@ -56,8 +56,8 @@ mutation UpsertPeople($objects: [people_cris_insert_input!]!) {
 }"""
 
 CHARGES_DELETE_MUTATION = """
-mutation DeleteCharges($crash_ids: [Int!]!) {
-  delete_charges_cris(where: {cris_crash_id: {_in: $crash_ids}}) {
+mutation DeleteCharges($cris_crash_ids: [Int!]!) {
+  delete_charges_cris(where: {cris_crash_id: {_in: $cris_crash_ids}}) {
     affected_rows
   }
 }
@@ -72,24 +72,24 @@ mutation InsertCharges($objects: [charges_cris_insert_input!]!) {
 """
 
 CRIS_IMPORT_LOG_INSERT_MUTATION = """
-mutation InsertImportLog($data: cris_import_log_insert_input!) {
-  insert_cris_import_log_one(object: $data) {
+mutation InsertImportLog($data: _cris_import_log_insert_input!) {
+  insert__cris_import_log_one(object: $data) {
     id
   }
 }
 """
 
 CRIS_IMPORT_LOG_UPDATE_MUTATION = """
-mutation UpdateImportLog($data: cris_import_log_set_input!, $id: Int!) {
-  update_cris_import_log_by_pk(pk_columns: {id: $id}, _set: $data) {
+mutation UpdateImportLog($data: _cris_import_log_set_input!, $id: Int!) {
+  update__cris_import_log_by_pk(pk_columns: {id: $id}, _set: $data) {
     id
   }
 }
 """
 
 UPDATE_CRASH_CR3_FIELDS = """
-mutation UpdateCrashCR3Fields($crash_id: Int!, $data: crashes_cris_set_input!) {
-    update_crashes_cris(where: { crash_id: { _eq: $crash_id } }, _set: $data) {
+mutation UpdateCrashCR3Fields($cris_crash_id: Int!, $data: crashes_cris_set_input!) {
+    update_crashes_cris(where: { cris_crash_id: { _eq: $cris_crash_id } }, _set: $data) {
         affected_rows
         returning {
         id
@@ -137,7 +137,7 @@ def make_hasura_request(*, query, variables=None):
 def create_log_entry(
     *, s3_file_key=None, extract_name=None, local_zip_file_path=None, **kwargs
 ):
-    """Insert a new entry in the `cris_import_log` tracking table.
+    """Insert a new entry in the `_cris_import_log` tracking table.
 
     Args:
         s3_file_key (str, optional): the S3 file key of the extract. Defaults to None.
@@ -164,18 +164,22 @@ def create_log_entry(
     data = make_hasura_request(
         query=CRIS_IMPORT_LOG_INSERT_MUTATION, variables=variables
     )
-    return data["insert_cris_import_log_one"]["id"]
+    return data["insert__cris_import_log_one"]["id"]
 
 
-def set_log_entry_complete(*, log_entry_id):
+def set_log_entry_complete(*, log_entry_id, records_processed):
     """Set the completed_at timestamp of a cris_activity_log record
 
     Args:
         log_entry_id (int): the log record ID
+        records_processed (dict): a dict with the number of records processed by table type.
+            E.g.: {"crashes": 0,"units": 0,"persons": 0,"charges": 0,"pdfs": 0}
     """
     variables = {
         "id": log_entry_id,
-        "data": {"completed_at": datetime.now(timezone.utc).isoformat()},
+        "data": {
+            "completed_at": datetime.now(timezone.utc).isoformat(),
+            "records_processed": records_processed,
+        },
     }
     make_hasura_request(query=CRIS_IMPORT_LOG_UPDATE_MUTATION, variables=variables)
-    return

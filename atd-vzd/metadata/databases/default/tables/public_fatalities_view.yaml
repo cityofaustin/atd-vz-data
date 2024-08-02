@@ -6,7 +6,7 @@ object_relationships:
     using:
       manual_configuration:
         column_mapping:
-          crash_id: id
+          crash_pk: id
         insertion_order: null
         remote_table:
           name: crashes
@@ -15,7 +15,7 @@ object_relationships:
     using:
       manual_configuration:
         column_mapping:
-          crash_id: crash_id
+          crash_pk: crash_pk
         insertion_order: null
         remote_table:
           name: recommendations
@@ -35,16 +35,17 @@ select_permissions:
       columns:
         - ytd_fatal_crash
         - ytd_fatality
-        - crash_id
+        - crash_pk
         - cris_crash_id
+        - engineering_area
         - person_id
         - unit_id
         - case_id
         - crash_date_ct
         - crash_time_ct
-        - engineering_area
         - law_enforcement_ytd_fatality_num
         - location
+        - record_locator
         - victim_name
         - year
       filter: {}
@@ -55,16 +56,17 @@ select_permissions:
       columns:
         - ytd_fatal_crash
         - ytd_fatality
-        - crash_id
+        - crash_pk
         - cris_crash_id
+        - engineering_area
         - person_id
         - unit_id
         - case_id
         - crash_date_ct
         - crash_time_ct
-        - engineering_area
         - law_enforcement_ytd_fatality_num
         - location
+        - record_locator
         - victim_name
         - year
       filter: {}
@@ -75,16 +77,17 @@ select_permissions:
       columns:
         - ytd_fatal_crash
         - ytd_fatality
-        - crash_id
+        - crash_pk
         - cris_crash_id
+        - engineering_area
         - person_id
         - unit_id
         - case_id
         - crash_date_ct
         - crash_time_ct
-        - engineering_area
         - law_enforcement_ytd_fatality_num
         - location
+        - record_locator
         - victim_name
         - year
       filter: {}

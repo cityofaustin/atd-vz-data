@@ -5,7 +5,7 @@ select_permissions:
   - role: editor
     permission:
       columns:
-        - crash_id
+        - crash_pk
         - id
         - record_id
         - record_json
@@ -18,7 +18,7 @@ select_permissions:
   - role: readonly
     permission:
       columns:
-        - crash_id
+        - crash_pk
         - id
         - record_id
         - record_json
@@ -31,7 +31,7 @@ select_permissions:
   - role: vz-admin
     permission:
       columns:
-        - crash_id
+        - crash_pk
         - id
         - record_id
         - record_json

@@ -2,9 +2,9 @@ table:
   name: units_cris
   schema: public
 object_relationships:
-  - name: crashes_cri
+  - name: crashes_cris
     using:
-      foreign_key_constraint_on: crash_id
+      foreign_key_constraint_on: crash_pk
   - name: units_edit
     using:
       foreign_key_constraint_on:
@@ -35,7 +35,7 @@ array_relationships:
           name: people_edits
           schema: public
 insert_permissions:
-  - role: editor
+  - role: vz-admin
     permission:
       check: {}
       columns:
@@ -45,7 +45,7 @@ insert_permissions:
         - contrib_factr_3_id
         - contrib_factr_p1_id
         - contrib_factr_p2_id
-        - crash_id
+        - crash_pk
         - created_by
         - cris_crash_id
         - cris_schema_version
@@ -72,40 +72,20 @@ insert_permissions:
         - veh_trvl_dir_id
         - vin
     comment: ""
+select_permissions:
   - role: vz-admin
     permission:
-      check: {}
       columns:
-        - autonomous_unit_id
-        - contrib_factr_1_id
-        - contrib_factr_2_id
-        - contrib_factr_3_id
-        - contrib_factr_p1_id
-        - contrib_factr_p2_id
-        - crash_id
-        - created_by
-        - cris_crash_id
-        - cris_schema_version
-        - e_scooter_id
-        - first_harm_evt_inv_id
-        - pbcat_pedalcyclist_id
-        - pbcat_pedestrian_id
-        - pedalcyclist_action_id
-        - pedestrian_action_id
-        - rpt_autonomous_level_engaged_id
-        - unit_desc_id
-        - unit_nbr
+        - crash_pk
+        - id
+      filter: {}
+    comment: ""
+update_permissions:
+  - role: vz-admin
+    permission:
+      columns:
+        - is_deleted
         - updated_by
-        - veh_body_styl_id
-        - veh_damage_description1_id
-        - veh_damage_description2_id
-        - veh_damage_direction_of_force1_id
-        - veh_damage_direction_of_force2_id
-        - veh_damage_severity1_id
-        - veh_damage_severity2_id
-        - veh_make_id
-        - veh_mod_id
-        - veh_mod_year
-        - veh_trvl_dir_id
-        - vin
+      filter: {}
+      check: null
     comment: ""

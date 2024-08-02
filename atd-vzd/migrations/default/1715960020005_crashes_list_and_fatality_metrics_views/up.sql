@@ -4,8 +4,8 @@ create or replace view person_injury_metrics_view as (
     select
         people.id,
         units.id as unit_id,
-        crashes.id as crash_id,
-        crashes.crash_id as cris_crash_id,
+        crashes.id as crash_pk,
+        crashes.cris_crash_id,
         people.years_of_life_lost,
         people.est_comp_cost_crash_based,
         case
@@ -172,14 +172,15 @@ create or replace view person_injury_metrics_view as (
     left join public.people_cris as people_cris on people.id = people_cris.id
     left join
         public.crashes as crashes
-        on units.crash_id = crashes.id
+        on units.crash_pk = crashes.id
+    where people.is_deleted = false
 );
 
 create or replace view unit_injury_metrics_view as
 (
     select
         units.id,
-        units.crash_id,
+        units.crash_pk,
         coalesce(
             sum(person_injury_metrics_view.unkn_injry), 0
         ) as unkn_injry_count,
@@ -215,6 +216,7 @@ create or replace view unit_injury_metrics_view as
     left join
         person_injury_metrics_view
         on units.id = person_injury_metrics_view.unit_id
+    where units.is_deleted = false
     group by
         units.id
 );
@@ -223,7 +225,7 @@ create or replace view crash_injury_metrics_view as
 (
     select
         crashes.id,
-        crashes.crash_id,
+        crashes.cris_crash_id,
         coalesce(
             sum(person_injury_metrics_view.unkn_injry), 0
         ) as unkn_injry_count,
@@ -319,10 +321,11 @@ create or replace view crash_injury_metrics_view as
         public.crashes as crashes
     left join
         person_injury_metrics_view
-        on crashes.id = person_injury_metrics_view.crash_id
+        on crashes.id = person_injury_metrics_view.crash_pk
+    where crashes.is_deleted = false
     group by
         crashes.id,
-        crashes.crash_id
+        crashes.cris_crash_id
 );
 
 
@@ -339,7 +342,7 @@ create or replace view crashes_list_view as with geocode_status as (
 
 select
     public.crashes.id,
-    public.crashes.crash_id,
+    public.crashes.cris_crash_id,
     public.crashes.record_locator,
     public.crashes.case_id,
     public.crashes.crash_timestamp,
@@ -372,6 +375,7 @@ select
     public.crashes.obj_struck_id,
     public.crashes.crash_speed_limit,
     public.crashes.council_district,
+    public.crashes.is_temp_record,
     crash_injury_metrics_view.nonincap_injry_count,
     crash_injury_metrics_view.poss_injry_count,
     crash_injury_metrics_view.sus_serious_injry_count,
@@ -419,6 +423,7 @@ left join
 left join
     lookups.injry_sev_lkp
     on lookups.injry_sev_lkp.id = crash_injury_metrics_view.crash_injry_sev_id
+where crashes.is_deleted = false
 order by id asc;
 
 create view locations_list_view as (
@@ -488,7 +493,7 @@ create view locations_list_view as (
 );
 
 create or replace view location_crashes_view as (select
-    public.crashes.crash_id,
+    public.crashes.cris_crash_id,
     'CR3'::text as type,
     public.crashes.location_id,
     public.crashes.case_id,
@@ -526,7 +531,7 @@ from
 left join lateral
     (
         select
-            units.crash_id,
+            units.crash_pk,
             string_agg(movt_lkp.label::text, ',') as movement_desc,
             string_agg(trvl_dir_lkp.label::text, ',') as travel_direction,
             string_agg(
@@ -546,8 +551,8 @@ left join lateral
         left join
             lookups.unit_desc_lkp as unit_desc_lkp
             on units.unit_desc_id = unit_desc_lkp.id
-        where crashes.id = units.crash_id
-        group by units.crash_id
+        where crashes.id = units.crash_pk
+        group by units.crash_pk
     ) as crash_units
     on true
 left join lateral (
@@ -561,10 +566,10 @@ left join lateral (
 left join
     lookups.collsn_lkp
     on public.crashes.fhe_collsn_id = lookups.collsn_lkp.id
-where crashes.crash_timestamp >= (now() - '5 years'::interval)::date
+where crashes.is_deleted = false and crashes.crash_timestamp >= (now() - '5 years'::interval)::date
 union all
 select
-    aab.form_id as crash_id,
+    aab.form_id as cris_crash_id,
     'NON-CR3'::text as record_type,
     aab.location_id,
     aab.case_id::text as case_id,

@@ -22,7 +22,7 @@ select_permissions:
         - case_id
         - cr3_processed_at
         - cr3_stored_fl
-        - crash_id
+        - cris_crash_id
         - crash_speed_limit
         - crash_timestamp
         - created_at
@@ -84,7 +84,7 @@ select_permissions:
         - case_id
         - cr3_processed_at
         - cr3_stored_fl
-        - crash_id
+        - cris_crash_id
         - crash_speed_limit
         - crash_timestamp
         - created_at
@@ -146,7 +146,7 @@ select_permissions:
         - case_id
         - cr3_processed_at
         - cr3_stored_fl
-        - crash_id
+        - cris_crash_id
         - crash_speed_limit
         - crash_timestamp
         - created_at
@@ -208,7 +208,7 @@ update_permissions:
         - at_intrsct_fl
         - case_id
         - crash_timestamp
-        - crash_id
+        - cris_crash_id
         - crash_speed_limit
         - fhe_collsn_id
         - intrsct_relat_id
@@ -265,7 +265,7 @@ update_permissions:
         - at_intrsct_fl
         - case_id
         - crash_timestamp
-        - crash_id
+        - cris_crash_id
         - crash_speed_limit
         - fhe_collsn_id
         - intrsct_relat_id

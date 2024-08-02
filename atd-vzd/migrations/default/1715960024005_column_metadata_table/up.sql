@@ -15,7 +15,7 @@ comment on column _column_metadata.is_imported_from_cris is 'If this column is p
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)
         values ('id', 'charges', false);
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)
-        values ('crash_id', 'charges', false);
+        values ('crash_pk', 'charges', false);
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)
         values ('cris_crash_id', 'charges', true);
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)
@@ -41,7 +41,7 @@ insert into _column_metadata (column_name, record_type, is_imported_from_cris)
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)
         values ('id', 'crashes', false);
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)
-        values ('crash_id', 'crashes', true);
+        values ('cris_crash_id', 'crashes', true);
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)
         values ('cris_schema_version', 'crashes', true);
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)
@@ -235,7 +235,7 @@ insert into _column_metadata (column_name, record_type, is_imported_from_cris)
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)
         values ('cris_schema_version', 'units', true);
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)
-        values ('crash_id', 'units', true);
+        values ('crash_pk', 'units', true);
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)
         values ('cris_crash_id', 'units', true);
 insert into _column_metadata (column_name, record_type, is_imported_from_cris)

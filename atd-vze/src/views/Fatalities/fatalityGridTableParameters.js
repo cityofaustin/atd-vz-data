@@ -5,13 +5,13 @@ export const fatalityGridTableColumns = {
     label_table: "Year",
     type: "Int",
   },
-  cris_crash_id: {
+  record_locator: {
     primary_key: true,
     searchable: true,
     sortable: true,
     label_search: "Search by Crash ID",
     label_table: "Crash ID",
-    type: "Int",
+    type: "String",
   },
   case_id: {
     searchable: true,

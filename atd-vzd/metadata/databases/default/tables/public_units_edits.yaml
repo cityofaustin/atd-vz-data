@@ -2,9 +2,9 @@ table:
   name: units_edits
   schema: public
 object_relationships:
-  - name: crashes_cri
+  - name: crashes_cris
     using:
-      foreign_key_constraint_on: crash_id
+      foreign_key_constraint_on: crash_pk
   - name: units_cri
     using:
       foreign_key_constraint_on: id
@@ -26,7 +26,7 @@ select_permissions:
         - contrib_factr_3_id
         - contrib_factr_p1_id
         - contrib_factr_p2_id
-        - crash_id
+        - crash_pk
         - e_scooter_id
         - first_harm_evt_inv_id
         - id
@@ -65,7 +65,7 @@ select_permissions:
         - contrib_factr_3_id
         - contrib_factr_p1_id
         - contrib_factr_p2_id
-        - crash_id
+        - crash_pk
         - e_scooter_id
         - first_harm_evt_inv_id
         - id
@@ -104,7 +104,7 @@ select_permissions:
         - contrib_factr_3_id
         - contrib_factr_p1_id
         - contrib_factr_p2_id
-        - crash_id
+        - crash_pk
         - e_scooter_id
         - first_harm_evt_inv_id
         - id
@@ -144,7 +144,7 @@ update_permissions:
         - contrib_factr_3_id
         - contrib_factr_p1_id
         - contrib_factr_p2_id
-        - crash_id
+        - crash_pk
         - e_scooter_id
         - first_harm_evt_inv_id
         - movement_id
@@ -180,7 +180,7 @@ update_permissions:
         - contrib_factr_3_id
         - contrib_factr_p1_id
         - contrib_factr_p2_id
-        - crash_id
+        - crash_pk
         - e_scooter_id
         - first_harm_evt_inv_id
         - movement_id

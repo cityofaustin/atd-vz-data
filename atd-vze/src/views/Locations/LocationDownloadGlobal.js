@@ -12,7 +12,7 @@ const LocationDownloadGlobal = props => {
         case_id
         collsn_desc
         crash_date
-        crash_id
+        cris_crash_id
         crash_sev_id
         crash_time
         day_of_week

@@ -38,10 +38,10 @@ begin
         update_stmt := update_stmt
             || array_to_string(updates_todo, ',')
             || format(' where public.$tableName$.$pkColumnName$ = %s', new.$pkColumnName$);
-        raise notice 'Updating $tableName$ record from CRIS update';
+        raise debug 'Updating $tableName$ record from CRIS update';
         execute (update_stmt) using new;
     else
-        raise notice 'No changes to unified record needed';
+        raise debug 'No changes to unified record needed';
     end if;
     return null;
 end;

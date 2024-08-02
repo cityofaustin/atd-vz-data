@@ -58,13 +58,13 @@ The only script that should be run directly is `cris_import.py`. It supports the
 
 ### Production run
 
-This is the expected invocation during a production deployment. It will download any extracts available in S3, load the CSV crash records into the database, crop crash diagrams out of the CR3 PDFs, upload the CR3 pdfs and crash diagrams to the s3 bucket.
+This is the expected invocation during a production deployment. It will download any extracts available in S3, load the CSV crash records into the database, crop crash diagrams out of the CR3 PDFs, upload the CR3 pdfs and crash diagrams to the s3 bucket. It also makes use of the `--workers` flag to increase the size of the processing pool to `8`.
 
 This invocation also "archives" the extract zips by moving them from `./inbox` to `./archive` subdirectory of the S3 bucket.
 
 ```shell
 # from the cris_import container's shell
-$ ./cris_import.py --s3-download --s3-upload --s3-archive --csv --pdf
+$ ./cris_import.py --s3-download --s3-upload --s3-archive --csv --pdf --workers 8
 ```
 
 ### Local import

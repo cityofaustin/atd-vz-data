@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { withApollo } from "react-apollo";
-import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 
 import {
@@ -20,30 +19,22 @@ import {
   ModalHeader,
   Table,
 } from "reactstrap";
+import { SOFT_DELETE_TEMP_RECORDS } from "../../queries/tempRecords";
+import { formatDateTimeString } from "../../helpers/format";
 
-const DELETE_TEMP_RECORD = gql`
-  mutation deleteTempRecords($crashId: Int!) {
-    delete_atd_txdot_crashes(where: { crash_id: { _eq: $crashId } }) {
-      affected_rows
-    }
-    delete_atd_txdot_units(where: { crash_id: { _eq: $crashId } }) {
-      affected_rows
-    }
-    delete_atd_txdot_primaryperson(where: { crash_id: { _eq: $crashId } }) {
-      affected_rows
-    }
-    delete_atd_txdot_person(where: { crash_id: { _eq: $crashId } }) {
-      affected_rows
-    }
-  }
-`;
-
-const CreateCrashRecordTable = ({ crashesData, loading, error }) => {
+const CreateCrashRecordTable = ({
+  crashesData,
+  loading,
+  error,
+  refetch,
+  userEmail,
+  setSuccessfulNewRecordId,
+}) => {
   const [crashSearch, setCrashSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [feedback, setFeedback] = useState(null);
-  const [deleteRecord] = useMutation(DELETE_TEMP_RECORD);
+  const [deleteTempRecords] = useMutation(SOFT_DELETE_TEMP_RECORDS);
 
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
@@ -56,26 +47,25 @@ const CreateCrashRecordTable = ({ crashesData, loading, error }) => {
     setCrashSearch(e.target.value);
   };
 
-  // /**
-  //  * Deletes all the temporary records in the database
-  //  */
-  // const handleDelete = () => {
-  //   setFeedback(null);
-  //   deleteRecord({ variables: { crashId: deleteId } })
-  //     .then(() => {
-  //       const newData = data["crashes"].filter(item => {
-  //         return item.crash_id !== deleteId;
-  //       });
-  //       setDeleteId(null);
-  //       setFeedback(`Crash ID ${deleteId} has been deleted.`);
-  //       setCrashesData({ atd_txdot_crashes: newData });
-  //       toggleModalDelete();
-  //     })
-  //     .catch(err => {
-  //       setFeedback(String(err));
-  //       setDeleteId(null);
-  //     });
-  // };
+  /**
+   * Soft deletes the temporary crash and all its associated unit and people records
+   */
+  const handleDelete = () => {
+    deleteTempRecords({
+      variables: { recordId: deleteId, updatedBy: userEmail },
+    })
+      .then(() => {
+        setSuccessfulNewRecordId(null);
+        setDeleteId(null);
+        setFeedback(`Crash ID ${deleteId} has been deleted.`);
+        toggleModalDelete();
+        refetch();
+      })
+      .catch(err => {
+        setFeedback(String(err));
+        setDeleteId(null);
+      });
+  };
 
   /**
    * Opens/Closes the delete modal
@@ -85,11 +75,11 @@ const CreateCrashRecordTable = ({ crashesData, loading, error }) => {
   };
 
   /**
-   * Commits the crash_id to be deleted to state, and prompts for deletion.
-   * @param {int} crashId - The crash id to be deleted.
+   * Commits the crash record id to be deleted to state, and prompts for deletion.
+   * @param {int} recordId - The record id to be deleted.
    */
-  const openModalDelete = crashId => {
-    setDeleteId(crashId);
+  const openModalDelete = recordId => {
+    setDeleteId(recordId);
     toggleModalDelete();
   };
 
@@ -147,15 +137,15 @@ const CreateCrashRecordTable = ({ crashesData, loading, error }) => {
                           </Link>
                         </td>
                         <td>{item.case_id}</td>
-                        <td>{item.crash_timestamp}</td>
+                        <td>{formatDateTimeString(item.crash_timestamp)}</td>
                         <td>{item.updated_by}</td>
-                        <td>{item.updated_at}</td>
+                        <td>{formatDateTimeString(item.updated_at)}</td>
                         <td>
                           <Button
                             color="danger"
                             className="btn-pill"
                             size={"sm"}
-                            onClick={() => openModalDelete(item.record_locator)}
+                            onClick={() => openModalDelete(item.id)}
                           >
                             <i className="fa fa-remove"></i>&nbsp;Delete
                           </Button>
@@ -177,11 +167,13 @@ const CreateCrashRecordTable = ({ crashesData, loading, error }) => {
           Delete this record?
         </ModalHeader>
         <ModalBody>
-          Are you sure you want to delete crash id <strong>{deleteId}</strong>?
+          Are you sure you want to delete crash id <strong>T{deleteId}</strong>?
           This cannot be undone.
         </ModalBody>
         <ModalFooter>
-          <Button color="danger">Ok</Button>
+          <Button color="danger" onClick={handleDelete}>
+            Ok
+          </Button>
           <Button color="secondary" onClick={toggleModalDelete}>
             Cancel
           </Button>

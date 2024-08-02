@@ -62,7 +62,7 @@ def make_column_sql(columns, full_table_name):
             # column name is always the same as the column name
             fk_column_name = column_name
             fk_cascade = "on update cascade on delete cascade"
-        elif column_name == "crash_id":
+        elif column_name == "crash_pk":
             if full_table_name == "units_edits":
                 # make nullable
                 constraint = ""

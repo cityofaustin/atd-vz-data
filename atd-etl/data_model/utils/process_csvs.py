@@ -264,11 +264,7 @@ def nullify_name_fields(records):
 
 
 def rename_crash_id(records):
-    """Rename CRIS's `crash_id` column to `cris_crash_id`. Records are modified in-place.
-
-    This is necessary for all record types except crashes, because the `crash_id`
-    column on these tables references the `crash.id` custom ID column.
-    """
+    """Rename CRIS's `crash_id` column to `cris_crash_id`. Records are modified in-place."""
     for record in records:
         record["cris_crash_id"] = record.pop("Crash_ID")
 
@@ -288,9 +284,9 @@ def process_csvs(extract_dir):
             unzipped CSV files to be processed
 
     Returns:
-        None
+        dict: number of records processed with one entry per table type
     """
-    total_crash_count = 0
+    records_processed = {"crashes": 0, "units": 0, "persons": 0, "charges": 0}
     overall_start_tme = time.time()
 
     logger.debug("Fetching column metadata")
@@ -342,13 +338,11 @@ def process_csvs(extract_dir):
                 records = load_csv(file["path"])
 
                 # rename Crash_ID to cris_crash_id for all tables except crashes
-                if table_name != "crashes":
-                    rename_crash_id(records)
+                rename_crash_id(records)
 
                 records = lower_case_keys(records)
 
                 if table_name == "crashes":
-                    total_crash_count += len(records)
                     combine_date_time_fields(
                         records,
                         date_field_name="crash_date",
@@ -410,7 +404,7 @@ def process_csvs(extract_dir):
                         logger.debug(f"Deleting {delete_charges_batch_size} crashes")
                         make_hasura_request(
                             query=CHARGES_DELETE_MUTATION,
-                            variables={"crash_ids": crash_ids},
+                            variables={"cris_crash_ids": crash_ids},
                         )
                     # now that we've deleted all charges we can purge the non-charge records
                     # from our import
@@ -445,7 +439,7 @@ def process_csvs(extract_dir):
                     logger.debug(
                         f"✅ done in {round(time.time() - start_time, 3)} seconds"
                     )
-
-    logger.info(
-        f"✅ {total_crash_count} crashes imported in {round((time.time() - overall_start_tme)/60, 2)} minutes"
-    )
+                records_processed[table_name] += len(records)
+    logger.debug(f"Records processed: {records_processed}")
+    logger.info(f"✅ Done in {round((time.time() - overall_start_tme)/60, 2)} minutes")
+    return records_processed

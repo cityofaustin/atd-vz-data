@@ -29,7 +29,7 @@ object_relationships:
   - name: recommendation
     using:
       foreign_key_constraint_on:
-        column: crash_id
+        column: crash_pk
         table:
           name: recommendations
           schema: public
@@ -38,7 +38,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          id: crash_id
+          id: crash_pk
         insertion_order: null
         remote_table:
           name: crashes_change_log_view
@@ -47,7 +47,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          id: crash_id
+          id: crash_pk
         insertion_order: null
         remote_table:
           name: charges_cris
@@ -55,7 +55,7 @@ array_relationships:
   - name: crash_notes
     using:
       foreign_key_constraint_on:
-        column: crash_id
+        column: crash_pk
         table:
           name: crash_notes
           schema: public
@@ -63,7 +63,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          id: crash_id
+          id: crash_pk
         insertion_order: null
         remote_table:
           name: people_list_view
@@ -71,7 +71,7 @@ array_relationships:
   - name: units
     using:
       foreign_key_constraint_on:
-        column: crash_id
+        column: crash_pk
         table:
           name: units
           schema: public
@@ -87,7 +87,7 @@ select_permissions:
         - council_district
         - cr3_processed_at
         - cr3_stored_fl
-        - crash_id
+        - cris_crash_id
         - crash_speed_limit
         - crash_timestamp
         - created_at
@@ -157,7 +157,7 @@ select_permissions:
         - council_district
         - cr3_processed_at
         - cr3_stored_fl
-        - crash_id
+        - cris_crash_id
         - crash_speed_limit
         - crash_timestamp
         - created_at
@@ -187,7 +187,7 @@ select_permissions:
         - toll_road_fl
         - txdot_rptable_fl
         - council_district
-        - crash_id
+        - cris_crash_id
         - crash_speed_limit
         - engineering_area
         - fhe_collsn_id
@@ -246,7 +246,7 @@ select_permissions:
         - council_district
         - cr3_processed_at
         - cr3_stored_fl
-        - crash_id
+        - cris_crash_id
         - crash_speed_limit
         - crash_timestamp
         - created_at
@@ -276,7 +276,6 @@ select_permissions:
         - toll_road_fl
         - txdot_rptable_fl
         - council_district
-        - crash_id
         - crash_speed_limit
         - engineering_area
         - fhe_collsn_id
