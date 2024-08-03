@@ -29,6 +29,8 @@ def main(cli_args):
         return
 
     for extract in extracts_todo:
+        if not cli_args.skip_db:
+            log_entry_id = create_log_entry(**extract)
         records_processed = {
             "crashes": 0,
             "units": 0,
@@ -51,12 +53,15 @@ def main(cli_args):
             records_processed.update(csv_records_processed_dict)
         if cli_args.pdf:
             pdfs_processed_count = process_pdfs(
-                extract_dir, cli_args.s3_upload, cli_args.workers
+                extract_dir, cli_args.s3_upload, cli_args.workers, cli_args.skip_db
             )
             records_processed["pdfs"] = pdfs_processed_count
         if cli_args.s3_download and cli_args.s3_archive and not cli_args.skip_unzip:
             archive_extract_zip(extract["s3_file_key"])
-        set_log_entry_complete(log_entry_id=log_entry_id, records_processed=records_processed)
+        if not cli_args.skip_db:
+            set_log_entry_complete(
+                log_entry_id=log_entry_id, records_processed=records_processed
+            )
 
 
 if __name__ == "__main__":
@@ -68,4 +73,6 @@ if __name__ == "__main__":
         raise ValueError("--s3-archive has no effect without --s3-download")
     if cli_args.skip_unzip and cli_args.s3_download:
         raise ValueError("Cannot use --s3-download in combination with --skip-unzip")
+    if cli_args.skip_db and cli_args.csv:
+        raise ValueError("skip-db is only meant to be used with PDF processing!")
     main(cli_args)

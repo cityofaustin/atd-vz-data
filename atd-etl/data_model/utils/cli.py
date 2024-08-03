@@ -44,6 +44,11 @@ def get_cli_args():
         help="Only process files that are already unzipped in the local directory",
     )
     parser.add_argument(
+        "--skip-db",
+        action="store_true",
+        help="Upload PDFs and crash diagrams to S3 without updating the DB",
+    )
+    parser.add_argument(
         "--verbose",
         "-v",
         action="store_true",

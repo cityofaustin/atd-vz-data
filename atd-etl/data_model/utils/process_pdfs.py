@@ -67,7 +67,7 @@ def get_cr3_object_key(filename, kind):
     return f"{ENV}/cr3s/{kind}/{filename}"
 
 
-def process_pdf(extract_dir, filename, s3_upload, index):
+def process_pdf(extract_dir, filename, s3_upload, skip_db, index):
     """Handles processing of one CR3 PDF document.
 
     Args:
@@ -102,6 +102,9 @@ def process_pdf(extract_dir, filename, s3_upload, index):
         logger.debug(f"Uploading crash diagram to {s3_object_key_diagram}")
         upload_file_to_s3(diagram_full_path, s3_object_key_diagram)
 
+        if skip_db:
+            return
+
         logger.debug(f"Updating crash CR3 metadata")
         res = make_hasura_request(
             query=UPDATE_CRASH_CR3_FIELDS,
@@ -121,7 +124,7 @@ def process_pdf(extract_dir, filename, s3_upload, index):
             )
 
 
-def process_pdfs(extract_dir, s3_upload, max_workers):
+def process_pdfs(extract_dir, s3_upload, max_workers, skip_db):
     """Main loop for extract crash diagrams from  CR3 PDFs
 
     Args:
@@ -150,7 +153,7 @@ def process_pdfs(extract_dir, s3_upload, max_workers):
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         for index, filename in enumerate(pdfs):
             future = executor.submit(
-                process_pdf, extract_dir, filename, s3_upload, index
+                process_pdf, extract_dir, filename, s3_upload, skip_db, index
             )
             futures.append(future)
     # inspect results and collect all errors—this must be done after all pdfs have
