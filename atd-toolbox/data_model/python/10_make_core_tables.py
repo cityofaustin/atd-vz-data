@@ -5,7 +5,6 @@ from settings import SCHEMA_NAME
 
 from utils import (
     make_migration_dir,
-    delete_all_migrations,
     save_file,
     save_empty_down_migration,
     load_column_metadata,
@@ -102,7 +101,6 @@ def make_column_sql(columns, full_table_name):
 
 
 def main():
-    delete_all_migrations()
     all_columns = load_column_metadata()
     # init the schema
     migration_path = make_migration_dir("create_schema")

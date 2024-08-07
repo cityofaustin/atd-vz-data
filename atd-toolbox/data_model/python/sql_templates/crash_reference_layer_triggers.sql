@@ -104,5 +104,7 @@ for each row
 when (
     new.latitude is distinct from old.latitude
     or new.longitude is distinct from old.longitude
+    or new.rpt_road_part_id is distinct from old.rpt_road_part_id
+    or new.rpt_hwy_num is distinct from old.rpt_hwy_num
 )
 execute procedure public.crashes_set_spatial_attributes();

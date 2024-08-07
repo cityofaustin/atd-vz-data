@@ -8,6 +8,7 @@
 # ------------
 set -e
 
+./05_pre_table_triggers.py
 ./10_make_core_tables.py
 ./20_make_change_log.py
 ./30_make_triggers.py

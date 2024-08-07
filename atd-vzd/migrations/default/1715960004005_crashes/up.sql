@@ -123,8 +123,8 @@ create table public.crashes_edits (
 create table public.crashes (
     id integer primary key references public.crashes_cris (id) on update cascade on delete cascade,
     active_school_zone_fl boolean,
-    address_primary text generated always as (trim(coalesce(rpt_street_pfx, '') || ' ' || coalesce(rpt_block_num, '') || ' ' || coalesce(rpt_street_name, '') || ' ' || coalesce(rpt_street_sfx, ''))) stored,
-    address_secondary text generated always as (trim(coalesce(rpt_sec_street_pfx, '') || ' ' || coalesce(rpt_sec_block_num, '') || ' ' || coalesce(rpt_sec_street_name, '') || ' ' || coalesce(rpt_sec_street_sfx, ''))) stored,
+    address_primary text generated always as (build_crash_address(rpt_block_num, rpt_street_pfx, rpt_street_name, rpt_street_sfx)) stored,
+    address_secondary text generated always as (build_crash_address(rpt_sec_block_num, rpt_sec_street_pfx, rpt_sec_street_name, rpt_sec_street_sfx)) stored,
     at_intrsct_fl boolean,
     case_id text,
     council_district integer,

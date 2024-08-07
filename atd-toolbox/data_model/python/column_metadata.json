@@ -359,7 +359,7 @@
   {
     "column_name": "address_primary",
     "data_type": "text",
-    "data_type_constraint": "generated always as (trim(coalesce(rpt_street_pfx, '') || ' ' || coalesce(rpt_block_num, '') || ' ' || coalesce(rpt_street_name, '') || ' ' || coalesce(rpt_street_sfx, ''))) stored",
+    "data_type_constraint": "generated always as (build_crash_address(rpt_block_num, rpt_street_pfx, rpt_street_name, rpt_street_sfx)) stored",
     "foreign_column_cascade": "",
     "foreign_column_name": "",
     "foreign_table_name": "",
@@ -376,7 +376,7 @@
   {
     "column_name": "address_secondary",
     "data_type": "text",
-    "data_type_constraint": "generated always as (trim(coalesce(rpt_sec_street_pfx, '') || ' ' || coalesce(rpt_sec_block_num, '') || ' ' || coalesce(rpt_sec_street_name, '') || ' ' || coalesce(rpt_sec_street_sfx, ''))) stored",
+    "data_type_constraint": "generated always as (build_crash_address(rpt_sec_block_num, rpt_sec_street_pfx, rpt_sec_street_name, rpt_sec_street_sfx)) stored",
     "foreign_column_cascade": "",
     "foreign_column_name": "",
     "foreign_table_name": "",
