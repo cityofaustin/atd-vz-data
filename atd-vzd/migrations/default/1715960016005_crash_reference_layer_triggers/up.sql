@@ -44,12 +44,12 @@ begin
                 limit 1);
         end if;
 
-        raise notice 'found location: % compared to previous location: %', new.location_id, old.location_id;
+        raise debug 'found location: % compared to previous location: %', new.location_id, old.location_id;
         --
         -- check if in austin full purpose jurisdiction
         --
         new.in_austin_full_purpose =  st_contains((select geometry from atd_jurisdictions where id = 5), new.position);
-        raise notice 'in austin full purpose: % compared to previous: %', new.in_austin_full_purpose, old.in_austin_full_purpose;
+        raise debug 'in austin full purpose: % compared to previous: %', new.in_austin_full_purpose, old.in_austin_full_purpose;
         --
         -- get council district
         --
@@ -61,7 +61,7 @@ begin
             where
                 st_contains(geometry, new.position)
             limit 1);
-        raise notice 'council_district: % compared to previous: %', new.council_district, old.council_district;
+        raise debug 'council_district: % compared to previous: %', new.council_district, old.council_district;
         --
         -- get engineering area
         --
@@ -73,16 +73,16 @@ begin
             where
                 st_contains(geometry, new.position)
             limit 1);
-        raise notice 'engineering_area: % compared to previous: %', new.engineering_area, old.engineering_area;
+        raise debug 'engineering_area: % compared to previous: %', new.engineering_area, old.engineering_area;
         else
-            raise notice 'setting location id and council district to null';
+            raise debug 'setting location id and council district to null';
             -- nullify position column
             new.position = null;
             -- reset location id
             new.location_id = null;
             -- use city id to determine full purpose jurisdiction
             new.in_austin_full_purpose = coalesce(new.rpt_city_id = 22, false);
-            raise notice 'setting in_austin_full_purpose based on city id: %', new.in_austin_full_purpose;
+            raise debug 'setting in_austin_full_purpose based on city id: %', new.in_austin_full_purpose;
             -- reset council district
             new.council_district = null;
             -- reset engineering area

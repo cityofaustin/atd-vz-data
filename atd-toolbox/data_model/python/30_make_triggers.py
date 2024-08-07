@@ -18,10 +18,10 @@ def patch_template(template, table_name, pk_column_name, columns_unified):
     return (
         template.replace("$tableName$", table_name)
         .replace("$pkColumnName$", pk_column_name)
-        .replace("$affectedColumns$", ", ".join(columns_unified))
+        .replace("$affectedColumns$", ",\n        ".join(columns_unified))
         .replace(
             "$affectedColumnsWithNewPrefix$",
-            ", ".join(affected_columns_with_new_prefix),
+            ",\n        ".join(affected_columns_with_new_prefix),
         )
     )
 
@@ -49,7 +49,7 @@ def main():
             and col["is_unified_column"]
             and col["record_type"] == table_name
         ]
-        # remove dupes, which is a concern for persons tables
+        # remove dupes, which was once a concern for persons tables
         columns_unified = list(set(columns_unified))
         # sort columns to keep diffs consistent
         columns_unified.sort()

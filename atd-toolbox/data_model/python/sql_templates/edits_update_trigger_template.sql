@@ -34,7 +34,7 @@ begin
         || array_to_string(updates_todo, ',')
         || format(' from (select * from public.$tableName$_cris where public.$tableName$_cris.$pkColumnName$ = %s) as cris_record', new.$pkColumnName$)
         || format(' where public.$tableName$.$pkColumnName$ = %s ', new.$pkColumnName$);
-    raise notice 'Updating unified $tableName$ record from edit update';
+    raise debug 'Updating unified $tableName$ record from edit update';
     execute (update_stmt) using new;
     return null;
 end;

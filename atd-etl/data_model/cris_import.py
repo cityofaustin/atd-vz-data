@@ -29,6 +29,13 @@ def main(cli_args):
         return
 
     for extract in extracts_todo:
+        records_processed = {
+            "crashes": 0,
+            "units": 0,
+            "persons": 0,
+            "charges": 0,
+            "pdfs": 0,
+        }
         log_entry_id = create_log_entry(**extract)
         extract_dir = get_extract_dir(extract["extract_name"])
         if cli_args.s3_download:
@@ -40,18 +47,22 @@ def main(cli_args):
         if not cli_args.skip_unzip:
             unzip_extract(extract["local_zip_file_path"], extract_dir)
         if cli_args.csv:
-            process_csvs(extract_dir)
+            csv_records_processed_dict = process_csvs(extract_dir)
+            records_processed.update(csv_records_processed_dict)
         if cli_args.pdf:
-            process_pdfs(extract_dir, cli_args.s3_upload, cli_args.workers)
+            pdfs_processed_count = process_pdfs(
+                extract_dir, cli_args.s3_upload, cli_args.workers
+            )
+            records_processed["pdfs"] = pdfs_processed_count
         if cli_args.s3_download and cli_args.s3_archive and not cli_args.skip_unzip:
             archive_extract_zip(extract["s3_file_key"])
-        set_log_entry_complete(log_entry_id=log_entry_id)
+        set_log_entry_complete(log_entry_id=log_entry_id, records_processed=records_processed)
 
 
 if __name__ == "__main__":
     cli_args = get_cli_args()
     logger = init_logger(debug=cli_args.verbose)
-    if (not cli_args.csv and not cli_args.pdf):
+    if not cli_args.csv and not cli_args.pdf:
         raise ValueError("Must specify at least one of --csv or --pdf")
     if cli_args.s3_archive and not cli_args.s3_download:
         raise ValueError("--s3-archive has no effect without --s3-download")

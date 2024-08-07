@@ -284,9 +284,9 @@ def process_csvs(extract_dir):
             unzipped CSV files to be processed
 
     Returns:
-        None
+        dict: number of records processed with one entry per table type
     """
-    total_crash_count = 0
+    records_processed = {"crashes": 0, "units": 0, "persons": 0, "charges": 0}
     overall_start_tme = time.time()
 
     logger.debug("Fetching column metadata")
@@ -343,7 +343,6 @@ def process_csvs(extract_dir):
                 records = lower_case_keys(records)
 
                 if table_name == "crashes":
-                    total_crash_count += len(records)
                     combine_date_time_fields(
                         records,
                         date_field_name="crash_date",
@@ -440,7 +439,7 @@ def process_csvs(extract_dir):
                     logger.debug(
                         f"✅ done in {round(time.time() - start_time, 3)} seconds"
                     )
-
-    logger.info(
-        f"✅ {total_crash_count} crashes imported in {round((time.time() - overall_start_tme)/60, 2)} minutes"
-    )
+                records_processed[table_name] += len(records)
+    logger.debug(f"Records processed: {records_processed}")
+    logger.info(f"✅ Done in {round((time.time() - overall_start_tme)/60, 2)} minutes")
+    return records_processed

@@ -175,3 +175,4 @@ def process_pdfs(extract_dir, s3_upload, max_workers):
     logger.info(
         f"✅ {pdf_count} CR3s processed in {round((time.time() - overall_start_tme)/60, 2)} minutes"
     )
+    return pdf_count

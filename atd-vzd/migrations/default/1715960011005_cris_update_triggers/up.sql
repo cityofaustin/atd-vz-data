@@ -38,10 +38,10 @@ begin
         update_stmt := update_stmt
             || array_to_string(updates_todo, ',')
             || format(' where public.crashes.id = %s', new.id);
-        raise notice 'Updating crashes record from CRIS update';
+        raise debug 'Updating crashes record from CRIS update';
         execute (update_stmt) using new;
     else
-        raise notice 'No changes to unified record needed';
+        raise debug 'No changes to unified record needed';
     end if;
     return null;
 end;
@@ -92,10 +92,10 @@ begin
         update_stmt := update_stmt
             || array_to_string(updates_todo, ',')
             || format(' where public.units.id = %s', new.id);
-        raise notice 'Updating units record from CRIS update';
+        raise debug 'Updating units record from CRIS update';
         execute (update_stmt) using new;
     else
-        raise notice 'No changes to unified record needed';
+        raise debug 'No changes to unified record needed';
     end if;
     return null;
 end;
@@ -146,10 +146,10 @@ begin
         update_stmt := update_stmt
             || array_to_string(updates_todo, ',')
             || format(' where public.people.id = %s', new.id);
-        raise notice 'Updating people record from CRIS update';
+        raise debug 'Updating people record from CRIS update';
         execute (update_stmt) using new;
     else
-        raise notice 'No changes to unified record needed';
+        raise debug 'No changes to unified record needed';
     end if;
     return null;
 end;

@@ -34,7 +34,7 @@ begin
         || array_to_string(updates_todo, ',')
         || format(' from (select * from public.crashes_cris where public.crashes_cris.id = %s) as cris_record', new.id)
         || format(' where public.crashes.id = %s ', new.id);
-    raise notice 'Updating unified crashes record from edit update';
+    raise debug 'Updating unified crashes record from edit update';
     execute (update_stmt) using new;
     return null;
 end;
@@ -81,7 +81,7 @@ begin
         || array_to_string(updates_todo, ',')
         || format(' from (select * from public.units_cris where public.units_cris.id = %s) as cris_record', new.id)
         || format(' where public.units.id = %s ', new.id);
-    raise notice 'Updating unified units record from edit update';
+    raise debug 'Updating unified units record from edit update';
     execute (update_stmt) using new;
     return null;
 end;
@@ -128,7 +128,7 @@ begin
         || array_to_string(updates_todo, ',')
         || format(' from (select * from public.people_cris where public.people_cris.id = %s) as cris_record', new.id)
         || format(' where public.people.id = %s ', new.id);
-    raise notice 'Updating unified people record from edit update';
+    raise debug 'Updating unified people record from edit update';
     execute (update_stmt) using new;
     return null;
 end;

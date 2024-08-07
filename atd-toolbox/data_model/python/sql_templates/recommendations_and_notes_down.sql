@@ -12,3 +12,6 @@ alter table crash_notes alter column crash_id set not null;
 alter table location_notes
 drop constraint fk_location_note_location,
 alter column location_id drop not null;
+
+alter table _cris_import_log rename to cris_import_log;
+alter table cris_import_log add column outcome_status text;

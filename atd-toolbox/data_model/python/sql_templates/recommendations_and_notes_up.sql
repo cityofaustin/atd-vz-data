@@ -24,3 +24,8 @@ add constraint fk_location_note_location foreign key (
     location_id
 ) references atd_txdot_locations (location_id),
 alter column location_id set not null;
+
+-- squeezing this in here
+alter table cris_import_log rename to _cris_import_log;
+alter table _cris_import_log drop column outcome_status;
+alter table _cris_import_log alter column records_processed drop DEFAULT;

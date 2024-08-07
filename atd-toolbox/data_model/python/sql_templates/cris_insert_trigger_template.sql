@@ -5,7 +5,9 @@ as
 $$
 BEGIN
     -- insert new combined / official record
-    INSERT INTO public.$tableName$ ($affectedColumns$) values (
+    INSERT INTO public.$tableName$ (
+        $affectedColumns$
+    ) values (
         $affectedColumnsWithNewPrefix$
     );
     -- insert new (editable) vz record (only record ID)
