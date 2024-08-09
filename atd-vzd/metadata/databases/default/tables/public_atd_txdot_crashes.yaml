@@ -84,13 +84,6 @@ object_relationships:
           name: atd_txdot__wthr_cond_lkp
           schema: public
 array_relationships:
-  - name: crash_notes
-    using:
-      foreign_key_constraint_on:
-        column: atd_txdot_crashes_crash_id
-        table:
-          name: crash_notes
-          schema: public
   - name: units
     using:
       manual_configuration:
