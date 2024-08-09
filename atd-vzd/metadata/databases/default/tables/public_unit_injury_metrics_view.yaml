@@ -1,0 +1,52 @@
+table:
+  name: unit_injury_metrics_view
+  schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - cris_fatality_count
+        - fatality_count
+        - law_enf_fatality_count
+        - nonincap_injry_count
+        - non_injry_count
+        - poss_injry_count
+        - sus_serious_injry_count
+        - unkn_injry_count
+        - vz_fatality_count
+        - years_of_life_lost
+        - id
+      filter: {}
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - cris_fatality_count
+        - fatality_count
+        - law_enf_fatality_count
+        - nonincap_injry_count
+        - non_injry_count
+        - poss_injry_count
+        - sus_serious_injry_count
+        - unkn_injry_count
+        - vz_fatality_count
+        - years_of_life_lost
+        - id
+      filter: {}
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - cris_fatality_count
+        - fatality_count
+        - law_enf_fatality_count
+        - nonincap_injry_count
+        - non_injry_count
+        - poss_injry_count
+        - sus_serious_injry_count
+        - unkn_injry_count
+        - vz_fatality_count
+        - years_of_life_lost
+        - id
+      filter: {}
+    comment: ""

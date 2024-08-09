@@ -29,15 +29,6 @@ object_relationships:
         remote_table:
           name: atd_txdot__ethnicity_lkp
           schema: public
-  - name: fatality
-    using:
-      manual_configuration:
-        column_mapping:
-          primaryperson_id: primaryperson_id
-        insertion_order: null
-        remote_table:
-          name: fatalities
-          schema: public
   - name: gender
     using:
       manual_configuration:

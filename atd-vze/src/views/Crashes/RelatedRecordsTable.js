@@ -9,6 +9,7 @@ const RelatedRecordsTable = ({
   fieldConfig,
   data,
   sortField,
+  secondSortField,
   tableName,
   keyField,
   lookupOptions,
@@ -76,9 +77,17 @@ const RelatedRecordsTable = ({
   const formatValue = (data, field) => {
     let fieldValue = data[field];
 
-    if (typeof data[field] === "object") {
+    // If the field comes from a hasura relationship then set the fieldValue accordingly
+    if (fieldConfig.fields[field].relationshipName) {
+      fieldValue = data[fieldConfig.fields[field].relationshipName][field];
+      // If the field value is still an object we need to go a layer deeper to get the lookup desc
+    } else if (typeof data[field] === "object") {
       fieldValue =
         data[field] && data[field][fieldConfig.fields[field].lookup_desc];
+    } else if (data[field] === true) {
+      fieldValue = "YES";
+    } else if (data[field] === false) {
+      fieldValue = "NO";
     }
 
     // Display null values as blanks, but allow 0
@@ -112,7 +121,11 @@ const RelatedRecordsTable = ({
         </thead>
         <tbody>
           {data
-            .sort((a, b) => (a[sortField] > b[sortField] ? 1 : -1))
+            .sort(
+              (a, b) =>
+                a[sortField] - b[sortField] ||
+                a[secondSortField] - b[secondSortField]
+            )
             .map(row => {
               return (
                 <tr key={`table-${tableName}-${row[keyField]}`}>
@@ -126,7 +139,7 @@ const RelatedRecordsTable = ({
                     .map((field, i) => {
                       // Render victim name cell in victim name column if row is a fatality
                       if (field === "victim_name") {
-                        if (row.prsn_injry_sev_id === 4) {
+                        if (row.injry_sev_lkp.id === 4) {
                           return (
                             <VictimNameField
                               key={`${field}-${i}`}
@@ -143,6 +156,8 @@ const RelatedRecordsTable = ({
                               field={field}
                               editField={editField}
                               editRow={editRow}
+                              refetch={refetch}
+                              isReadOnly={isReadOnly(roles)}
                               {...props}
                             ></VictimNameField>
                           );
@@ -153,9 +168,6 @@ const RelatedRecordsTable = ({
                       } else {
                         const isEditing =
                           editField === field && row === editRow;
-
-                        const fieldLookupPrefix =
-                          fieldConfig.fields[field].lookupPrefix;
 
                         const updateFieldKey = fieldConfig.fields[field]
                           .updateFieldKey
@@ -200,10 +212,8 @@ const RelatedRecordsTable = ({
                                     }
                                     defaultValue={
                                       // Check for null values and display as blank
-                                      row[field] &&
-                                      row[field][`${fieldLookupPrefix}_id`] !==
-                                        null
-                                        ? row[field][`${fieldLookupPrefix}_id`]
+                                      row[field] && row[field][`id`] !== null
+                                        ? row[field][`id`]
                                         : ""
                                     }
                                     type="select"
@@ -214,14 +224,10 @@ const RelatedRecordsTable = ({
                                     ].map(option => {
                                       return (
                                         <option
-                                          value={
-                                            option[`${fieldLookupPrefix}_id`]
-                                          }
-                                          key={
-                                            option[`${fieldLookupPrefix}_id`]
-                                          }
+                                          value={option[`id`]}
+                                          key={option[`id`]}
                                         >
-                                          {option[`${fieldLookupPrefix}_desc`]}
+                                          {option[`label`]}
                                         </option>
                                       );
                                     })}
@@ -236,9 +242,8 @@ const RelatedRecordsTable = ({
                                       handleInputChange(e, updateFieldKey)
                                     }
                                   >
-                                    <option value={""}>NO DATA</option>
-                                    <option value={true}>TRUE</option>
-                                    <option value={false}>FALSE</option>
+                                    <option value={true}>YES</option>
+                                    <option value={false}>NO</option>
                                   </Input>
                                 )}
                                 <div className="d-flex">

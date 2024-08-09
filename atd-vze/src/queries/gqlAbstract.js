@@ -285,8 +285,6 @@ gqlAbstractTableAggregateName (
 
     if (value === null) {
       return "-";
-    } else {
-      value = String(value);
     }
 
     if (!!this.config.columns[columnName].filter) {

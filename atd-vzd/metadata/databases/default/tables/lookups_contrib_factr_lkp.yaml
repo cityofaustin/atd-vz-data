@@ -1,0 +1,134 @@
+table:
+  name: contrib_factr_lkp
+  schema: lookups
+array_relationships:
+  - name: units
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_1_id
+        table:
+          name: units
+          schema: public
+  - name: unitsCrisByContribFactr2Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_2_id
+        table:
+          name: units_cris
+          schema: public
+  - name: unitsCrisByContribFactr3Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_3_id
+        table:
+          name: units_cris
+          schema: public
+  - name: unitsCrisByContribFactrP1Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_p1_id
+        table:
+          name: units_cris
+          schema: public
+  - name: unitsCrisByContribFactrP2Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_p2_id
+        table:
+          name: units_cris
+          schema: public
+  - name: unitsEditsByContribFactr2Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_2_id
+        table:
+          name: units_edits
+          schema: public
+  - name: unitsEditsByContribFactr3Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_3_id
+        table:
+          name: units_edits
+          schema: public
+  - name: unitsEditsByContribFactrP1Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_p1_id
+        table:
+          name: units_edits
+          schema: public
+  - name: unitsEditsByContribFactrP2Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_p2_id
+        table:
+          name: units_edits
+          schema: public
+  - name: unitsUnifiedsByContribFactr2Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_2_id
+        table:
+          name: units
+          schema: public
+  - name: unitsUnifiedsByContribFactr3Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_3_id
+        table:
+          name: units
+          schema: public
+  - name: unitsUnifiedsByContribFactrP1Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_p1_id
+        table:
+          name: units
+          schema: public
+  - name: unitsUnifiedsByContribFactrP2Id
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_p2_id
+        table:
+          name: units
+          schema: public
+  - name: units_cris
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_1_id
+        table:
+          name: units_cris
+          schema: public
+  - name: units_edits
+    using:
+      foreign_key_constraint_on:
+        column: contrib_factr_1_id
+        table:
+          name: units_edits
+          schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - id
+        - label
+        - source
+      filter: {}
+    comment: ""

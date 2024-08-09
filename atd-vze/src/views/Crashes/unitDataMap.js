@@ -1,6 +1,5 @@
 export const unitDataMap = [
   {
-    title: "Unit",
     mutationVariableKey: "unitId",
 
     fields: {
@@ -8,25 +7,23 @@ export const unitDataMap = [
         label: "Unit",
         editable: false,
       },
-      unit_description: {
+      unit_desc_lkp: {
         edit_field_name: "unit_desc_id",
         label: "Type",
         editable: true,
         format: "select",
-        lookup_desc: "veh_unit_desc_desc",
-        lookupOptions: "atd_txdot__veh_unit_desc_lkp",
-        lookupPrefix: "veh_unit_desc",
+        lookup_desc: "label",
+        lookupOptions: "lookups_unit_desc_lkp",
         updateFieldKey: "unit_desc_id",
         mutationVariableKey: "unitId",
       },
-      body_style: {
+      veh_body_styl_lkp: {
         edit_field_name: "veh_body_styl_id",
         label: "Body Style",
         editable: true,
         format: "select",
-        lookup_desc: "veh_body_styl_desc",
-        lookupOptions: "atd_txdot__veh_body_styl_lkp",
-        lookupPrefix: "veh_body_styl",
+        lookup_desc: "label",
+        lookupOptions: "lookups_veh_body_styl_lkp",
         updateFieldKey: "veh_body_styl_id",
         mutationVariableKey: "unitId",
       },
@@ -34,54 +31,50 @@ export const unitDataMap = [
         label: "Year",
         editable: false,
       },
-      make: {
+      veh_make_lkp: {
         label: "Make",
         editable: false,
-        lookup_desc: "veh_make_desc",
+        lookup_desc: "label",
       },
-      model: {
+      veh_mod_lkp: {
         label: "Model",
         editable: false,
-        lookup_desc: "veh_mod_desc",
+        lookup_desc: "label",
       },
-      travel_direction_desc: {
-        edit_field_name: "travel_direction",
+      trvl_dir_lkp: {
+        edit_field_name: "veh_trvl_dir_id",
         label: "Direction",
         editable: true,
         format: "select",
-        lookup_desc: "trvl_dir_desc",
-        lookupOptions: "atd_txdot__trvl_dir_lkp",
-        lookupPrefix: "trvl_dir",
-        updateFieldKey: "travel_direction",
+        lookup_desc: "label",
+        lookupOptions: "lookups_trvl_dir_lkp",
+        updateFieldKey: "veh_trvl_dir_id",
         mutationVariableKey: "unitId",
       },
-      movement: {
+      movt_lkp: {
         edit_field_name: "movement_id",
         label: "Movement",
         editable: true,
         format: "select",
-        lookup_desc: "movement_desc",
-        lookupOptions: "atd_txdot__movt_lkp",
-        lookupPrefix: "movement",
+        lookup_desc: "label",
+        lookupOptions: "lookups_movt_lkp",
         updateFieldKey: "movement_id",
         mutationVariableKey: "unitId",
       },
-      death_cnt: {
+      vz_fatality_count: {
+        relationshipName: "unit_injury_metrics_view",
         label: "Fatalities",
-        editable: true,
-        format: "text",
-        mutationVariableKey: "unitId",
+        editable: false,
       },
-      sus_serious_injry_cnt: {
+      sus_serious_injry_count: {
+        relationshipName: "unit_injury_metrics_view",
         label: "Suspected Serious Injuries",
-        editable: true,
-        format: "text",
-        mutationVariableKey: "unitId",
+        editable: false,
       },
-      contributing_factor_1: {
+      contrib_factr_lkp: {
         label: "Primary Contributing Factor",
         editable: false,
-        lookup_desc: "contrib_factr_desc",
+        lookup_desc: "label",
       },
     },
   },

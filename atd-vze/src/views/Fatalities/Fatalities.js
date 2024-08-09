@@ -12,7 +12,8 @@ import {
 
 // Our initial query configuration
 let queryConf = {
-  table: "view_fatalities",
+  table: "fatalities_view",
+  dateField: "crash_date_ct",
   single_item: "crashes",
   showDateRange: true,
   columns: fatalityGridTableColumns,

@@ -1,0 +1,7 @@
+table:
+  name: change_log_crashes
+  schema: public
+object_relationships:
+  - name: crashes
+    using:
+      foreign_key_constraint_on: record_id

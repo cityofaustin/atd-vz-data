@@ -1,9 +1,9 @@
-version: '3'
-
 services:
   socrata_export:
     build: .
     volumes:
       - .:/app
     env_file:
-      - ./.env
+      - .env
+    network_mode: host
+    entrypoint: /bin/bash

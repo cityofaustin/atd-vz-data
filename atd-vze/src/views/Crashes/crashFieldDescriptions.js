@@ -58,9 +58,6 @@ export const piiFields = {
  * @type {object}
  */
 export const notNullValues = {
-  charges: {
-    charge_cat_id: "0",
-  },
   primaryperson: {
     prsn_death_time: null,
   },
@@ -489,7 +486,6 @@ export const crashFieldDescription = {
     crash_id: { type: "integer" },
     unit_nbr: { type: "integer" },
     prsn_nbr: { type: "integer" },
-    charge_cat_id: { type: "integer" },
     charge: { type: "string" },
     citation_nbr: { type: "string" },
     last_update: { type: "string" },

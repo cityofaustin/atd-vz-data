@@ -318,7 +318,9 @@ const GridTable = ({
     typeof query.config.showDateRange !== "undefined"
       ? query.config.showDateRange
       : true;
-  const dateField = query.table === "atd_apd_blueform" ? "date" : "crash_date";
+
+  const dateField = query.config.dateField;
+
   // Handle Date Range (only if available)
   if (
     hasDateRange &&

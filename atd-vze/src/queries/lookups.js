@@ -2,95 +2,79 @@ import { gql } from "apollo-boost";
 
 export const GET_LOOKUPS = gql`
   {
-    atd_txdot__city_lkp {
-      city_id
-      city_desc
+    lookups_city_lkp {
+      id
+      label
     }
-    atd_txdot__collsn_lkp {
-      collsn_id
-      collsn_desc
+    lookups_collsn_lkp {
+      id
+      label
     }
-    atd_txdot__light_cond_lkp {
-      light_cond_id
-      light_cond_desc
+    lookups_light_cond_lkp {
+      id
+      label
     }
-    atd_txdot__injry_sev_lkp {
-      injry_sev_id
-      injry_sev_desc
+    lookups_injry_sev_lkp {
+      id
+      label
     }
-    atd_txdot__intrsct_relat_lkp {
-      intrsct_relat_id
-      intrsct_relat_desc
+    lookups_obj_struck_lkp {
+      id
+      label
     }
-    atd_txdot__obj_struck_lkp {
-      obj_struck_desc
-      obj_struck_id
+    lookups_road_part_lkp {
+      id
+      label
     }
-    atd_txdot__road_part_lkp {
-      road_part_id
-      road_part_desc
+    lookups_rwy_sys_lkp {
+      id
+      label
     }
-    atd_txdot__road_type_lkp {
-      road_type_id
-      road_type_desc
+    lookups_traffic_cntl_lkp {
+      id
+      label
     }
-    atd_txdot__rwy_sys_lkp {
-      rwy_sys_id
-      rwy_sys_desc
-    }
-    atd_txdot__traffic_cntl_lkp {
-      traffic_cntl_id
-      traffic_cntl_desc
-    }
-    atd_txdot__wthr_cond_lkp {
-      wthr_cond_id
-      wthr_cond_desc
-    }
-    atd_txdot__y_n_lkp {
-      y_n_id
-      y_n_desc
-    }
-    atd_txdot__asmp_level_lkp {
-      asmp_level_id
-      asmp_level_desc
+    lookups_wthr_cond_lkp {
+      id
+      label
     }
   }
 `;
 
 export const GET_UNIT_LOOKUPS = gql`
   {
-    atd_txdot__trvl_dir_lkp {
-      trvl_dir_id
-      trvl_dir_desc
+    lookups_trvl_dir_lkp {
+      id
+      label
     }
-    atd_txdot__movt_lkp {
-      movement_id
-      movement_desc
+    lookups_unit_desc_lkp {
+      id
+      label
     }
-    atd_txdot__veh_unit_desc_lkp {
-      veh_unit_desc_id
-      veh_unit_desc_desc
+    lookups_veh_body_styl_lkp {
+      id
+      label
     }
-    atd_txdot__veh_body_styl_lkp {
-      veh_body_styl_id
-      veh_body_styl_desc
+    lookups_movt_lkp {
+      id
+      label
     }
   }
 `;
 
 export const GET_PERSON_LOOKUPS = gql`
   {
-    atd_txdot__injry_sev_lkp {
-      injry_sev_id
-      injry_sev_desc
+    lookups_injry_sev_lkp {
+      id
+      label
     }
-    atd_txdot__ethnicity_lkp {
-      ethnicity_id
-      ethnicity_desc
+    lookups_drvr_ethncty_lkp {
+      id
+      label
     }
-    atd_txdot__gndr_lkp {
-      gndr_id
-      gndr_desc
+    lookups_gndr_lkp {
+      id
+      label
     }
   }
 `;

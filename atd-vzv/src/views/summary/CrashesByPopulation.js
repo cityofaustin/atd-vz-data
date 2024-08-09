@@ -21,18 +21,18 @@ const CrashesByPopulation = () => {
   const url = `${crashEndpointUrl}?$query=`;
 
   useEffect(() => {
-    const dateCondition = `crash_date BETWEEN '${format(
+    const dateCondition = `crash_timestamp_ct BETWEEN '${format(
       dataStartDate,
       "yyyy-MM-dd"
     )}T00:00:00' and '${fiveYearAvgEndDateByPop}T23:59:59'`;
     const queryGroupAndOrder = `GROUP BY year ORDER BY year`;
 
     const queries = {
-      fatalities: `SELECT date_extract_y(crash_date) as year, sum(death_cnt) as total 
+      fatalities: `SELECT date_extract_y(crash_timestamp_ct) as year, sum(death_cnt) as total 
                    WHERE death_cnt > 0 AND ${dateCondition} ${queryGroupAndOrder}`,
-      fatalitiesAndSeriousInjuries: `SELECT date_extract_y(crash_date) as year, sum(death_cnt) + sum(sus_serious_injry_cnt) as total 
+      fatalitiesAndSeriousInjuries: `SELECT date_extract_y(crash_timestamp_ct) as year, sum(death_cnt) + sum(sus_serious_injry_cnt) as total 
                                      WHERE (death_cnt > 0 OR sus_serious_injry_cnt > 0) AND ${dateCondition} ${queryGroupAndOrder}`,
-      seriousInjuries: `SELECT date_extract_y(crash_date) as year, sum(sus_serious_injry_cnt) as total 
+      seriousInjuries: `SELECT date_extract_y(crash_timestamp_ct) as year, sum(sus_serious_injry_cnt) as total 
                         WHERE sus_serious_injry_cnt > 0 AND ${dateCondition} ${queryGroupAndOrder}`,
     };
 

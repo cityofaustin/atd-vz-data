@@ -1,10 +1,8 @@
-FROM python:3.10-slim
-
-RUN apt-get update
-RUN apt-get upgrade -y
+FROM python:3.11-slim
 
 WORKDIR /app
-
 COPY . /app
 
-RUN cd /app && pip install -r requirements.txt
+RUN apt-get -y update
+RUN chmod -R 755 /app/*
+RUN pip install -r requirements.txt

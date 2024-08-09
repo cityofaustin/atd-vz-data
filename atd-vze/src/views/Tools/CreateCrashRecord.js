@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useReducer } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@apollo/react-hooks";
 
 import {
   Alert,
@@ -15,6 +16,7 @@ import {
   FormGroup,
   FormText,
   FormFeedback,
+  Row,
 } from "reactstrap";
 import { format } from "date-fns";
 import { withApollo } from "react-apollo";
@@ -22,38 +24,86 @@ import { gql } from "apollo-boost";
 import "./CreateCrashRecord.css";
 import UnitsForm from "./UnitsForm";
 import CreateCrashRecordTable from "./CreateCrashRecordTable";
+import { GET_TEMP_RECORDS } from "../../queries/tempRecords";
 import { useAuth0 } from "../../auth/authContext";
 
+// Builds an array of units objects with nested arrays of person objects within them
+function buildNestedObjects(unitFormState, userEmail) {
+  const unitObjects = [];
+
+  unitFormState.forEach((unit, i) => {
+    const unitNumber = i + 1;
+
+    const personObjects = [];
+
+    for (let index = 0; index < Number(unit.fatality_count); index++) {
+      personObjects.push({
+        unit_nbr: unitNumber,
+        prsn_injry_sev_id: 4,
+        cris_schema_version: "2023",
+        is_primary_person: true,
+        updated_by: userEmail,
+        created_by: userEmail,
+      });
+    }
+
+    for (let index = 0; index < Number(unit.sus_serious_injry_cnt); index++) {
+      personObjects.push({
+        unit_nbr: unitNumber,
+        prsn_injry_sev_id: 1,
+        cris_schema_version: "2023",
+        is_primary_person: true,
+        updated_by: userEmail,
+        created_by: userEmail,
+      });
+    }
+
+    unitObjects.push({
+      unit_nbr: unitNumber,
+      unit_desc_id: Number(unit.unit_desc_id),
+      cris_schema_version: "2023",
+      updated_by: userEmail,
+      created_by: userEmail,
+      people_cris: {
+        data: personObjects,
+      },
+    });
+  });
+  return unitObjects;
+}
+
 const CreateCrashRecord = ({ client }) => {
+  const { loading, error, data, refetch } = useQuery(GET_TEMP_RECORDS, {
+    fetchPolicy: "no-cache",
+  });
+
   const { user } = useAuth0();
 
+  const userEmail = user.email;
+
   const unitsInitialState = [
-    { unit_desc_id: 1, atd_fatality_count: 0, sus_serious_injry_cnt: 0 },
+    { unit_desc_id: 1, fatality_count: 0, sus_serious_injry_cnt: 0 },
   ];
 
   const formInitialState = {
-    tempId: 1000,
     caseId: "",
-    crashTime: format(new Date(), "HH:mm:ss"),
-    crashDate: format(new Date(), "yyyy-MM-dd"),
-    primaryAddress: "",
-    secondayAddress: "",
-    units: [
-      { unit_desc_id: 1, atd_fatality_count: 0, sus_serious_injry_cnt: 0 },
-    ],
+    crashTimestamp: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+    primaryStreetName: "",
+    secondaryStreetName: "",
+    units: [{ unit_desc_id: 1, fatality_count: 0, sus_serious_injry_cnt: 0 }],
   };
 
-  const [tempId, setTempId] = useState(formInitialState.tempId);
   const [caseId, setCaseId] = useState(formInitialState.caseId);
   const [successfulNewRecordId, setSuccessfulNewRecordId] = useState(null);
-  const [crashTime, setCrashTime] = useState(formInitialState.crashTime);
-  const [crashDate, setCrashDate] = useState(formInitialState.crashDate);
-  const [feedback, setFeedback] = useState(false);
-  const [primaryAddress, setPrimaryAddress] = useState(
-    formInitialState.primaryAddress
+  const [crashTimestamp, setCrashTimestamp] = useState(
+    formInitialState.crashTimestamp
   );
-  const [secondayAddress, setSecondaryAddress] = useState(
-    formInitialState.secondayAddress
+  const [feedback, setFeedback] = useState(false);
+  const [primaryStreetName, setPrimaryStreetName] = useState(
+    formInitialState.primaryStreetName
+  );
+  const [secondaryStreetName, setSecondaryStreetName] = useState(
+    formInitialState.secondaryStreetname
   );
 
   function unitsReducer(state, action) {
@@ -83,43 +133,11 @@ const CreateCrashRecord = ({ client }) => {
     return !data;
   }
 
-  useEffect(() => {
-    const GET_HIGHEST_TEMP_RECORD_ID = gql`
-      {
-        atd_txdot_crashes(
-          where: { temp_record: { _eq: true } }
-          limit: 1
-          order_by: { crash_id: desc }
-        ) {
-          crash_id
-        }
-      }
-    `;
-
-    client
-      .mutate({
-        mutation: GET_HIGHEST_TEMP_RECORD_ID,
-      })
-      .then(res => {
-        // Find the highest existing temp crash record ID value.
-        // If there aren't and temp crash records,
-        // default to 1000.
-        const highestCurrentTempId = res.data.atd_txdot_crashes[0]
-          ? res.data.atd_txdot_crashes[0].crash_id
-          : 1000;
-        setTempId(highestCurrentTempId + 1);
-      })
-      .catch(error => {
-        setFeedback({ title: "Error", message: String(error) });
-      });
-  }, [client]);
-
   const resetForm = () => {
     setCaseId(formInitialState.caseId);
-    setCrashTime(formInitialState.crashTime);
-    setCrashDate(formInitialState.crashDate);
-    setPrimaryAddress(formInitialState.primaryAddress);
-    setSecondaryAddress(formInitialState.secondayAddress);
+    setCrashTimestamp(formInitialState.crashTimestamp);
+    setPrimaryStreetName(formInitialState.primaryStreetName);
+    setSecondaryStreetName(formInitialState.secondaryStreetName);
     unitFormDispatch({ type: "reset" });
   };
 
@@ -127,338 +145,254 @@ const CreateCrashRecord = ({ client }) => {
     e.preventDefault();
     setFeedback(false);
 
-    client
-      .query({
-        query: gql`
-          {
-            atd_txdot_crashes(where: {case_id: {_eq: "${caseId}"}}) {
-              case_id
-            }
-          }
-        `,
-      })
-      .then(res => {
-        if (res.data.atd_txdot_crashes.length > 0) {
-          setFeedback({ title: "Error", message: "Case ID must be unique." });
-        } else {
-          if (isFieldInvalid(caseId)) {
-            setFeedback({
-              title: "Error",
-              message: "Must have a valid Case ID.",
-            });
-            return false;
-          }
+    if (isFieldInvalid(caseId)) {
+      setFeedback({
+        title: "Error",
+        message: "Case ID is required",
+      });
+      return false;
+    }
+    if (isFieldInvalid(crashTimestamp)) {
+      setFeedback({
+        title: "Error",
+        message: "Crash timestamp is required",
+      });
+      return false;
+    }
+    if (isFieldInvalid(primaryStreetName)) {
+      setFeedback({
+        title: "Error",
+        message: "Primary address is required",
+      });
+      return false;
+    }
 
-          // Build an array of persons objects formated as a string
-          // so the String can be interpolated into the gql tag syntax.
-          let personObjects = "[";
-          let unitObjects = "[";
+    const unitObjects = buildNestedObjects(unitFormState, userEmail);
 
-          unitFormState.forEach((unit, i) => {
-            let unitNumber = i + 1;
-
-            unitObjects = unitObjects.concat(
-              `{
-          crash_id: $crash_id,
-          unit_nbr: ${unitNumber},
-          death_cnt: ${Number(unit.atd_fatality_count)},
-          sus_serious_injry_cnt: ${Number(unit.sus_serious_injry_cnt)},
-          unit_desc_id: ${Number(unit.unit_desc_id)}
-        }`
-            );
-
-            for (
-              let index = 0;
-              index < Number(unit.atd_fatality_count);
-              index++
-            ) {
-              personObjects = personObjects.concat(`{
-        crash_id: ${tempId},
-        unit_nbr: ${unitNumber},
-        prsn_injry_sev_id: 4,
-      }`);
-            }
-
-            for (
-              let index = 0;
-              index < Number(unit.sus_serious_injry_cnt);
-              index++
-            ) {
-              personObjects = personObjects.concat(`{
-        crash_id: ${tempId},
-        unit_nbr: ${unitNumber},
-        prsn_injry_sev_id: 1,
-      }`);
-            }
-          });
-
-          personObjects = personObjects.concat("]");
-          unitObjects = unitObjects.concat("]");
-
-          const INSERT_BULK = gql`
-      mutation bulkInsert(
-        $address_confirmed_primary: String
-        $address_confirmed_secondary: String
-        $atd_fatality_count: Int
-        $case_id: String
-        $crash_date: date
-        $crash_fatal_fl: String
-        $crash_id: Int
-        $crash_time: time,
-        $sus_serious_injry_cnt: Int,
-        $updated_by: String
-      ) {
-        insert_atd_txdot_crashes(
-          objects: [
-            {
-              address_confirmed_primary: $address_confirmed_primary
-              address_confirmed_secondary: $address_confirmed_secondary
-              atd_fatality_count: $atd_fatality_count
-              case_id: $case_id
-              city_id: 22
-              crash_date: $crash_date
-              crash_fatal_fl: $crash_fatal_fl
-              crash_id: $crash_id
-              crash_time: $crash_time
-              sus_serious_injry_cnt: $sus_serious_injry_cnt
-              updated_by: $updated_by 
-              temp_record: true
-            }
-          ]
-        ) {
-          affected_rows
+    const INSERT_BULK = gql`
+      mutation bulkInsert($crash_data: crashes_cris_insert_input!) {
+        insert_crashes_cris(objects: [$crash_data]) {
           returning {
-            crash_id
+            id
           }
-        }
-
-        insert_atd_txdot_units(
-          objects: ${unitObjects}
-        ) {
-          affected_rows
-        }
-
-        insert_atd_txdot_primaryperson(objects: ${personObjects}) {
-          affected_rows
         }
       }
     `;
-          const fatalityCountSum = unitFormState.reduce(
-            (a, b) => a + Number(b.atd_fatality_count),
-            0
-          );
-          const susSeriousInjuryCountSum = unitFormState.reduce(
-            (a, b) => a + Number(b.sus_serious_injry_cnt),
-            0
-          );
 
-          const crashVariables = {
-            atd_fatality_count: fatalityCountSum,
-            address_confirmed_primary: primaryAddress,
-            address_confirmed_secondary: secondayAddress,
+    client
+      .mutate({
+        mutation: INSERT_BULK,
+        variables: {
+          crash_data: {
+            rpt_street_name: primaryStreetName?.toUpperCase(),
+            rpt_sec_street_name: secondaryStreetName?.toUpperCase(),
             case_id: caseId,
-            crash_date: crashDate,
-            crash_fatal_fl: fatalityCountSum > 0 ? "Y" : "N",
-            crash_id: tempId,
-            crash_time: crashTime,
-            sus_serious_injry_cnt: susSeriousInjuryCountSum,
-            updated_by: user.email,
-          };
-
-          client
-            .mutate({
-              mutation: INSERT_BULK,
-              variables: crashVariables,
-            })
-            .then(res => {
-              // Increment the temp ID so the user can resuse the form.
-              setTempId(tempId + 1);
-              setSuccessfulNewRecordId(
-                res.data.insert_atd_txdot_crashes.returning[0].crash_id
-              );
-              resetForm();
-              // unitFormDispatch({ type: "reset" });
-            })
-            .catch(error => {
-              setFeedback({ title: "Error", message: String(error) });
-            });
-        }
+            rpt_city_id: 22,
+            crash_timestamp: new Date(crashTimestamp).toISOString(),
+            updated_by: userEmail,
+            created_by: userEmail,
+            cris_schema_version: "2023",
+            is_temp_record: true,
+            private_dr_fl: false,
+            units_cris: {
+              data: unitObjects,
+            },
+          },
+        },
+      })
+      .then(res => {
+        // Re-route to the crash details page for the new temp record on successful creation
+        setSuccessfulNewRecordId(res.data.insert_crashes_cris.returning[0].id);
+        refetch();
+      })
+      .catch(error => {
+        setFeedback({ title: "Error", message: String(error) });
       });
   };
 
   return (
-    <Form
-      onSubmit={e => handleFormSubmit(e)}
-      onReset={e => resetForm(e)}
-      className="form-horizontal"
-    >
-      <Card>
-        <CardHeader>Create New Crash Record Set</CardHeader>
-        <CardBody>
-          <Alert
-            color="success"
-            isOpen={!!successfulNewRecordId}
-            toggle={e => setSuccessfulNewRecordId(false)}
+    <>
+      <Row>
+        <Col md={6} className="p-0">
+          <Form
+            onSubmit={e => handleFormSubmit(e)}
+            onReset={e => resetForm(e)}
+            className="form-horizontal"
           >
-            {/*eslint-disable-next-line*/}
-            Crash record creation successful.{" "}
-            <Link
-              to={`/crashes/${successfulNewRecordId}`}
-              className="alert-link"
-            >
-              Open new Crash ID #{successfulNewRecordId} details page
-            </Link>
-            .
-          </Alert>
-          <Alert
-            color="danger"
-            isOpen={!!feedback}
-            toggle={e => setFeedback(false)}
-          >
-            {feedback.title}: {feedback.message}
-          </Alert>
+            <Card md={1}>
+              <CardHeader>Create New Crash Record Set</CardHeader>
+              <CardBody>
+                <FormGroup row>
+                  <Col md="4">
+                    <Label htmlFor="hf-email">Case ID</Label>
+                  </Col>
+                  <Col xs="12" md="8">
+                    <Input
+                      type="number"
+                      id="hf-case-id"
+                      name="hf-case-id"
+                      placeholder="Enter Case ID..."
+                      autoComplete="off"
+                      value={caseId}
+                      onChange={e => setCaseId(e.target.value)}
+                    />
+                    {isFieldInvalid(caseId) ? (
+                      <FormFeedback>
+                        Case ID must be unique and can't be blank.
+                      </FormFeedback>
+                    ) : (
+                      <FormText className="help-block">
+                        Please enter the Case ID
+                      </FormText>
+                    )}
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Col md="4">
+                    <Label htmlFor="date-input">Crash Timestamp</Label>
+                  </Col>
+                  <Col xs="12" md="8">
+                    <Input
+                      type="datetime-local"
+                      id="timestamp-input"
+                      name="timestamp-input"
+                      placeholder="timestamp"
+                      value={crashTimestamp}
+                      invalid={isFieldInvalid(crashTimestamp)}
+                      onChange={e => setCrashTimestamp(e.target.value)}
+                    />
+                    {isFieldInvalid(crashTimestamp) ? (
+                      <FormFeedback>
+                        Crash Timestamp can't be blank.
+                      </FormFeedback>
+                    ) : (
+                      <FormText className="help-block">
+                        Please enter the Crash Timestamp
+                      </FormText>
+                    )}
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Col md="4">
+                    <Label htmlFor="date-input">Primary Address</Label>
+                  </Col>
+                  <Col xs="12" md="8">
+                    <Input
+                      type="text"
+                      id="primary-address-input"
+                      name="primary-address-input"
+                      placeholder="ex: S 900 AUSTIN AVE"
+                      autoComplete="off"
+                      value={primaryStreetName?.toUpperCase() || ""}
+                      onChange={e => setPrimaryStreetName(e.target.value)}
+                    />
+                    <FormText className="help-block">
+                      Please enter the Primary Address
+                    </FormText>
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Col md="4">
+                    <Label htmlFor="date-input">Secondary Address</Label>
+                  </Col>
+                  <Col xs="12" md="8">
+                    <Input
+                      type="text"
+                      id="secondary-address-input"
+                      name="secondary-address-input"
+                      autoComplete="off"
+                      placeholder="ex: N MOPAC BLVD"
+                      value={secondaryStreetName?.toUpperCase() || ""}
+                      onChange={e => setSecondaryStreetName(e.target.value)}
+                    />
+                    <FormText className="help-block">
+                      Please enter the Secondary Address
+                    </FormText>
+                  </Col>
+                </FormGroup>
 
-          <FormGroup row>
-            <Col md="3">
-              <Label htmlFor="hf-email">Case ID</Label>
-            </Col>
-            <Col xs="12" md="9">
-              <Input
-                type="number"
-                id="hf-case-id"
-                name="hf-case-id"
-                placeholder="Enter Case ID..."
-                value={caseId}
-                onChange={e => setCaseId(e.target.value)}
-              />
-              {isFieldInvalid(caseId) ? (
-                <FormFeedback>
-                  Case ID must be unique and can't be blank.
-                </FormFeedback>
-              ) : (
-                <FormText className="help-block">
-                  Please enter the Case ID
-                </FormText>
-              )}
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col md="3">
-              <Label htmlFor="date-input">Crash Time</Label>
-            </Col>
-            <Col xs="12" md="9">
-              <Input
-                type="time"
-                id="time-input"
-                name="time-input"
-                placeholder="time"
-                value={crashTime}
-                invalid={isFieldInvalid(crashTime)}
-                onChange={e => setCrashTime(e.target.value)}
-              />
-              {isFieldInvalid(crashTime) ? (
-                <FormFeedback>Crash Time can't be blank.</FormFeedback>
-              ) : (
-                <FormText className="help-block">
-                  Please enter the Crash Time
-                </FormText>
-              )}
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col md="3">
-              <Label htmlFor="date-input">Crash Date</Label>
-            </Col>
-            <Col xs="12" md="9">
-              <Input
-                type="date"
-                id="date-input"
-                name="date-input"
-                placeholder="date"
-                value={crashDate}
-                invalid={isFieldInvalid(crashDate)}
-                onChange={e => setCrashDate(e.target.value)}
-              />
-              {isFieldInvalid(crashDate) ? (
-                <FormFeedback>Crash Date can't be blank.</FormFeedback>
-              ) : (
-                <FormText className="help-block">
-                  Please enter the Crash Date.
-                </FormText>
-              )}
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col md="3">
-              <Label htmlFor="date-input">Primary Address</Label>
-            </Col>
-            <Col xs="12" md="9">
-              <Input
-                type="text"
-                id="primary-address-input"
-                name="primary-address-input"
-                placeholder="ex: S 900 AUSTIN AVE"
-                value={primaryAddress}
-                onChange={e => setPrimaryAddress(e.target.value)}
-              />
-              <FormText className="help-block">
-                Please enter the Primary Address
-              </FormText>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col md="3">
-              <Label htmlFor="date-input">Secondary Address</Label>
-            </Col>
-            <Col xs="12" md="9">
-              <Input
-                type="text"
-                id="secondary-address-input"
-                name="secondary-address-input"
-                placeholder="ex: N MOPAC BLVD"
-                value={secondayAddress}
-                onChange={e => setSecondaryAddress(e.target.value)}
-              />
-              <FormText className="help-block">
-                Please enter the Secondary Address
-              </FormText>
-            </Col>
-          </FormGroup>
+                <UnitsForm
+                  units={unitFormState}
+                  handleUnitFormChange={unitFormDispatch}
+                  client={client}
+                />
 
-          <UnitsForm
-            units={unitFormState}
-            handleUnitFormChange={unitFormDispatch}
-            client={client}
+                <div className="d-flex flex-row-reverse">
+                  <Button
+                    color="primary"
+                    size="sm"
+                    onClick={e => {
+                      unitFormDispatch({
+                        type: "addNewUnit",
+                        payload: unitsInitialState[0],
+                      });
+                    }}
+                  >
+                    <i className="fa fa-plus"></i>&nbsp;Add Unit
+                  </Button>
+                </div>
+              </CardBody>
+              <CardFooter>
+                <div className="d-flex flex-row-reverse">
+                  <Button type="submit" size="lg" color="primary">
+                    <i className="fa fa-dot-circle-o"></i> Submit
+                  </Button>
+                  <Button
+                    type="reset"
+                    size="lg"
+                    color="danger"
+                    className="mr-3"
+                  >
+                    <i className="fa fa-ban"></i> Reset
+                  </Button>
+                </div>
+                <div className="py-2">
+                  <Alert
+                    color="success"
+                    className="text-center"
+                    isOpen={!!successfulNewRecordId}
+                    toggle={e => setSuccessfulNewRecordId(false)}
+                    fade={false}
+                  >
+                    {/*eslint-disable-next-line*/}
+                    <i className="fa fa-check-circle" /> Successfully created
+                    crash{" "}
+                    <Link
+                      to={`/crashes/T${successfulNewRecordId}`}
+                      className="alert-link"
+                    >
+                      #T{successfulNewRecordId}
+                    </Link>
+                  </Alert>
+                  <Alert
+                    color="danger"
+                    className="text-center"
+                    isOpen={!!feedback}
+                    toggle={e => setFeedback(false)}
+                    fade={false}
+                  >
+                    <i className="fa fa-exclamation-triangle" />{" "}
+                    {feedback.title}: {feedback.message}
+                  </Alert>
+                </div>
+              </CardFooter>
+            </Card>
+          </Form>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <CreateCrashRecordTable
+            crashesData={data.crashes}
+            loading={loading}
+            error={error}
+            refetch={refetch}
+            userEmail={userEmail}
+            setSuccessfulNewRecordId={setSuccessfulNewRecordId}
           />
-
-          <div className="d-flex flex-row-reverse">
-            <Button
-              color="primary"
-              size="sm"
-              onClick={e => {
-                unitFormDispatch({
-                  type: "addNewUnit",
-                  payload: unitsInitialState[0],
-                });
-              }}
-            >
-              <i className="fa fa-plus"></i>&nbsp;Add Unit
-            </Button>
-          </div>
-        </CardBody>
-        <CardFooter>
-          <div className="d-flex flex-row-reverse">
-            <Button type="submit" size="lg" color="primary">
-              <i className="fa fa-dot-circle-o"></i> Submit
-            </Button>
-            <Button type="reset" size="lg" color="danger" className="mr-3">
-              <i className="fa fa-ban"></i> Reset
-            </Button>
-          </div>
-        </CardFooter>
-      </Card>
-      <CreateCrashRecordTable />
-    </Form>
+        </Col>
+      </Row>
+    </>
   );
 };
 

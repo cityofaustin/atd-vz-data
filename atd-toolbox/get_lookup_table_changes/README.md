@@ -16,8 +16,12 @@ Fill in the values using your credentials for the VZ read replica.
 
 ### Running the script
 
-In order to run this script you need to have a recent CRIS lookup table export csv and provide the file path as an argument in the command line like so:
+In order to run this script you need to have a recent CRIS lookup table export csv and provide the file path as an argument using the `--input` arg like so:
 
 `python3 get_lookup_table_changes.py --input path_to_extract.csv `
 
-Running `get_lookup_table_changes.py` can take awhile, so sit tight. Once the script is done, a file will be created in this directory called `up_migrations.sql` that contains all of the sql commands generated from running the script. The contents of this file can then be used to create a migration in the hasura console so we can track these huge changes. A file called `down_migrations.sql` is also created in this directory which you can use as the down migration.
+Once the script is done, a file will be created in this directory called `up_migrations.sql` that contains all of the sql commands generated from running the script.
+
+**_WARNING_** _- You need to manually validate that the tables proposed to be dropped should actually be dropped. We don't want to accidentally drop a custom lookup table. Same with the deletions from lookup tables, we don't want to delete custom lookup values on accident either. If you need to remove anything, make sure to remove it from the down migration as well._
+
+The contents of the up migrations file can then be used to create a migration in the hasura console so we can track these huge changes. A file called `down_migrations.sql` is also created in this directory which you can use as the down migration.

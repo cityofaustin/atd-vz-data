@@ -89,6 +89,7 @@ class Widget02 extends Component {
       }
     };
 
+    
     return (
       <Card>
         <CardBody className={card.classes} {...attributes}>

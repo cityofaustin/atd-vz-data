@@ -212,7 +212,6 @@ select_permissions:
         - original_city_id
         - atd_fatality_count
         - temp_record
-        - cr3_file_metadata
         - cr3_ocr_extraction_date
         - investigator_narrative_ocr
         - est_comp_cost_crash_based
@@ -431,7 +430,6 @@ select_permissions:
         - original_city_id
         - atd_fatality_count
         - temp_record
-        - cr3_file_metadata
         - cr3_ocr_extraction_date
         - investigator_narrative_ocr
         - est_comp_cost_crash_based
@@ -543,7 +541,6 @@ select_permissions:
         - wthr_cond_id
         - atd_mode_category_metadata
         - geocode_match_metadata
-        - cr3_file_metadata
         - est_comp_cost
         - est_comp_cost_crash_based
         - est_econ_cost

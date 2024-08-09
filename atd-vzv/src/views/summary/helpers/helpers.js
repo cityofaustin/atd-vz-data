@@ -7,7 +7,7 @@ import { dataEndDate } from "../../../constants/time";
 const calcFieldTotalsFromRecords = (data, prevYear, currentYear, field) =>
   data.reduce(
     (accumulator, record) => {
-      const recordYear = record.crash_date.slice(0, 4);
+      const recordYear = record.crash_timestamp_ct.slice(0, 4);
       accumulator = {
         ...accumulator,
         [recordYear]: (accumulator[recordYear] += parseInt(record[field])),
@@ -31,7 +31,7 @@ export const calcSummaryTotalSeriousInjuries = (data, prevYear, currentYear) =>
 export const calcSummaryTotalCrashes = (data, prevYear, currentYear) =>
   data.reduce(
     (accumulator, record) => {
-      const recordYear = record.crash_date.slice(0, 4);
+      const recordYear = record.crash_timestamp_ct.slice(0, 4);
       accumulator = {
         ...accumulator,
         [recordYear]: (accumulator[recordYear] += 1),
@@ -58,7 +58,7 @@ const calcYearsOfLifeLost = (record) => {
 export const getSummaryYearsOfLifeLost = (data, prevYear, currentYear) => {
   return data.reduce(
     (accumulator, record) => {
-      const recordYear = record.crash_date.slice(0, 4);
+      const recordYear = record.crash_timestamp_ct.slice(0, 4);
       accumulator = {
         ...accumulator,
         [recordYear]: (accumulator[recordYear] += calcYearsOfLifeLost(record)),

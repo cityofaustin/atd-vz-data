@@ -1,0 +1,3 @@
+table:
+  name: socrata_export_people_view
+  schema: public

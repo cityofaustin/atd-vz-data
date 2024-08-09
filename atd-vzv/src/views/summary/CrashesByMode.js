@@ -109,7 +109,7 @@ const CrashesByMode = () => {
               year.toString() === format(dataEndDate, "yyyy")
                 ? `${summaryCurrentYearEndDate}T23:59:59`
                 : `${year}-12-31T23:59:59`;
-            let url = `${crashEndpointUrl}?$where=${crashType.queryStringCrash} AND crash_date between '${year}-01-01T00:00:00' and '${endDate}'`;
+            let url = `${crashEndpointUrl}?$where=${crashType.queryStringCrash} AND crash_timestamp_ct between '${year}-01-01T00:00:00' and '${endDate}'`;
             await axios.get(url).then((res) => {
               newData = { ...newData, ...{ [year]: res.data } };
             });

@@ -30,25 +30,25 @@ const CrashesByYear = () => {
 
   // Fetch data for By Month Average and Cumulative visualizations
   useEffect(() => {
-    const avgDateCondition = `crash_date BETWEEN '${fiveYearAvgStartDate}T00:00:00' and '${fiveYearAvgEndDate}T23:59:59'`;
-    const currentYearDateCondition = `crash_date BETWEEN '${summaryCurrentYearStartDate}T00:00:00' and '${summaryCurrentYearEndDate}T23:59:59'`;
+    const avgDateCondition = `crash_timestamp_ct BETWEEN '${fiveYearAvgStartDate}T00:00:00' and '${fiveYearAvgEndDate}T23:59:59'`;
+    const currentYearDateCondition = `crash_timestamp_ct BETWEEN '${summaryCurrentYearStartDate}T00:00:00' and '${summaryCurrentYearEndDate}T23:59:59'`;
     const queryGroupAndOrder = `GROUP BY month ORDER BY month`;
 
     const avgQueries = {
-      fatalities: `SELECT date_extract_m(crash_date) as month, sum(death_cnt) / 5 as avg 
+      fatalities: `SELECT date_extract_m(crash_timestamp_ct) as month, sum(death_cnt) / 5 as avg 
                    WHERE death_cnt > 0 AND ${avgDateCondition} ${queryGroupAndOrder}`,
-      fatalitiesAndSeriousInjuries: `SELECT date_extract_m(crash_date) as month, sum(death_cnt) / 5 + sum(sus_serious_injry_cnt) / 5 as avg 
+      fatalitiesAndSeriousInjuries: `SELECT date_extract_m(crash_timestamp_ct) as month, sum(death_cnt) / 5 + sum(sus_serious_injry_cnt) / 5 as avg 
                                      WHERE (death_cnt > 0 OR sus_serious_injry_cnt > 0) AND ${avgDateCondition} ${queryGroupAndOrder}`,
-      seriousInjuries: `SELECT date_extract_m(crash_date) as month, sum(sus_serious_injry_cnt) / 5 as avg 
+      seriousInjuries: `SELECT date_extract_m(crash_timestamp_ct) as month, sum(sus_serious_injry_cnt) / 5 as avg 
                         WHERE sus_serious_injry_cnt > 0 AND ${avgDateCondition} ${queryGroupAndOrder}`,
     };
 
     const currentYearQueries = {
-      fatalities: `SELECT date_extract_m(crash_date) as month, sum(death_cnt) as total 
+      fatalities: `SELECT date_extract_m(crash_timestamp_ct) as month, sum(death_cnt) as total 
                    WHERE death_cnt > 0 AND ${currentYearDateCondition} ${queryGroupAndOrder}`,
-      fatalitiesAndSeriousInjuries: `SELECT date_extract_m(crash_date) as month, sum(death_cnt) + sum(sus_serious_injry_cnt) as total 
+      fatalitiesAndSeriousInjuries: `SELECT date_extract_m(crash_timestamp_ct) as month, sum(death_cnt) + sum(sus_serious_injry_cnt) as total 
                                      WHERE (death_cnt > 0 OR sus_serious_injry_cnt > 0) AND ${currentYearDateCondition} ${queryGroupAndOrder}`,
-      seriousInjuries: `SELECT date_extract_m(crash_date) as month, sum(sus_serious_injry_cnt) as total 
+      seriousInjuries: `SELECT date_extract_m(crash_timestamp_ct) as month, sum(sus_serious_injry_cnt) as total 
                         WHERE sus_serious_injry_cnt > 0 AND ${currentYearDateCondition} ${queryGroupAndOrder}`,
     };
 

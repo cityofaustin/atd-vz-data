@@ -63,7 +63,7 @@ const calculateHourBlockTotals = (records, crashType) => {
   const dataArray = buildDataArray();
 
   records.forEach((record) => {
-    const recordDateTime = parseISO(record.crash_date);
+    const recordDateTime = parseISO(record.crash_timestamp_ct);
     const recordHour = format(recordDateTime, "hha");
     const recordDay = format(recordDateTime, "E");
 
@@ -97,8 +97,8 @@ const getFatalitiesByYearsAgoUrl = (activeTab, crashType) => {
   const yearsAgoDate = format(sub(new Date(), { years: activeTab }), "yyyy");
   let queryUrl =
     activeTab === 0
-      ? `${crashEndpointUrl}?$where=${crashType.queryStringCrash} AND crash_date between '${summaryCurrentYearStartDate}T00:00:00' and '${summaryCurrentYearEndDate}T23:59:59'`
-      : `${crashEndpointUrl}?$where=${crashType.queryStringCrash} AND crash_date between '${yearsAgoDate}-01-01T00:00:00' and '${yearsAgoDate}-12-31T23:59:59'`;
+      ? `${crashEndpointUrl}?$where=${crashType.queryStringCrash} AND crash_timestamp_ct between '${summaryCurrentYearStartDate}T00:00:00' and '${summaryCurrentYearEndDate}T23:59:59'`
+      : `${crashEndpointUrl}?$where=${crashType.queryStringCrash} AND crash_timestamp_ct between '${yearsAgoDate}-01-01T00:00:00' and '${yearsAgoDate}-12-31T23:59:59'`;
   return queryUrl;
 };
 
@@ -129,8 +129,8 @@ const CrashesByTimeOfDay = () => {
     if (maxForLegend) return;
 
     const maxQuery = `
-    SELECT date_extract_dow(crash_date) as day, date_extract_hh(crash_date) as hour, date_extract_y(crash_date) as year, SUM(death_cnt) as death, SUM(sus_serious_injry_cnt) as serious, serious + death as all 
-    WHERE crash_date BETWEEN '${format(
+    SELECT date_extract_dow(crash_timestamp_ct) as day, date_extract_hh(crash_timestamp_ct) as hour, date_extract_y(crash_timestamp_ct) as year, SUM(death_cnt) as death, SUM(sus_serious_injry_cnt) as serious, serious + death as all 
+    WHERE crash_timestamp_ct BETWEEN '${format(
       dataStartDate,
       "yyyy-MM-dd"
     )}' and '${summaryCurrentYearEndDate}' 

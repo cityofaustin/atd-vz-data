@@ -1,0 +1,31 @@
+table:
+  name: _column_metadata
+  schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - is_imported_from_cris
+        - id
+        - column_name
+        - record_type
+      filter: {}
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - is_imported_from_cris
+        - id
+        - column_name
+        - record_type
+      filter: {}
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - is_imported_from_cris
+        - id
+        - column_name
+        - record_type
+      filter: {}
+    comment: ""

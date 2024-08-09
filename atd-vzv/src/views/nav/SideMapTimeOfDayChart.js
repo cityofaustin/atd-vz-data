@@ -51,7 +51,7 @@ export const SideMapTimeOfDayChart = ({ filters }) => {
       const crashTimeWindows = Object.values(filters).map((filter) => filter);
       const crashTimeTotals = crashes.reduce((accumulator, crash) => {
         crashTimeWindows.forEach((timeWindow, i) => {
-          const crashDate = crash.crash_date;
+          const crashDate = crash.crash_timestamp_ct;
           const crashHour = parseInt(format(new Date(crashDate), "H"));
           crashHour >= timeWindow[0] &&
             crashHour <= timeWindow[1] &&
@@ -94,7 +94,7 @@ export const SideMapTimeOfDayChart = ({ filters }) => {
       const timeWindowArray = filters[timeWindow];
       const timeWindowStart = timeWindowArray[0];
       const timeWindowEnd = timeWindowArray[1];
-      const timeWindowFilterString = ` AND date_extract_hh(crash_date) between ${timeWindowStart} and ${timeWindowEnd} AND date_extract_mm(crash_date) between 0 and 59`;
+      const timeWindowFilterString = ` AND date_extract_hh(crash_timestamp_ct) between ${timeWindowStart} and ${timeWindowEnd} AND date_extract_mm(crash_timestamp_ct) between 0 and 59`;
       setMapTimeWindow(timeWindowFilterString);
     }
 

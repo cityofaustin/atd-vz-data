@@ -1,0 +1,46 @@
+table:
+  name: specimen_type_lkp
+  schema: lookups
+array_relationships:
+  - name: peopleCrisByPrsnDrgSpecTypeId
+    using:
+      foreign_key_constraint_on:
+        column: prsn_drg_spec_type_id
+        table:
+          name: people_cris
+          schema: public
+  - name: peopleEditsByPrsnDrgSpecTypeId
+    using:
+      foreign_key_constraint_on:
+        column: prsn_drg_spec_type_id
+        table:
+          name: people_edits
+          schema: public
+  - name: peopleUnifiedsByPrsnDrgSpecTypeId
+    using:
+      foreign_key_constraint_on:
+        column: prsn_drg_spec_type_id
+        table:
+          name: people
+          schema: public
+  - name: people_cris
+    using:
+      foreign_key_constraint_on:
+        column: prsn_alc_spec_type_id
+        table:
+          name: people_cris
+          schema: public
+  - name: people_edits
+    using:
+      foreign_key_constraint_on:
+        column: prsn_alc_spec_type_id
+        table:
+          name: people_edits
+          schema: public
+  - name: peoples
+    using:
+      foreign_key_constraint_on:
+        column: prsn_alc_spec_type_id
+        table:
+          name: people
+          schema: public

@@ -55,7 +55,7 @@ export const createMapDataUrl = (
     ? null
     : `${endpoint}?$select=${mapRequestFields.join(",")}` +
         `&$limit=100000` +
-        `&$where=crash_date between '${startDate}' and '${endDate}'` +
+        `&$where=crash_timestamp_ct between '${startDate}' and '${endDate}'` +
         // if there is a polygon selected, add as filter
         ((!!mapPolygon && ` AND within_polygon(point, '${mapPolygon}')`) ||
           "") +

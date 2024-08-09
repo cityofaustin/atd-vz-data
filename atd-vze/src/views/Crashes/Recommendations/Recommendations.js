@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@apollo/react-hooks";
 import { Card, CardHeader, CardBody, CardFooter } from "reactstrap";
 import { recommendationsDataMap } from "./recommendationsDataMap";
 import {
-  GET_RECOMMENDATIONS,
+  GET_RECOMMENDATION_LOOKUPS,
   INSERT_RECOMMENDATION,
   INSERT_RECOMMENDATION_PARTNER,
   REMOVE_RECOMMENDATION_PARTNER,
@@ -13,14 +13,12 @@ import RecommendationTextInput from "./RecommendationTextInput";
 import RecommendationSelectValueDropdown from "./RecommendationSelectValueDropdown";
 import RecommendationMultipleSelectDropdown from "./RecommendationMultipleSelectDropdown";
 
-const Recommendations = ({ crashId }) => {
+const Recommendations = ({ crashPk, recommendation, refetch }) => {
   // get current users email
   const userEmail = localStorage.getItem("hasura_user_email");
 
   // fetch recommendation table from database using graphQL query
-  const { loading, error, data, refetch } = useQuery(GET_RECOMMENDATIONS, {
-    variables: { crashId },
-  });
+  const { loading, error, data } = useQuery(GET_RECOMMENDATION_LOOKUPS);
 
   // declare mutation functions
   const [addRecommendation] = useMutation(INSERT_RECOMMENDATION);
@@ -32,7 +30,6 @@ const Recommendations = ({ crashId }) => {
   if (error) return `Error! ${error.message}`;
 
   const fieldConfig = recommendationsDataMap;
-  const recommendation = data?.recommendations?.[0];
   const partners = recommendation?.recommendations_partners;
   const doesRecommendationRecordExist = recommendation ? true : false;
   const recommendationRecordId = recommendation?.id;
@@ -47,7 +44,7 @@ const Recommendations = ({ crashId }) => {
 
   const onAdd = valuesObject => {
     const recommendationRecord = {
-      crashId,
+      crashPk,
       userEmail,
       ...valuesObject,
     };

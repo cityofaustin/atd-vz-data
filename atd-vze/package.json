@@ -69,6 +69,7 @@
     "build": "CI= react-scripts build && cp _redirects build && cp -r build editor && mv editor build",
     "build:production": "env-cmd -f .env.production npm run build",
     "build:staging": "env-cmd -f .env.staging npm run build",
+    "build:test": "env-cmd -f .env.test npm run build",
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",

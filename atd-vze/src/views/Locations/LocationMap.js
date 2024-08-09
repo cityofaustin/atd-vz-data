@@ -24,18 +24,17 @@ const polygonDataLayer = {
   },
 };
 
-const LocationMap = ({ data }) => {
-  const polygon = data?.atd_txdot_locations?.[0] || null;
-  const locationGeoJson = polygon
+const LocationMap = ({ location }) => {
+  const locationGeoJson = location
     ? {
         type: "Feature",
         properties: {
-          renderType: polygon.shape.type,
-          id: polygon.location_id,
+          renderType: location.geometry.type,
+          id: location.location_id,
         },
         geometry: {
-          coordinates: polygon.shape.coordinates,
-          type: polygon.shape.type,
+          coordinates: location.geometry.coordinates,
+          type: location.geometry.type,
         },
       }
     : null;
@@ -44,8 +43,8 @@ const LocationMap = ({ data }) => {
   return (
     <MapGL
       initialViewState={{
-        latitude: polygon?.latitude || defaultInitialState.latitude,
-        longitude: polygon?.longitude || defaultInitialState.longitude,
+        latitude: location?.latitude || defaultInitialState.latitude,
+        longitude: location?.longitude || defaultInitialState.longitude,
         zoom: defaultInitialState.zoom,
         bounds: initialBounds,
         fitBoundsOptions: { duration: 0, padding: 100 },

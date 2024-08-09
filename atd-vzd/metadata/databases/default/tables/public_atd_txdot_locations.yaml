@@ -11,7 +11,23 @@ object_relationships:
         remote_table:
           name: view_location_injry_count_cost_summary
           schema: public
+  - name: locations_list_view
+    using:
+      manual_configuration:
+        column_mapping:
+          location_id: location_id
+        insertion_order: null
+        remote_table:
+          name: locations_list_view
+          schema: public
 array_relationships:
+  - name: crashes
+    using:
+      foreign_key_constraint_on:
+        column: location_id
+        table:
+          name: crashes
+          schema: public
   - name: crashes_by_manner_collision
     using:
       manual_configuration:
@@ -30,85 +46,62 @@ array_relationships:
         remote_table:
           name: view_location_crashes_by_veh_body_style
           schema: public
+  - name: location_notes
+    using:
+      foreign_key_constraint_on:
+        column: location_id
+        table:
+          name: location_notes
+          schema: public
 select_permissions:
   - role: editor
     permission:
       columns:
-        - address
-        - asmp_street_level
-        - council_district
-        - description
-        - geometry
-        - is_retired
-        - is_studylocation
+        - location_id
+        - street_level
         - last_update
         - latitude
-        - level_1
-        - level_2
-        - level_3
-        - level_4
-        - level_5
-        - location_group
-        - location_id
         - longitude
-        - metadata
-        - priority_level
         - scale_factor
-        - shape
-        - street_level
+        - council_district
+        - is_intersection
+        - location_group
+        - description
+        - geometry
       filter: {}
       allow_aggregations: true
+    comment: ""
   - role: readonly
     permission:
       columns:
-        - address
-        - asmp_street_level
-        - council_district
-        - description
-        - geometry
-        - is_retired
-        - is_studylocation
+        - location_id
+        - street_level
         - last_update
         - latitude
-        - level_1
-        - level_2
-        - level_3
-        - level_4
-        - level_5
-        - location_group
-        - location_id
         - longitude
-        - metadata
-        - priority_level
         - scale_factor
-        - shape
-        - street_level
+        - council_district
+        - is_intersection
+        - location_group
+        - description
+        - geometry
       filter: {}
       allow_aggregations: true
+    comment: ""
   - role: vz-admin
     permission:
       columns:
-        - address
-        - asmp_street_level
-        - council_district
-        - description
-        - geometry
-        - is_retired
-        - is_studylocation
+        - location_id
+        - street_level
         - last_update
         - latitude
-        - level_1
-        - level_2
-        - level_3
-        - level_4
-        - level_5
-        - location_group
-        - location_id
         - longitude
-        - metadata
-        - priority_level
         - scale_factor
-        - shape
-        - street_level
+        - council_district
+        - is_intersection
+        - location_group
+        - description
+        - geometry
       filter: {}
       allow_aggregations: true
+    comment: ""

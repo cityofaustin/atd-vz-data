@@ -1,0 +1,95 @@
+table:
+  name: fatalities_view
+  schema: public
+object_relationships:
+  - name: crash
+    using:
+      manual_configuration:
+        column_mapping:
+          crash_id: id
+        insertion_order: null
+        remote_table:
+          name: crashes
+          schema: public
+  - name: recommendation
+    using:
+      manual_configuration:
+        column_mapping:
+          crash_id: crash_id
+        insertion_order: null
+        remote_table:
+          name: recommendations
+          schema: public
+  - name: unit
+    using:
+      manual_configuration:
+        column_mapping:
+          unit_id: id
+        insertion_order: null
+        remote_table:
+          name: units
+          schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - ytd_fatal_crash
+        - ytd_fatality
+        - crash_id
+        - cris_crash_id
+        - engineering_area
+        - person_id
+        - unit_id
+        - case_id
+        - crash_date_ct
+        - crash_time_ct
+        - law_enforcement_ytd_fatality_num
+        - location
+        - record_locator
+        - victim_name
+        - year
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - ytd_fatal_crash
+        - ytd_fatality
+        - crash_id
+        - cris_crash_id
+        - engineering_area
+        - person_id
+        - unit_id
+        - case_id
+        - crash_date_ct
+        - crash_time_ct
+        - law_enforcement_ytd_fatality_num
+        - location
+        - record_locator
+        - victim_name
+        - year
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - ytd_fatal_crash
+        - ytd_fatality
+        - crash_id
+        - cris_crash_id
+        - engineering_area
+        - person_id
+        - unit_id
+        - case_id
+        - crash_date_ct
+        - crash_time_ct
+        - law_enforcement_ytd_fatality_num
+        - location
+        - record_locator
+        - victim_name
+        - year
+      filter: {}
+      allow_aggregations: true
+    comment: ""

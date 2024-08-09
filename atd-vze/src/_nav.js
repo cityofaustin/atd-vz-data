@@ -39,11 +39,6 @@ export const navigation = roles => {
   // Admin nav items
   const adminNavItems = [
     {
-      name: "Changes",
-      url: "/changes",
-      icon: "icon-layers",
-    },
-    {
       title: true,
       name: "Admin",
     },
@@ -51,18 +46,6 @@ export const navigation = roles => {
       name: "Fatalities",
       url: "/fatalities",
       icon: "fa fa-heart-o",
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: "icon-chart",
-      children: [
-        {
-          name: "Inconsistent KSI Counts",
-          url: "/reports/inconsistent_ksi_counts",
-          icon: "icon-graph",
-        },
-      ],
     },
     {
       name: "Tools",

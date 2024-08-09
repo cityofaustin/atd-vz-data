@@ -1,0 +1,97 @@
+table:
+  name: location_crashes_view
+  schema: public
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - nonincap_injry_count
+        - non_injry_count
+        - poss_injry_count
+        - sus_serious_injry_count
+        - tot_injry_count
+        - unkn_injry_count
+        - vz_fatality_count
+        - crash_id
+        - crash_sev_id
+        - est_comp_cost_crash_based
+        - latitude
+        - longitude
+        - address_primary
+        - address_secondary
+        - case_id
+        - collsn_desc
+        - crash_date
+        - crash_time
+        - day_of_week
+        - location_id
+        - movement_desc
+        - travel_direction
+        - type
+        - veh_body_styl_desc
+        - veh_unit_desc
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - nonincap_injry_count
+        - non_injry_count
+        - poss_injry_count
+        - sus_serious_injry_count
+        - tot_injry_count
+        - unkn_injry_count
+        - vz_fatality_count
+        - crash_id
+        - crash_sev_id
+        - est_comp_cost_crash_based
+        - latitude
+        - longitude
+        - address_primary
+        - address_secondary
+        - case_id
+        - collsn_desc
+        - crash_date
+        - crash_time
+        - day_of_week
+        - location_id
+        - movement_desc
+        - travel_direction
+        - type
+        - veh_body_styl_desc
+        - veh_unit_desc
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - nonincap_injry_count
+        - non_injry_count
+        - poss_injry_count
+        - sus_serious_injry_count
+        - tot_injry_count
+        - unkn_injry_count
+        - vz_fatality_count
+        - crash_id
+        - crash_sev_id
+        - est_comp_cost_crash_based
+        - latitude
+        - longitude
+        - address_primary
+        - address_secondary
+        - case_id
+        - collsn_desc
+        - crash_date
+        - crash_time
+        - day_of_week
+        - location_id
+        - movement_desc
+        - travel_direction
+        - type
+        - veh_body_styl_desc
+        - veh_unit_desc
+      filter: {}
+      allow_aggregations: true
+    comment: ""

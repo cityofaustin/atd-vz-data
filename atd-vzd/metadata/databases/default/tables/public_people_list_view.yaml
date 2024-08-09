@@ -1,0 +1,182 @@
+table:
+  name: people_list_view
+  schema: public
+object_relationships:
+  - name: drvr_ethncty_lkp
+    using:
+      manual_configuration:
+        column_mapping:
+          prsn_ethnicity_id: id
+        insertion_order: null
+        remote_table:
+          name: drvr_ethncty_lkp
+          schema: lookups
+  - name: gndr_lkp
+    using:
+      manual_configuration:
+        column_mapping:
+          prsn_gndr_id: id
+        insertion_order: null
+        remote_table:
+          name: gndr_lkp
+          schema: lookups
+  - name: injry_sev_lkp
+    using:
+      manual_configuration:
+        column_mapping:
+          prsn_injry_sev_id: id
+        insertion_order: null
+        remote_table:
+          name: injry_sev_lkp
+          schema: lookups
+  - name: prsn_type_lkp
+    using:
+      manual_configuration:
+        column_mapping:
+          prsn_type_id: id
+        insertion_order: null
+        remote_table:
+          name: prsn_type_lkp
+          schema: lookups
+select_permissions:
+  - role: editor
+    permission:
+      columns:
+        - is_primary_person
+        - prsn_exp_homelessness
+        - crash_id
+        - cris_crash_id
+        - drvr_drg_cat_1_id
+        - ems_id
+        - est_comp_cost_crash_based
+        - id
+        - prsn_age
+        - prsn_alc_rslt_id
+        - prsn_alc_spec_type_id
+        - prsn_drg_rslt_id
+        - prsn_drg_spec_type_id
+        - prsn_ethnicity_id
+        - prsn_gndr_id
+        - prsn_helmet_id
+        - prsn_injry_sev_id
+        - prsn_nbr
+        - prsn_occpnt_pos_id
+        - prsn_rest_id
+        - prsn_type_id
+        - unit_desc_id
+        - unit_id
+        - unit_nbr
+        - years_of_life_lost
+        - created_by
+        - drvr_city_name
+        - drvr_zip
+        - mode_desc
+        - prsn_bac_test_rslt
+        - prsn_first_name
+        - prsn_injry_sev_desc
+        - prsn_last_name
+        - prsn_mid_name
+        - prsn_name_sfx
+        - prsn_taken_by
+        - prsn_taken_to
+        - updated_by
+        - crash_timestamp
+        - created_at
+        - prsn_death_timestamp
+        - updated_at
+      filter: {}
+    comment: ""
+  - role: readonly
+    permission:
+      columns:
+        - is_primary_person
+        - prsn_exp_homelessness
+        - crash_id
+        - cris_crash_id
+        - drvr_drg_cat_1_id
+        - ems_id
+        - est_comp_cost_crash_based
+        - id
+        - prsn_age
+        - prsn_alc_rslt_id
+        - prsn_alc_spec_type_id
+        - prsn_drg_rslt_id
+        - prsn_drg_spec_type_id
+        - prsn_ethnicity_id
+        - prsn_gndr_id
+        - prsn_helmet_id
+        - prsn_injry_sev_id
+        - prsn_nbr
+        - prsn_occpnt_pos_id
+        - prsn_rest_id
+        - prsn_type_id
+        - unit_desc_id
+        - unit_id
+        - unit_nbr
+        - years_of_life_lost
+        - created_by
+        - drvr_city_name
+        - drvr_zip
+        - mode_desc
+        - prsn_bac_test_rslt
+        - prsn_first_name
+        - prsn_injry_sev_desc
+        - prsn_last_name
+        - prsn_mid_name
+        - prsn_name_sfx
+        - prsn_taken_by
+        - prsn_taken_to
+        - updated_by
+        - crash_timestamp
+        - created_at
+        - prsn_death_timestamp
+        - updated_at
+      filter: {}
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - is_primary_person
+        - prsn_exp_homelessness
+        - crash_id
+        - cris_crash_id
+        - drvr_drg_cat_1_id
+        - ems_id
+        - est_comp_cost_crash_based
+        - id
+        - prsn_age
+        - prsn_alc_rslt_id
+        - prsn_alc_spec_type_id
+        - prsn_drg_rslt_id
+        - prsn_drg_spec_type_id
+        - prsn_ethnicity_id
+        - prsn_gndr_id
+        - prsn_helmet_id
+        - prsn_injry_sev_id
+        - prsn_nbr
+        - prsn_occpnt_pos_id
+        - prsn_rest_id
+        - prsn_type_id
+        - unit_desc_id
+        - unit_id
+        - unit_nbr
+        - years_of_life_lost
+        - created_by
+        - drvr_city_name
+        - drvr_zip
+        - mode_desc
+        - prsn_bac_test_rslt
+        - prsn_first_name
+        - prsn_injry_sev_desc
+        - prsn_last_name
+        - prsn_mid_name
+        - prsn_name_sfx
+        - prsn_taken_by
+        - prsn_taken_to
+        - updated_by
+        - crash_timestamp
+        - created_at
+        - prsn_death_timestamp
+        - updated_at
+      filter: {}
+    comment: ""

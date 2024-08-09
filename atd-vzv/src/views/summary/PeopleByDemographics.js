@@ -16,7 +16,7 @@ import ColorSpinner from "../../Components/Spinner/ColorSpinner";
 
 const url = `${personEndpointUrl}?$query=`;
 
-const dateCondition = `crash_date BETWEEN '${format(
+const dateCondition = `crash_timestamp_ct BETWEEN '${format(
   dataStartDate,
   "yyyy-MM-dd"
 )}T00:00:00' and '${format(dataEndDate, "yyyy-MM-dd")}T23:59:59'`;
@@ -45,7 +45,7 @@ const chartConfigs = {
       "American Indian or Alaska Native",
     ],
     exceptionCategory: "Other or unknown", // Category for missing or unknown data
-    query: `SELECT date_extract_y(crash_date) as year, COUNT(*) as total, prsn_ethnicity_id, prsn_injry_sev_id
+    query: `SELECT date_extract_y(crash_timestamp_ct) as year, COUNT(*) as total, prsn_ethnicity_id, prsn_injry_sev_id
               WHERE ${dateCondition}
               GROUP BY year, prsn_ethnicity_id, prsn_injry_sev_id
               ORDER BY year`,
@@ -76,7 +76,7 @@ const chartConfigs = {
       "Unknown",
     ],
     exceptionCategory: "Unknown",
-    query: `SELECT date_extract_y(crash_date) as year, COUNT(*) as total, prsn_age, prsn_injry_sev_id
+    query: `SELECT date_extract_y(crash_timestamp_ct) as year, COUNT(*) as total, prsn_age, prsn_injry_sev_id
               WHERE ${dateCondition}
               GROUP BY year, prsn_age, prsn_injry_sev_id
               ORDER BY year`,
@@ -93,14 +93,14 @@ const chartConfigs = {
   },
   sexData: {
     label: "Sex",
-    categoryKey: "prsn_gndr_id",
+    categoryKey: "prsn_sex_id",
     categoryType: "target",
     socrataCategories: ["1", "2", "0"],
     labelCategories: ["Male", "Female", "Unknown"],
     exceptionCategory: "Unknown",
-    query: `SELECT date_extract_y(crash_date) as year, COUNT(*) as total, prsn_gndr_id, prsn_injry_sev_id
+    query: `SELECT date_extract_y(crash_timestamp_ct) as year, COUNT(*) as total, prsn_sex_id, prsn_injry_sev_id
               WHERE ${dateCondition}
-              GROUP BY year, prsn_gndr_id, prsn_injry_sev_id
+              GROUP BY year, prsn_sex_id, prsn_injry_sev_id
               ORDER BY year`,
     colors: chartColors,
   },

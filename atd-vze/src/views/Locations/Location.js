@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { format, subYears } from "date-fns";
 import DataTable from "../../Components/DataTable";
 import LocationMap from "./LocationMap";
 import { Card, CardBody, CardHeader, Col, Row } from "reactstrap";
@@ -14,9 +13,8 @@ import LocationDownloadGlobal from "./LocationDownloadGlobal";
 import Notes from "../../Components/Notes/Notes";
 import Page404 from "../Pages/Page404/Page404";
 
-import { GET_LOCATION, UPDATE_LOCATION } from "../../queries/Locations";
+import { GET_LOCATION, UPDATE_LOCATION } from "../../queries/locations";
 import {
-  GET_LOCATION_NOTES,
   INSERT_LOCATION_NOTE,
   UPDATE_LOCATION_NOTE,
   DELETE_LOCATION_NOTE,
@@ -26,11 +24,8 @@ function Location(props) {
   // Set initial variables for GET_LOCATION query
   const locationId = props.match.params.id;
 
-  const fiveYearsAgo = format(subYears(Date.now(), 5), "yyyy-MM-dd");
-
   const [variables] = useState({
     id: locationId,
-    yearsAgoDate: fiveYearsAgo,
   });
 
   const { loading, error, data, refetch } = useQuery(GET_LOCATION, {
@@ -77,13 +72,13 @@ function Location(props) {
     </div>
   );
 
-  return !data?.atd_txdot_locations?.length ? (
+  return !data?.location ? (
     <Page404 />
   ) : (
     <div className="animated fadeIn">
       <Row>
         <Col>
-          <h2 className="h2 mb-3">{data.atd_txdot_locations[0].description}</h2>
+          <h2 className="h2 mb-3">{data.location.description}</h2>
         </Col>
       </Row>
       <Row>
@@ -93,13 +88,13 @@ function Location(props) {
               <i className="fa fa-map fa-lg"></i> Aerial Map
             </CardHeader>
             <CardBody>
-              <LocationMap data={data} />
+              <LocationMap location={data.location} />
             </CardBody>
           </Card>
         </Col>
         <DataTable
           dataMap={locationDataMap}
-          dataTable={"atd_txdot_locations"}
+          dataTable={"location"}
           formData={formData}
           setEditField={setEditField}
           editField={editField}
@@ -112,12 +107,12 @@ function Location(props) {
       <Row>
         <Col>
           <Notes
-            recordId={locationId}
-            tableName={"location_notes"}
-            GET_NOTES={GET_LOCATION_NOTES}
+            parentRecordId={locationId}
+            notes={data?.location?.location_notes}
             INSERT_NOTE={INSERT_LOCATION_NOTE}
             UPDATE_NOTE={UPDATE_LOCATION_NOTE}
             DELETE_NOTE={DELETE_LOCATION_NOTE}
+            refetch={refetch}
           />
         </Col>
       </Row>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Card,
@@ -10,48 +10,43 @@ import {
   Collapse,
 } from "reactstrap";
 
-const ChargesDetailsCard = ({ chargesData, isExpanded, toggleAccordion }) => {
+const ChargesDetailsCard = ({ data }) => {
+  const [isOpen, setIsOpen] = useState(true);
   return (
-    <Card className="mb-0">
+    <Card>
       <CardHeader id="headingThree">
         <Button
           block
           color="link"
           className="text-left m-0 p-0"
-          onClick={() => toggleAccordion(2)}
-          aria-expanded={isExpanded}
-          aria-controls="collapseThree"
+          onClick={() => setIsOpen(!isOpen)}
         >
           <h5 className="m-0 p-0">
             <i className="fa fa-legal" /> Charges
-            <Badge color="secondary float-right">
-              {
-                chargesData.filter(charge => charge.charge !== "NO CHARGES")
-                  .length
-              }
-            </Badge>
+            <Badge color="secondary float-right">{data.length}</Badge>
           </h5>
         </Button>
       </CardHeader>
-      <Collapse isOpen={isExpanded} data-parent="#accordion" id="collapseThree">
+      <Collapse isOpen={isOpen}>
         <CardBody>
           <Table responsive>
             <thead>
               <tr>
+                <th>Unit</th>
+                <th>Person</th>
                 <th>Charge</th>
-                <th>Charge Category</th>
+                <th>Citation Number</th>
               </tr>
             </thead>
             <tbody>
-              {chargesData.map(
-                (charge, i) =>
-                  charge.charge !== "NO CHARGES" && (
-                    <tr key={`charges-${i}`}>
-                      <td>{charge.charge}</td>
-                      <td>{charge.charge_cat_id}</td>
-                    </tr>
-                  )
-              )}
+              {data.map((charge, i) => (
+                <tr key={`charges-${i}`}>
+                  <td>{charge.unit_nbr}</td>
+                  <td>{charge.prsn_nbr}</td>
+                  <td>{charge.charge}</td>
+                  <td>{charge.citation_nbr}</td>
+                </tr>
+              ))}
             </tbody>
           </Table>
         </CardBody>

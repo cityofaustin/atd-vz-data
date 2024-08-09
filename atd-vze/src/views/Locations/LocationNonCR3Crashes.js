@@ -10,6 +10,7 @@ function LocationNonCR3Crashes(props) {
   // Our initial query configuration
   let queryConf = {
     table: "atd_apd_blueform",
+    dateField: "date",
     single_item: "crashes",
     showDateRange: true,
     columns: nonCR3CrashGridTableColumns,

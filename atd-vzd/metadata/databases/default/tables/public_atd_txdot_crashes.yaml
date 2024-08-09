@@ -96,16 +96,9 @@ array_relationships:
   - name: crash_notes
     using:
       foreign_key_constraint_on:
-        column: crash_id
+        column: atd_txdot_crashes_crash_id
         table:
           name: crash_notes
-          schema: public
-  - name: fatalities
-    using:
-      foreign_key_constraint_on:
-        column: crash_id
-        table:
-          name: fatalities
           schema: public
   - name: units
     using:
@@ -1721,10 +1714,10 @@ delete_permissions:
       filter:
         temp_record:
           _eq: true
-    comment: "Allow for the deletion of temp records only"
+    comment: Allow for the deletion of temp records only
   - role: vz-admin
     permission:
       filter:
         temp_record:
           _eq: true
-    comment: "Allow for the deletion of temp records only"
+    comment: Allow for the deletion of temp records only

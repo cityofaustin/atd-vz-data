@@ -1,8 +1,4 @@
-- "!include public_find_cr3_collisions_for_location.yaml"
 - "!include public_find_crash_in_jurisdiction.yaml"
 - "!include public_find_crash_jurisdictions.yaml"
 - "!include public_find_crashes_in_jurisdiction.yaml"
-- "!include public_find_noncr3_collisions_for_location.yaml"
-- "!include public_find_service_road_location_for_centerline_crash.yaml"
 - "!include public_get_location_totals.yaml"
-- "!include public_search_atd_location_crashes.yaml"

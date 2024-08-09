@@ -12,19 +12,10 @@ import {
 } from "reactstrap";
 import { useQuery } from "@apollo/react-hooks";
 import { withApollo } from "react-apollo";
-import { gql } from "apollo-boost";
-
-const GET_VEHICLE_DESC_LKP = gql`
-  {
-    atd_txdot__veh_unit_desc_lkp {
-      veh_unit_desc_id
-      veh_unit_desc_desc
-    }
-  }
-`;
+import { GET_UNIT_LOOKUPS } from "../../queries/lookups";
 
 const UnitsForm = ({ units, handleUnitFormChange, client }) => {
-  const { data: lookupValues, loading } = useQuery(GET_VEHICLE_DESC_LKP);
+  const { data: lookupValues, loading } = useQuery(GET_UNIT_LOOKUPS);
 
   return (
     <>
@@ -34,10 +25,10 @@ const UnitsForm = ({ units, handleUnitFormChange, client }) => {
             <CardHeader>Unit #{i + 1}</CardHeader>
             <CardBody>
               <FormGroup row>
-                <Col md="3">
+                <Col md="4">
                   <Label htmlFor="unit-type">Unit Type</Label>
                 </Col>
-                <Col xs="12" md="9">
+                <Col xs="12" md="8">
                   <Input
                     type="select"
                     id="unit-type"
@@ -54,13 +45,10 @@ const UnitsForm = ({ units, handleUnitFormChange, client }) => {
                   >
                     <option value={0}>Select the unit type...</option>
                     {!loading &&
-                      lookupValues.atd_txdot__veh_unit_desc_lkp.map(item => {
+                      lookupValues.lookups_unit_desc_lkp.map(item => {
                         return (
-                          <option
-                            value={item.veh_unit_desc_id}
-                            key={`option-${item.veh_unit_desc_id}`}
-                          >
-                            {item.veh_unit_desc_desc}
+                          <option value={item.id} key={`option-${item.id}`}>
+                            {item.label}
                           </option>
                         );
                       })}
@@ -71,21 +59,21 @@ const UnitsForm = ({ units, handleUnitFormChange, client }) => {
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <Col md="3">
+                <Col md="4">
                   <Label htmlFor={`fatality-count-${i + 1}`}>
                     Fatality Count
                   </Label>
                 </Col>
-                <Col xs="12" md="9">
+                <Col xs="12" md="8">
                   <Input
                     type="number"
                     id={`fatality-count-${i + 1}`}
                     name={`fatality-count-${i + 1}`}
                     placeholder="Enter Fatality Count..."
-                    value={unit.atd_fatality_count}
+                    value={unit.fatality_count}
                     onChange={e =>
                       handleUnitFormChange({
-                        type: "atd_fatality_count",
+                        type: "fatality_count",
                         payload: e.target.value,
                         unitIndex: i,
                       })
@@ -97,12 +85,12 @@ const UnitsForm = ({ units, handleUnitFormChange, client }) => {
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <Col md="3">
+                <Col md="4">
                   <Label htmlFor={`sus-injury-cnt-${i + 1}`}>
                     Suspected Serious Injury Count
                   </Label>
                 </Col>
-                <Col xs="12" md="9">
+                <Col xs="12" md="8">
                   <Input
                     type="number"
                     id={`sus-injury-cnt-${i + 1}`}

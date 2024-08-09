@@ -1,0 +1,25 @@
+table:
+  name: autonomous_unit_lkp
+  schema: lookups
+array_relationships:
+  - name: units
+    using:
+      foreign_key_constraint_on:
+        column: autonomous_unit_id
+        table:
+          name: units
+          schema: public
+  - name: units_cris
+    using:
+      foreign_key_constraint_on:
+        column: autonomous_unit_id
+        table:
+          name: units_cris
+          schema: public
+  - name: units_edits
+    using:
+      foreign_key_constraint_on:
+        column: autonomous_unit_id
+        table:
+          name: units_edits
+          schema: public
