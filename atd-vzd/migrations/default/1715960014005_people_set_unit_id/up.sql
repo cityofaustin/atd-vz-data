@@ -1,6 +1,6 @@
 --
 -- handle a people record insert by setting
--- the unit_id column based on the crash_id and unit_nbr
+-- the unit_id column based on the cris_crash_id and unit_nbr
 --
 create or replace function public.people_cris_set_unit_id()
 returns trigger

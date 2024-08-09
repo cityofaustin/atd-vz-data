@@ -30,16 +30,16 @@ export const SOFT_DELETE_TEMP_RECORDS = gql`
       id
     }
     update_units_cris(
-      where: { crash_id: { _eq: $recordId } }
+      where: { crash_pk: { _eq: $recordId } }
       _set: { is_deleted: true, updated_by: $updatedBy }
     ) {
       returning {
         id
-        crash_id
+        crash_pk
       }
     }
     update_people_cris(
-      where: { units_cri: { crash_id: { _eq: $recordId } } }
+      where: { units_cris: { crash_pk: { _eq: $recordId } } }
       _set: { is_deleted: true, updated_by: $updatedBy }
     ) {
       returning {

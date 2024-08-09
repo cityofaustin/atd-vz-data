@@ -12,7 +12,7 @@ object_relationships:
         table:
           name: people_edits
           schema: public
-  - name: units_cri
+  - name: units_cris
     using:
       foreign_key_constraint_on: unit_id
 array_relationships:

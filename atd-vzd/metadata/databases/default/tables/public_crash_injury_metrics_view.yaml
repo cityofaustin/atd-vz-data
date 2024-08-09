@@ -27,7 +27,7 @@ select_permissions:
         - unkn_injry_count
         - vz_fatality_count
         - years_of_life_lost
-        - crash_id
+        - cris_crash_id
         - crash_injry_sev_id
         - est_comp_cost_crash_based
       filter: {}
@@ -57,7 +57,7 @@ select_permissions:
         - unkn_injry_count
         - vz_fatality_count
         - years_of_life_lost
-        - crash_id
+        - cris_crash_id
         - crash_injry_sev_id
         - est_comp_cost_crash_based
       filter: {}
@@ -87,7 +87,7 @@ select_permissions:
         - unkn_injry_count
         - vz_fatality_count
         - years_of_life_lost
-        - crash_id
+        - cris_crash_id
         - crash_injry_sev_id
         - est_comp_cost_crash_based
       filter: {}

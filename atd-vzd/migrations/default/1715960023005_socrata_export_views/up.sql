@@ -5,7 +5,7 @@ unit_aggregates as (
         string_agg(distinct mode_categories.label, ' & ') as units_involved
     from crashes
     left join units
-        on crashes.id = units.crash_id
+        on crashes.id = units.crash_pk
     left join
         lookups.mode_category_lkp as mode_categories
         on units.vz_mode_category_id = mode_categories.id
@@ -14,7 +14,7 @@ unit_aggregates as (
 
 select
     crashes.id,
-    crashes.crash_id,
+    crashes.cris_crash_id as crash_id,
     crashes.case_id,
     crashes.address_primary,
     crashes.address_secondary,
@@ -95,7 +95,7 @@ create or replace view socrata_export_people_view as (
         people.id as id,
         people.id as person_id, --this column exists for backwards compatibility
         people.unit_id as unit_id,
-        crashes.crash_id,
+        crashes.cris_crash_id as crash_id,
         people.is_primary_person,
         people.prsn_age,
         people.prsn_gndr_id as prsn_sex_id,
@@ -114,7 +114,7 @@ create or replace view socrata_export_people_view as (
         ) as crash_timestamp_ct
     from people
     left join public.units as units on people.unit_id = units.id
-    left join public.crashes as crashes on units.crash_id = crashes.id
+    left join public.crashes as crashes on units.crash_pk = crashes.id
     left join
         lookups.mode_category_lkp as mode_categories
         on units.vz_mode_category_id = mode_categories.id

@@ -29,15 +29,6 @@ object_relationships:
         remote_table:
           name: atd_txdot_primaryperson
           schema: public
-  - name: recommendation
-    using:
-      manual_configuration:
-        column_mapping:
-          crash_id: crash_id
-        insertion_order: null
-        remote_table:
-          name: recommendations
-          schema: public
 select_permissions:
   - role: vz-admin
     permission:

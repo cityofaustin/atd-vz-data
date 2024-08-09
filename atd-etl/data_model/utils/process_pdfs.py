@@ -39,14 +39,14 @@ def is_new_cr3_form(page):
     return new_cr3_form
 
 
-def crop_and_save_diagram(page, crash_id, is_new_cr3_form, extract_dir):
+def crop_and_save_diagram(page, cris_crash_id, is_new_cr3_form, extract_dir):
     """Crop out the crash diagram and save it to the local directory.
 
-    The diagram is saved to <extract_dir>/crash_diagrams/<crash_id>.jpeg
+    The diagram is saved to <extract_dir>/crash_diagrams/<cris_crash_id>.jpeg
 
     Args:
         page (PIL image): the CR3 pdf page as an image
-        crash_id (int): the CRIS crash ID
+        cris_crash_id (int): the CRIS crash ID
         is_new_cr3_form (bool): if the CR3 is in the 'new' format
         extract_dir (str): the local directory in which to save the file
 
@@ -56,7 +56,7 @@ def crop_and_save_diagram(page, crash_id, is_new_cr3_form, extract_dir):
     """
     bbox = DIAGRAM_BBOX_PIXELS["new"] if is_new_cr3_form else DIAGRAM_BBOX_PIXELS["old"]
     diagram_image = page.crop(bbox)
-    diagram_filename = f"{crash_id}.jpeg"
+    diagram_filename = f"{cris_crash_id}.jpeg"
     diagram_full_path = os.path.join(extract_dir, "crash_diagrams", diagram_filename)
     diagram_image.save(diagram_full_path)
     return diagram_full_path, diagram_filename
@@ -77,7 +77,7 @@ def process_pdf(extract_dir, filename, s3_upload, index):
         index (int): the index ID of this pdf among all PDFs being processed
     """
     logger.info(f"Processing {filename} ({index})")
-    crash_id = int(filename.replace(".pdf", ""))
+    cris_crash_id = int(filename.replace(".pdf", ""))
     pdf_path = os.path.join(extract_dir, "crashReports", filename)
     logger.debug("Converting PDF to image...")
     page = convert_from_path(
@@ -90,7 +90,7 @@ def process_pdf(extract_dir, filename, s3_upload, index):
 
     logger.debug("Cropping crash diagram...")
     diagram_full_path, diagram_filename = crop_and_save_diagram(
-        page, crash_id, is_new_cr3_form(page), extract_dir
+        page, cris_crash_id, is_new_cr3_form(page), extract_dir
     )
 
     if s3_upload:
@@ -106,7 +106,7 @@ def process_pdf(extract_dir, filename, s3_upload, index):
         res = make_hasura_request(
             query=UPDATE_CRASH_CR3_FIELDS,
             variables={
-                "crash_id": crash_id,
+                "cris_crash_id": cris_crash_id,
                 "data": {
                     "cr3_processed_at": datetime.now(timezone.utc).isoformat(),
                     "cr3_stored_fl": True,
@@ -117,7 +117,7 @@ def process_pdf(extract_dir, filename, s3_upload, index):
         affected_rows = res["update_crashes_cris"]["affected_rows"]
         if not affected_rows:
             raise ValueError(
-                f"Crash ID: {crash_id} - CR3 PDF has no matching crash record in the DB. This should never happen."
+                f"Crash ID: {cris_crash_id} - CR3 PDF has no matching crash record in the DB. This should never happen."
             )
 
 

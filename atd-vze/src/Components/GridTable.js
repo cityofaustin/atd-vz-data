@@ -353,7 +353,7 @@ const GridTable = ({
       query.deleteWhere(column);
     });
 
-    const useEqSearch = ["crash_id", "form_id", "record_id"].includes(
+    const useEqSearch = ["cris_crash_id", "form_id", "record_id"].includes(
       searchParameters["column"]
     );
 

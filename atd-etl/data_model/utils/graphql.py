@@ -22,7 +22,7 @@ mutation UpsertCrashes($objects: [crashes_cris_insert_input!]!) {
   insert_crashes_cris(
     objects: $objects, 
     on_conflict: {
-        constraint: crashes_cris_crash_id_key,
+        constraint: crashes_cris_cris_crash_id_key,
         update_columns: [$updateColumns]
     }) {
     affected_rows
@@ -56,8 +56,8 @@ mutation UpsertPeople($objects: [people_cris_insert_input!]!) {
 }"""
 
 CHARGES_DELETE_MUTATION = """
-mutation DeleteCharges($crash_ids: [Int!]!) {
-  delete_charges_cris(where: {cris_crash_id: {_in: $crash_ids}}) {
+mutation DeleteCharges($cris_crash_ids: [Int!]!) {
+  delete_charges_cris(where: {cris_crash_id: {_in: $cris_crash_ids}}) {
     affected_rows
   }
 }
@@ -88,8 +88,8 @@ mutation UpdateImportLog($data: cris_import_log_set_input!, $id: Int!) {
 """
 
 UPDATE_CRASH_CR3_FIELDS = """
-mutation UpdateCrashCR3Fields($crash_id: Int!, $data: crashes_cris_set_input!) {
-    update_crashes_cris(where: { crash_id: { _eq: $crash_id } }, _set: $data) {
+mutation UpdateCrashCR3Fields($cris_crash_id: Int!, $data: crashes_cris_set_input!) {
+    update_crashes_cris(where: { cris_crash_id: { _eq: $cris_crash_id } }, _set: $data) {
         affected_rows
         returning {
         id

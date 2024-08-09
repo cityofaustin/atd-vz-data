@@ -1,6 +1,6 @@
 create table public.people_cris (
     id serial primary key,
-    cris_crash_id integer references public.crashes_cris (crash_id) on delete cascade on update cascade,
+    cris_crash_id integer references public.crashes_cris (cris_crash_id) on delete cascade on update cascade,
     cris_schema_version text not null,
     drvr_city_name text,
     drvr_drg_cat_1_id integer references lookups.substnc_cat_lkp (id) on update cascade on delete cascade,

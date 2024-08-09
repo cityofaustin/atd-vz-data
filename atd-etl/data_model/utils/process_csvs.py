@@ -264,11 +264,7 @@ def nullify_name_fields(records):
 
 
 def rename_crash_id(records):
-    """Rename CRIS's `crash_id` column to `cris_crash_id`. Records are modified in-place.
-
-    This is necessary for all record types except crashes, because the `crash_id`
-    column on these tables references the `crash.id` custom ID column.
-    """
+    """Rename CRIS's `crash_id` column to `cris_crash_id`. Records are modified in-place."""
     for record in records:
         record["cris_crash_id"] = record.pop("Crash_ID")
 
@@ -342,8 +338,7 @@ def process_csvs(extract_dir):
                 records = load_csv(file["path"])
 
                 # rename Crash_ID to cris_crash_id for all tables except crashes
-                if table_name != "crashes":
-                    rename_crash_id(records)
+                rename_crash_id(records)
 
                 records = lower_case_keys(records)
 
@@ -410,7 +405,7 @@ def process_csvs(extract_dir):
                         logger.debug(f"Deleting {delete_charges_batch_size} crashes")
                         make_hasura_request(
                             query=CHARGES_DELETE_MUTATION,
-                            variables={"crash_ids": crash_ids},
+                            variables={"cris_crash_ids": crash_ids},
                         )
                     # now that we've deleted all charges we can purge the non-charge records
                     # from our import

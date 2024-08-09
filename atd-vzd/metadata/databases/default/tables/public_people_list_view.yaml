@@ -44,7 +44,7 @@ select_permissions:
       columns:
         - is_primary_person
         - prsn_exp_homelessness
-        - crash_id
+        - crash_pk
         - cris_crash_id
         - drvr_drg_cat_1_id
         - ems_id
@@ -91,7 +91,7 @@ select_permissions:
       columns:
         - is_primary_person
         - prsn_exp_homelessness
-        - crash_id
+        - crash_pk
         - cris_crash_id
         - drvr_drg_cat_1_id
         - ems_id
@@ -138,7 +138,7 @@ select_permissions:
       columns:
         - is_primary_person
         - prsn_exp_homelessness
-        - crash_id
+        - crash_pk
         - cris_crash_id
         - drvr_drg_cat_1_id
         - ems_id

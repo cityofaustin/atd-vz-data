@@ -6,7 +6,7 @@ object_relationships:
     using:
       manual_configuration:
         column_mapping:
-          crash_id: crash_id
+          id: crash_pk
         insertion_order: null
         remote_table:
           name: recommendations
@@ -16,7 +16,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          crash_id: cris_crash_id
+          cris_crash_id: cris_crash_id
         insertion_order: null
         remote_table:
           name: units
@@ -34,7 +34,7 @@ select_permissions:
         - council_district
         - crash_date_ct
         - crash_day_of_week
-        - crash_id
+        - cris_crash_id
         - crash_injry_sev_desc
         - crash_injry_sev_id
         - crash_speed_limit
@@ -94,7 +94,7 @@ select_permissions:
         - council_district
         - crash_date_ct
         - crash_day_of_week
-        - crash_id
+        - cris_crash_id
         - crash_injry_sev_desc
         - crash_injry_sev_id
         - crash_speed_limit
@@ -168,7 +168,7 @@ select_permissions:
         - schl_bus_fl
         - toll_road_fl
         - council_district
-        - crash_id
+        - cris_crash_id
         - crash_injry_sev_id
         - crash_speed_limit
         - est_comp_cost_crash_based

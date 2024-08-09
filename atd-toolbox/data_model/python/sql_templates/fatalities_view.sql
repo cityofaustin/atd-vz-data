@@ -9,8 +9,8 @@ drop function if exists fatality_insert cascade;
 create or replace view fatalities_view AS
 select 
 people.id as person_id,
-crashes.id as crash_id,
-crashes.crash_id as cris_crash_id,
+crashes.id as crash_pk,
+crashes.cris_crash_id,
 crashes.record_locator,
 units.id as unit_id,
 CONCAT_WS(' ', people.prsn_first_name, people.prsn_mid_name, people.prsn_last_name) as victim_name,
@@ -36,11 +36,11 @@ ROW_NUMBER() OVER (
     ORDER BY crashes.crash_timestamp ASC) 
     AS ytd_fatality,
 -- get ytd fatal crash, partition by year and sort by date timestamp.
--- records with the same crash_id will get "tie" rankings thus making
+-- records with the same crash.id will get "tie" rankings thus making
 -- this column count each crash rather than each fatality
 DENSE_RANK() OVER (
     PARTITION BY EXTRACT(year FROM crashes.crash_timestamp) 
-    ORDER BY crashes.crash_timestamp ASC, crashes.crash_id) 
+    ORDER BY crashes.crash_timestamp ASC, crashes.id) 
     AS ytd_fatal_crash,
 crashes.case_id,
 crashes.law_enforcement_ytd_fatality_num,
@@ -48,5 +48,5 @@ crashes.engineering_area
   from 
     people 
   left join units on people.unit_id = units.id
-  left join crashes on units.crash_id = crashes.id
+  left join crashes on units.crash_pk = crashes.id
 where crashes.in_austin_full_purpose = true AND people.prsn_injry_sev_id = 4 AND crashes.private_dr_fl = false AND crashes.is_deleted = false;

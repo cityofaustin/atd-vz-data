@@ -17,7 +17,7 @@
     "source": "db sequence"
   },
   {
-    "column_name": "crash_id",
+    "column_name": "crash_pk",
     "data_type": "integer",
     "data_type_constraint": "not null",
     "foreign_column_cascade": "on update cascade on delete cascade",
@@ -38,7 +38,7 @@
     "data_type": "integer",
     "data_type_constraint": "not null",
     "foreign_column_cascade": "on update cascade on delete cascade",
-    "foreign_column_name": "crash_id",
+    "foreign_column_name": "cris_crash_id",
     "foreign_table_name": "crashes_cris",
     "foreign_table_schema": "public",
     "is_cris_column": true,
@@ -238,7 +238,7 @@
     "source": "db generated field"
   },
   {
-    "column_name": "crash_id",
+    "column_name": "cris_crash_id",
     "data_type": "integer",
     "data_type_constraint": "unique",
     "foreign_column_cascade": "",
@@ -1294,7 +1294,7 @@
   {
     "column_name": "record_locator",
     "data_type": "text",
-    "data_type_constraint": "unique not null generated always as (case when is_temp_record = true then 'T' || id::text  else crash_id::text end) stored",
+    "data_type_constraint": "unique not null generated always as (case when is_temp_record = true then 'T' || id::text  else cris_crash_id::text end) stored",
     "foreign_column_cascade": "",
     "foreign_column_name": "",
     "foreign_table_name": "",
@@ -1382,7 +1382,7 @@
     "data_type": "integer",
     "data_type_constraint": "",
     "foreign_column_cascade": "on delete cascade on update cascade",
-    "foreign_column_name": "crash_id",
+    "foreign_column_name": "cris_crash_id",
     "foreign_table_name": "crashes_cris",
     "foreign_table_schema": "public",
     "is_cris_column": true,
@@ -1888,7 +1888,7 @@
     "source": "etl"
   },
   {
-    "column_name": "crash_id",
+    "column_name": "crash_pk",
     "data_type": "integer",
     "data_type_constraint": "not null",
     "foreign_column_cascade": "on update cascade on delete cascade",
@@ -1909,7 +1909,7 @@
     "data_type": "integer",
     "data_type_constraint": "",
     "foreign_column_cascade": "on update cascade on delete cascade",
-    "foreign_column_name": "crash_id",
+    "foreign_column_name": "cris_crash_id",
     "foreign_table_name": "crashes_cris",
     "foreign_table_schema": "public",
     "is_cris_column": true,

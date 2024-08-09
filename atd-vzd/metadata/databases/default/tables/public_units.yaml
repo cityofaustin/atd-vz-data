@@ -7,7 +7,7 @@ object_relationships:
       foreign_key_constraint_on: contrib_factr_1_id
   - name: crashes
     using:
-      foreign_key_constraint_on: crash_id
+      foreign_key_constraint_on: crash_pk
   - name: movt_lkp
     using:
       foreign_key_constraint_on: movement_id
@@ -54,7 +54,7 @@ select_permissions:
         - contrib_factr_3_id
         - contrib_factr_p1_id
         - contrib_factr_p2_id
-        - crash_id
+        - crash_pk
         - e_scooter_id
         - first_harm_evt_inv_id
         - id
@@ -94,7 +94,7 @@ select_permissions:
         - contrib_factr_3_id
         - contrib_factr_p1_id
         - contrib_factr_p2_id
-        - crash_id
+        - crash_pk
         - e_scooter_id
         - first_harm_evt_inv_id
         - id
@@ -134,7 +134,7 @@ select_permissions:
         - contrib_factr_3_id
         - contrib_factr_p1_id
         - contrib_factr_p2_id
-        - crash_id
+        - crash_pk
         - e_scooter_id
         - first_harm_evt_inv_id
         - id

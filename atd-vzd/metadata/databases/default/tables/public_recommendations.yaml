@@ -7,7 +7,7 @@ object_relationships:
       foreign_key_constraint_on: recommendation_status_id
   - name: crash
     using:
-      foreign_key_constraint_on: crash_id
+      foreign_key_constraint_on: crash_pk
 array_relationships:
   - name: recommendations_partners
     using:
@@ -23,7 +23,7 @@ insert_permissions:
       columns:
         - id
         - created_at
-        - crash_id
+        - crash_pk
         - recommendation_status_id
         - rec_text
         - created_by
@@ -34,7 +34,7 @@ insert_permissions:
       columns:
         - id
         - created_at
-        - crash_id
+        - crash_pk
         - recommendation_status_id
         - rec_text
         - created_by
@@ -43,7 +43,7 @@ select_permissions:
   - role: editor
     permission:
       columns:
-        - crash_id
+        - crash_pk
         - id
         - recommendation_status_id
         - created_by
@@ -54,7 +54,7 @@ select_permissions:
   - role: vz-admin
     permission:
       columns:
-        - crash_id
+        - crash_pk
         - id
         - recommendation_status_id
         - created_by
@@ -66,7 +66,7 @@ update_permissions:
   - role: editor
     permission:
       columns:
-        - crash_id
+        - crash_pk
         - id
         - recommendation_status_id
         - created_by
@@ -78,7 +78,7 @@ update_permissions:
   - role: vz-admin
     permission:
       columns:
-        - crash_id
+        - crash_pk
         - id
         - recommendation_status_id
         - created_by

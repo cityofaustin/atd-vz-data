@@ -27,7 +27,7 @@ array_relationships:
   - name: charges_cris
     using:
       foreign_key_constraint_on:
-        column: crash_id
+        column: crash_pk
         table:
           name: charges_cris
           schema: public
@@ -41,14 +41,14 @@ array_relationships:
   - name: units_cris
     using:
       foreign_key_constraint_on:
-        column: crash_id
+        column: crash_pk
         table:
           name: units_cris
           schema: public
   - name: units_edits
     using:
       foreign_key_constraint_on:
-        column: crash_id
+        column: crash_pk
         table:
           name: units_edits
           schema: public
@@ -117,7 +117,7 @@ select_permissions:
         - active_school_zone_fl
         - at_intrsct_fl
         - case_id
-        - crash_id
+        - cris_crash_id
         - crash_speed_limit
         - crash_timestamp
         - created_at

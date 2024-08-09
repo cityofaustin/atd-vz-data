@@ -2,9 +2,9 @@ table:
   name: units_cris
   schema: public
 object_relationships:
-  - name: crashes_cri
+  - name: crashes_cris
     using:
-      foreign_key_constraint_on: crash_id
+      foreign_key_constraint_on: crash_pk
   - name: units_edit
     using:
       foreign_key_constraint_on:
@@ -45,7 +45,7 @@ insert_permissions:
         - contrib_factr_3_id
         - contrib_factr_p1_id
         - contrib_factr_p2_id
-        - crash_id
+        - crash_pk
         - created_by
         - cris_crash_id
         - cris_schema_version
@@ -76,7 +76,7 @@ select_permissions:
   - role: vz-admin
     permission:
       columns:
-        - crash_id
+        - crash_pk
         - id
       filter: {}
     comment: ""
