@@ -49,6 +49,7 @@ export const GET_CRASH = gql`
       longitude
       location_id
       is_temp_record
+      in_austin_full_purpose
       crash_injury_metrics_view {
         vz_fatality_count
         sus_serious_injry_count

@@ -9,6 +9,7 @@ import {
   Col,
   Row,
   UncontrolledTooltip,
+  Alert,
 } from "reactstrap";
 import axios from "axios";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -153,9 +154,9 @@ const CrashDiagram = ({ crashId, isCr3Stored, isTempRecord }) => {
       {diagramError &&
         (isTempRecord ? (
           <CardBody>
-            <p>
+            <Alert color="danger">
               Crash diagrams are not available for user-created crash records.
-            </p>
+            </Alert>
           </CardBody>
         ) : (
           <CardBody>
