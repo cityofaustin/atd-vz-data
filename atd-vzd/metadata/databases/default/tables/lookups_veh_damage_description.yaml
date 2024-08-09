@@ -1,0 +1,46 @@
+table:
+  name: veh_damage_description
+  schema: lookups
+array_relationships:
+  - name: units
+    using:
+      foreign_key_constraint_on:
+        column: veh_damage_description1_id
+        table:
+          name: units
+          schema: public
+  - name: unitsCrisByVehDamageDescription2Id
+    using:
+      foreign_key_constraint_on:
+        column: veh_damage_description2_id
+        table:
+          name: units_cris
+          schema: public
+  - name: unitsEditsByVehDamageDescription2Id
+    using:
+      foreign_key_constraint_on:
+        column: veh_damage_description2_id
+        table:
+          name: units_edits
+          schema: public
+  - name: unitsUnifiedsByVehDamageDescription2Id
+    using:
+      foreign_key_constraint_on:
+        column: veh_damage_description2_id
+        table:
+          name: units
+          schema: public
+  - name: units_cris
+    using:
+      foreign_key_constraint_on:
+        column: veh_damage_description1_id
+        table:
+          name: units_cris
+          schema: public
+  - name: units_edits
+    using:
+      foreign_key_constraint_on:
+        column: veh_damage_description1_id
+        table:
+          name: units_edits
+          schema: public

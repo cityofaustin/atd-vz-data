@@ -1,0 +1,46 @@
+table:
+  name: substnc_tst_result
+  schema: lookups
+array_relationships:
+  - name: peopleCrisByPrsnDrgRsltId
+    using:
+      foreign_key_constraint_on:
+        column: prsn_drg_rslt_id
+        table:
+          name: people_cris
+          schema: public
+  - name: peopleEditsByPrsnDrgRsltId
+    using:
+      foreign_key_constraint_on:
+        column: prsn_drg_rslt_id
+        table:
+          name: people_edits
+          schema: public
+  - name: peopleUnifiedsByPrsnDrgRsltId
+    using:
+      foreign_key_constraint_on:
+        column: prsn_drg_rslt_id
+        table:
+          name: people
+          schema: public
+  - name: people_cris
+    using:
+      foreign_key_constraint_on:
+        column: prsn_alc_rslt_id
+        table:
+          name: people_cris
+          schema: public
+  - name: people_edits
+    using:
+      foreign_key_constraint_on:
+        column: prsn_alc_rslt_id
+        table:
+          name: people_edits
+          schema: public
+  - name: peoples
+    using:
+      foreign_key_constraint_on:
+        column: prsn_alc_rslt_id
+        table:
+          name: people
+          schema: public

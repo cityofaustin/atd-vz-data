@@ -1,7 +1,7 @@
 alter table units drop column vz_mode_category_id;
 
 alter table units
-add column vz_mode_category_id integer not null constraint vz_mode_category_fk references lookups.mode_category_lkp (
+add column vz_mode_category_id integer not null constraint vz_mode_category_fk references lookups.mode_category (
     id
 ) on
 update

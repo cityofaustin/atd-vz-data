@@ -333,8 +333,8 @@ recommendation { rec_text }
 recommendation { rec_update }
 recommendation { atd__recommendation_status_lkp { rec_status_desc } }
 recommendation { recommendations_partners { atd__coordination_partners_lkp { coord_partner_desc } } }
-unit { unit_desc_lkp { label } }
-unit { veh_body_styl_lkp { label } }
+unit { unit_desc { label } }
+unit { veh_body_styl { label } }
 crash { onsys_fl }
 engineering_area
 crash { council_district }

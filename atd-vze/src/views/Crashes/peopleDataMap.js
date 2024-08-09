@@ -1,10 +1,10 @@
 // Return true if person record is a fatality
 const shouldRenderVictimName = data => {
-  return data.some(person => person.injry_sev_lkp.id === 4);
+  return data.some(person => person.injry_sev.id === 4);
 };
 
 const getInjurySeverityColor = personRecord => {
-  switch (personRecord.injry_sev_lkp.id) {
+  switch (personRecord.injry_sev.id) {
     case 0: // UNKNOWN: no color
       return "muted";
     case 1: // SUSPECTED INCAPACITATING INJURY: yellow
@@ -33,12 +33,12 @@ export const primaryPersonDataMap = [
         label: "Unit",
         editable: false,
       },
-      injry_sev_lkp: {
+      injry_sev: {
         label: "Injury Severity",
         editable: true,
         format: "select",
         lookup_desc: "label",
-        lookupOptions: "lookups_injry_sev_lkp",
+        lookupOptions: "lookups_injry_sev",
         updateFieldKey: "prsn_injry_sev_id",
         mutationVariableKey: "personId",
         badge: true,
@@ -62,7 +62,7 @@ export const primaryPersonDataMap = [
           },
         },
       },
-      prsn_type_lkp: {
+      prsn_type: {
         label: "Type",
         editable: false,
         lookup_desc: "label",
@@ -73,21 +73,21 @@ export const primaryPersonDataMap = [
         format: "text",
         mutationVariableKey: "personId",
       },
-      gndr_lkp: {
+      gndr: {
         label: "Sex",
         editable: true,
         lookup_desc: "label",
         format: "select",
-        lookupOptions: "lookups_gndr_lkp",
+        lookupOptions: "lookups_gndr",
         updateFieldKey: "prsn_gndr_id",
         mutationVariableKey: "personId",
       },
-      drvr_ethncty_lkp: {
+      drvr_ethncty: {
         label: "Race/Ethnicity",
         editable: true,
         lookup_desc: "label",
         format: "select",
-        lookupOptions: "lookups_drvr_ethncty_lkp",
+        lookupOptions: "lookups_drvr_ethncty",
         updateFieldKey: "prsn_ethnicity_id",
         mutationVariableKey: "personId",
       },
@@ -119,12 +119,12 @@ export const personDataMap = [
         label: "Unit",
         editable: false,
       },
-      injry_sev_lkp: {
+      injry_sev: {
         label: "Injury Severity",
         editable: true,
         format: "select",
         lookup_desc: "label",
-        lookupOptions: "lookups_injry_sev_lkp",
+        lookupOptions: "lookups_injry_sev",
         updateFieldKey: "prsn_injry_sev_id",
         mutationVariableKey: "personId",
         badge: true,
@@ -148,7 +148,7 @@ export const personDataMap = [
           },
         },
       },
-      prsn_type_lkp: {
+      prsn_type: {
         label: "Type",
         editable: false,
         lookup_desc: "label",
@@ -159,21 +159,21 @@ export const personDataMap = [
         format: "text",
         mutationVariableKey: "personId",
       },
-      gndr_lkp: {
+      gndr: {
         label: "Sex",
         editable: true,
         lookup_desc: "label",
         format: "select",
-        lookupOptions: "lookups_gndr_lkp",
+        lookupOptions: "lookups_gndr",
         updateFieldKey: "prsn_gndr_id",
         mutationVariableKey: "personId",
       },
-      drvr_ethncty_lkp: {
+      drvr_ethncty: {
         label: "Race/Ethnicity",
         editable: true,
         lookup_desc: "label",
         format: "select",
-        lookupOptions: "lookups_drvr_ethncty_lkp",
+        lookupOptions: "lookups_drvr_ethncty",
         updateFieldKey: "prsn_ethnicity_id",
         mutationVariableKey: "personId",
       },

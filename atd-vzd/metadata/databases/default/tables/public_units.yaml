@@ -2,19 +2,19 @@ table:
   name: units
   schema: public
 object_relationships:
-  - name: contrib_factr_lkp
+  - name: contrib_factr
     using:
       foreign_key_constraint_on: contrib_factr_1_id
   - name: crashes
     using:
       foreign_key_constraint_on: crash_pk
-  - name: movt_lkp
+  - name: movt
     using:
       foreign_key_constraint_on: movement_id
-  - name: trvl_dir_lkp
+  - name: trvl_dir
     using:
       foreign_key_constraint_on: veh_trvl_dir_id
-  - name: unit_desc_lkp
+  - name: unit_desc
     using:
       foreign_key_constraint_on: unit_desc_id
   - name: unit_injury_metrics_view
@@ -26,13 +26,13 @@ object_relationships:
         remote_table:
           name: unit_injury_metrics_view
           schema: public
-  - name: veh_body_styl_lkp
+  - name: veh_body_styl
     using:
       foreign_key_constraint_on: veh_body_styl_id
-  - name: veh_make_lkp
+  - name: veh_make
     using:
       foreign_key_constraint_on: veh_make_id
-  - name: veh_mod_lkp
+  - name: veh_mod
     using:
       foreign_key_constraint_on: veh_mod_id
 array_relationships:

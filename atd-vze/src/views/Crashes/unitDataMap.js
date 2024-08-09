@@ -7,23 +7,23 @@ export const unitDataMap = [
         label: "Unit",
         editable: false,
       },
-      unit_desc_lkp: {
+      unit_desc: {
         edit_field_name: "unit_desc_id",
         label: "Type",
         editable: true,
         format: "select",
         lookup_desc: "label",
-        lookupOptions: "lookups_unit_desc_lkp",
+        lookupOptions: "lookups_unit_desc",
         updateFieldKey: "unit_desc_id",
         mutationVariableKey: "unitId",
       },
-      veh_body_styl_lkp: {
+      veh_body_styl: {
         edit_field_name: "veh_body_styl_id",
         label: "Body Style",
         editable: true,
         format: "select",
         lookup_desc: "label",
-        lookupOptions: "lookups_veh_body_styl_lkp",
+        lookupOptions: "lookups_veh_body_styl",
         updateFieldKey: "veh_body_styl_id",
         mutationVariableKey: "unitId",
       },
@@ -31,33 +31,33 @@ export const unitDataMap = [
         label: "Year",
         editable: false,
       },
-      veh_make_lkp: {
+      veh_make: {
         label: "Make",
         editable: false,
         lookup_desc: "label",
       },
-      veh_mod_lkp: {
+      veh_mod: {
         label: "Model",
         editable: false,
         lookup_desc: "label",
       },
-      trvl_dir_lkp: {
+      trvl_dir: {
         edit_field_name: "veh_trvl_dir_id",
         label: "Direction",
         editable: true,
         format: "select",
         lookup_desc: "label",
-        lookupOptions: "lookups_trvl_dir_lkp",
+        lookupOptions: "lookups_trvl_dir",
         updateFieldKey: "veh_trvl_dir_id",
         mutationVariableKey: "unitId",
       },
-      movt_lkp: {
+      movt: {
         edit_field_name: "movement_id",
         label: "Movement",
         editable: true,
         format: "select",
         lookup_desc: "label",
-        lookupOptions: "lookups_movt_lkp",
+        lookupOptions: "lookups_movt",
         updateFieldKey: "movement_id",
         mutationVariableKey: "unitId",
       },
@@ -71,7 +71,7 @@ export const unitDataMap = [
         label: "Suspected Serious Injuries",
         editable: false,
       },
-      contrib_factr_lkp: {
+      contrib_factr: {
         label: "Primary Contributing Factor",
         editable: false,
         lookup_desc: "label",

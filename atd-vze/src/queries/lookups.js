@@ -2,39 +2,39 @@ import { gql } from "apollo-boost";
 
 export const GET_LOOKUPS = gql`
   {
-    lookups_city_lkp {
+    lookups_city {
       id
       label
     }
-    lookups_collsn_lkp {
+    lookups_collsn {
       id
       label
     }
-    lookups_light_cond_lkp {
+    lookups_light_cond {
       id
       label
     }
-    lookups_injry_sev_lkp {
+    lookups_injry_sev {
       id
       label
     }
-    lookups_obj_struck_lkp {
+    lookups_obj_struck {
       id
       label
     }
-    lookups_road_part_lkp {
+    lookups_road_part {
       id
       label
     }
-    lookups_rwy_sys_lkp {
+    lookups_rwy_sys {
       id
       label
     }
-    lookups_traffic_cntl_lkp {
+    lookups_traffic_cntl {
       id
       label
     }
-    lookups_wthr_cond_lkp {
+    lookups_wthr_cond {
       id
       label
     }
@@ -43,19 +43,19 @@ export const GET_LOOKUPS = gql`
 
 export const GET_UNIT_LOOKUPS = gql`
   {
-    lookups_trvl_dir_lkp {
+    lookups_trvl_dir {
       id
       label
     }
-    lookups_unit_desc_lkp {
+    lookups_unit_desc {
       id
       label
     }
-    lookups_veh_body_styl_lkp {
+    lookups_veh_body_styl {
       id
       label
     }
-    lookups_movt_lkp {
+    lookups_movt {
       id
       label
     }
@@ -64,15 +64,15 @@ export const GET_UNIT_LOOKUPS = gql`
 
 export const GET_PERSON_LOOKUPS = gql`
   {
-    lookups_injry_sev_lkp {
+    lookups_injry_sev {
       id
       label
     }
-    lookups_drvr_ethncty_lkp {
+    lookups_drvr_ethncty {
       id
       label
     }
-    lookups_gndr_lkp {
+    lookups_gndr {
       id
       label
     }

@@ -2,41 +2,41 @@ table:
   name: people_list_view
   schema: public
 object_relationships:
-  - name: drvr_ethncty_lkp
+  - name: drvr_ethncty
     using:
       manual_configuration:
         column_mapping:
           prsn_ethnicity_id: id
         insertion_order: null
         remote_table:
-          name: drvr_ethncty_lkp
+          name: drvr_ethncty
           schema: lookups
-  - name: gndr_lkp
+  - name: gndr
     using:
       manual_configuration:
         column_mapping:
           prsn_gndr_id: id
         insertion_order: null
         remote_table:
-          name: gndr_lkp
+          name: gndr
           schema: lookups
-  - name: injry_sev_lkp
+  - name: injry_sev
     using:
       manual_configuration:
         column_mapping:
           prsn_injry_sev_id: id
         insertion_order: null
         remote_table:
-          name: injry_sev_lkp
+          name: injry_sev
           schema: lookups
-  - name: prsn_type_lkp
+  - name: prsn_type
     using:
       manual_configuration:
         column_mapping:
           prsn_type_id: id
         insertion_order: null
         remote_table:
-          name: prsn_type_lkp
+          name: prsn_type
           schema: lookups
 select_permissions:
   - role: editor

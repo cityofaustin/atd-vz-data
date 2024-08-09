@@ -387,8 +387,8 @@ select
     crash_injury_metrics_view.est_comp_cost_crash_based,
     crash_injury_metrics_view.crash_injry_sev_id,
     crash_injury_metrics_view.years_of_life_lost,
-    lookups.injry_sev_lkp.label as crash_injry_sev_desc,
-    lookups.collsn_lkp.label as collsn_desc,
+    lookups.injry_sev.label as crash_injry_sev_desc,
+    lookups.collsn.label as collsn_desc,
     geocode_status.is_manual_geocode,
     to_char(
         public.crashes.crash_timestamp at time zone 'US/Central', 'YYYY-MM-DD'
@@ -415,11 +415,11 @@ left join
     geocode_status
     on public.crashes.id = geocode_status.id
 left join
-    lookups.collsn_lkp
-    on public.crashes.fhe_collsn_id = lookups.collsn_lkp.id
+    lookups.collsn
+    on public.crashes.fhe_collsn_id = lookups.collsn.id
 left join
-    lookups.injry_sev_lkp
-    on lookups.injry_sev_lkp.id = crash_injury_metrics_view.crash_injry_sev_id
+    lookups.injry_sev
+    on lookups.injry_sev.id = crash_injury_metrics_view.crash_injry_sev_id
 where crashes.is_deleted = false
 order by crash_timestamp desc;
 
@@ -514,7 +514,7 @@ create or replace view location_crashes_view as (
         crash_injury_metrics_view.unkn_injry_count,
         crash_injury_metrics_view.vz_fatality_count,
         crash_injury_metrics_view.est_comp_cost_crash_based,
-        lookups.collsn_lkp.label as collsn_desc,
+        lookups.collsn.label as collsn_desc,
         crash_units.movement_desc,
         crash_units.travel_direction,
         crash_units.veh_body_styl_desc,
@@ -525,25 +525,25 @@ create or replace view location_crashes_view as (
         (
             select
                 units.crash_pk,
-                string_agg(movt_lkp.label::text, ',') as movement_desc,
-                string_agg(trvl_dir_lkp.label::text, ',') as travel_direction,
+                string_agg(movt.label::text, ',') as movement_desc,
+                string_agg(trvl_dir.label::text, ',') as travel_direction,
                 string_agg(
-                    veh_body_styl_lkp.label::text, ','
+                    veh_body_styl.label::text, ','
                 ) as veh_body_styl_desc,
-                string_agg(unit_desc_lkp.label::text, ',') as veh_unit_desc
+                string_agg(unit_desc.label::text, ',') as veh_unit_desc
             from units
             left join
-                lookups.movt_lkp as movt_lkp
-                on units.movement_id = movt_lkp.id
+                lookups.movt as movt
+                on units.movement_id = movt.id
             left join
-                lookups.trvl_dir_lkp as trvl_dir_lkp
-                on units.veh_trvl_dir_id = trvl_dir_lkp.id
+                lookups.trvl_dir as trvl_dir
+                on units.veh_trvl_dir_id = trvl_dir.id
             left join
-                lookups.veh_body_styl_lkp as veh_body_styl_lkp
-                on units.veh_body_styl_id = veh_body_styl_lkp.id
+                lookups.veh_body_styl as veh_body_styl
+                on units.veh_body_styl_id = veh_body_styl.id
             left join
-                lookups.unit_desc_lkp as unit_desc_lkp
-                on units.unit_desc_id = unit_desc_lkp.id
+                lookups.unit_desc as unit_desc
+                on units.unit_desc_id = unit_desc.id
             where crashes.id = units.crash_pk
             group by units.crash_pk
         ) as crash_units
@@ -557,8 +557,8 @@ create or replace view location_crashes_view as (
         limit 1
     ) as crash_injury_metrics_view on true
     left join
-        lookups.collsn_lkp
-        on public.crashes.fhe_collsn_id = lookups.collsn_lkp.id
+        lookups.collsn
+        on public.crashes.fhe_collsn_id = lookups.collsn.id
     where
         crashes.is_deleted = false
         and crashes.crash_timestamp >= (now() - '5 years'::interval)::date

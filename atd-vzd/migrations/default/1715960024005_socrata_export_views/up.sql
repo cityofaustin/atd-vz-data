@@ -7,7 +7,7 @@ unit_aggregates as (
     left join units
         on crashes.id = units.crash_pk
     left join
-        lookups.mode_category_lkp as mode_categories
+        lookups.mode_category as mode_categories
         on units.vz_mode_category_id = mode_categories.id
     group by crashes.id
 )
@@ -99,9 +99,9 @@ create or replace view socrata_export_people_view as (
         people.is_primary_person,
         people.prsn_age,
         people.prsn_gndr_id as prsn_sex_id,
-        lookups.gndr_lkp.label as prsn_sex_label,
+        lookups.gndr.label as prsn_sex_label,
         people.prsn_ethnicity_id,
-        lookups.drvr_ethncty_lkp.label as prsn_ethnicity_label,
+        lookups.drvr_ethncty.label as prsn_ethnicity_label,
         people.prsn_injry_sev_id,
         units.vz_mode_category_id as mode_id,
         mode_categories.label as mode_desc,
@@ -116,14 +116,14 @@ create or replace view socrata_export_people_view as (
     left join public.units as units on people.unit_id = units.id
     left join public.crashes as crashes on units.crash_pk = crashes.id
     left join
-        lookups.mode_category_lkp as mode_categories
+        lookups.mode_category as mode_categories
         on units.vz_mode_category_id = mode_categories.id
     left join
-        lookups.drvr_ethncty_lkp
-        on people.prsn_ethnicity_id = lookups.drvr_ethncty_lkp.id
+        lookups.drvr_ethncty
+        on people.prsn_ethnicity_id = lookups.drvr_ethncty.id
     left join
-        lookups.gndr_lkp
-        on people.prsn_gndr_id = lookups.gndr_lkp.id
+        lookups.gndr
+        on people.prsn_gndr_id = lookups.gndr.id
     where
         crashes.in_austin_full_purpose = true and crashes.private_dr_fl = false
         and crashes.crash_timestamp < now() - interval '14 days'

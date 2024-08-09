@@ -36,31 +36,31 @@ export const createCrashDataMap = isTempRecord => {
           label: "Manner of Collision ID",
           editable: isTempRecord,
           uiType: "select",
-          lookupOptions: "lookups_collsn_lkp",
+          lookupOptions: "lookups_collsn",
         },
         rpt_city_id: {
           label: "City",
           editable: true,
           uiType: "select",
-          lookupOptions: "lookups_city_lkp",
+          lookupOptions: "lookups_city",
         },
         light_cond_id: {
           label: "Light Condition",
           editable: false,
           uiType: "select",
-          lookupOptions: "lookups_light_cond_lkp",
+          lookupOptions: "lookups_light_cond",
         },
         wthr_cond_id: {
           label: "Weather Condition",
           editable: false,
           uiType: "select",
-          lookupOptions: "lookups_wthr_cond_lkp",
+          lookupOptions: "lookups_wthr_cond",
         },
         obj_struck_id: {
           label: "Object Struck",
           editable: false,
           uiType: "select",
-          lookupOptions: "lookups_obj_struck_lkp",
+          lookupOptions: "lookups_obj_struck",
         },
         crash_speed_limit: {
           label: "Speed Limit",
@@ -72,7 +72,7 @@ export const createCrashDataMap = isTempRecord => {
           label: "Traffic Control",
           editable: true,
           uiType: "select",
-          lookupOptions: "lookups_traffic_cntl_lkp",
+          lookupOptions: "lookups_traffic_cntl",
         },
       },
     },
@@ -83,7 +83,7 @@ export const createCrashDataMap = isTempRecord => {
           label: "Crash Severity",
           relationshipName: "crash_injury_metrics_view",
           editable: false,
-          lookupOptions: "lookups_injry_sev_lkp",
+          lookupOptions: "lookups_injry_sev",
         },
         nonincap_injry_count: {
           label: "Non-incapacitating Injury Count",
@@ -144,13 +144,13 @@ export const createCrashDataMap = isTempRecord => {
           label: "Roadway Part",
           editable: false,
           uiType: "select",
-          lookupOptions: "lookups_road_part_lkp",
+          lookupOptions: "lookups_road_part",
         },
         rpt_rdwy_sys_id: {
           label: "Roadway System",
           editable: false,
           uiType: "select",
-          lookupOptions: "lookups_rwy_sys_lkp",
+          lookupOptions: "lookups_rwy_sys",
         },
         rpt_hwy_num: {
           label: "Highway Number",
@@ -162,7 +162,7 @@ export const createCrashDataMap = isTempRecord => {
           editable: false,
           uiType: "text",
         },
-        // TODO: We'll probably want to validate that they are using values from the atd_txdot__street_sfx_lkp table
+        // TODO: We'll probably want to validate that they are using values from the table
         // for the rpt_street_sfx & rpt_sec_street_sfx fields but the values are currently text, not ID lookups so we'll punt
         rpt_street_sfx: {
           label: "Street Suffix",
@@ -198,13 +198,13 @@ export const createCrashDataMap = isTempRecord => {
           label: "Secondary Roadway Part",
           editable: false,
           uiType: "select",
-          lookupOptions: "lookups_road_part_lkp",
+          lookupOptions: "lookups_road_part",
         },
         rpt_sec_rdwy_sys_id: {
           label: "Secondary Roadway System",
           editable: false,
           uiType: "select",
-          lookupOptions: "lookups_rwy_sys_lkp",
+          lookupOptions: "lookups_rwy_sys",
         },
         rpt_sec_hwy_num: {
           label: "Secondary Highway Number",

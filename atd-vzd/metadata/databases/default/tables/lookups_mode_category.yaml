@@ -1,0 +1,11 @@
+table:
+  name: mode_category
+  schema: lookups
+array_relationships:
+  - name: units
+    using:
+      foreign_key_constraint_on:
+        column: vz_mode_category_id
+        table:
+          name: units
+          schema: public

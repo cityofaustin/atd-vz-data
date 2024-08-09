@@ -64,31 +64,31 @@ export const GET_CRASH = gql`
         id
         unit_nbr
         veh_mod_year
-        unit_desc_lkp {
+        unit_desc {
           id
           label
         }
-        veh_body_styl_lkp {
+        veh_body_styl {
           id
           label
         }
-        veh_make_lkp {
+        veh_make {
           id
           label
         }
-        veh_mod_lkp {
+        veh_mod {
           id
           label
         }
-        trvl_dir_lkp {
+        trvl_dir {
           id
           label
         }
-        movt_lkp {
+        movt {
           id
           label
         }
-        contrib_factr_lkp {
+        contrib_factr {
           id
           label
         }
@@ -109,19 +109,19 @@ export const GET_CRASH = gql`
         prsn_first_name
         prsn_mid_name
         prsn_last_name
-        injry_sev_lkp {
+        injry_sev {
           id
           label
         }
-        prsn_type_lkp {
+        prsn_type {
           id
           label
         }
-        gndr_lkp {
+        gndr {
           id
           label
         }
-        drvr_ethncty_lkp {
+        drvr_ethncty {
           id
           label
         }
@@ -211,16 +211,16 @@ unkn_injry_count
 crash_injry_sev_desc
 collsn_desc
 units {
-  trvl_dir_lkp {
+  trvl_dir {
     label
   }
-  movt_lkp {
+  movt {
     label
   }
-  veh_body_styl_lkp {
+  veh_body_styl {
     label
   }
-  unit_desc_lkp {
+  unit_desc {
     label
   }
 }

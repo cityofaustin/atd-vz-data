@@ -45,7 +45,7 @@ const UnitsForm = ({ units, handleUnitFormChange, client }) => {
                   >
                     <option value={0}>Select the unit type...</option>
                     {!loading &&
-                      lookupValues.lookups_unit_desc_lkp.map(item => {
+                      lookupValues.lookups_unit_desc.map(item => {
                         return (
                           <option value={item.id} key={`option-${item.id}`}>
                             {item.label}

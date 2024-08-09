@@ -121,7 +121,7 @@ export const locationCrashGridTableColumns = {
       label_table: "Collision Description",
       type: "String",
     },
-    "units { unit_desc_lkp { label } }": {
+    "units { unit_desc { label } }": {
       searchable: false,
       sortable: false,
       label_table: "Unit Description",
