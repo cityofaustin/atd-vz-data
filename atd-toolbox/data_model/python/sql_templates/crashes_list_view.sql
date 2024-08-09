@@ -332,8 +332,6 @@ create or replace view crash_injury_metrics_view as
 create or replace view crashes_list_view as with geocode_status as (
     select
         cris.id,
-        cris.latitude is null or cris.longitude is null
-        as has_no_cris_coordinates,
         edits.latitude is not null and edits.longitude is not null
         as is_manual_geocode
     from public.crashes_cris as cris
@@ -392,7 +390,6 @@ select
     lookups.injry_sev_lkp.label as crash_injry_sev_desc,
     lookups.collsn_lkp.label as collsn_desc,
     geocode_status.is_manual_geocode,
-    geocode_status.has_no_cris_coordinates,
     to_char(
         public.crashes.crash_timestamp at time zone 'US/Central', 'YYYY-MM-DD'
     ) as crash_date_ct,
@@ -424,187 +421,186 @@ left join
     lookups.injry_sev_lkp
     on lookups.injry_sev_lkp.id = crash_injury_metrics_view.crash_injry_sev_id
 where crashes.is_deleted = false
-order by id asc;
+order by crash_timestamp desc;
 
-create view locations_list_view as (
-    with crash_totals as (
-        with unioned_crash_counts as (
-            with cr3_crash_counts as (
-                select
-                    location_id,
-                    sus_serious_injry_count,
-                    vz_fatality_count,
-                    est_comp_cost_crash_based
-                from
-                    crashes_list_view
-                where
-                    crashes_list_view.private_dr_fl = false
-                    and crashes_list_view.location_id is not null
-                    and crashes_list_view.crash_timestamp
-                    > (now() - '5 years'::interval)
-            ),
 
-            non_cr3_crash_counts as (
-                select
-                    location_id,
-                    0 as vz_fatality_count,
-                    0 as sus_serious_injry_count,
-                    est_comp_cost as est_comp_cost_crash_based
-                from atd_apd_blueform as non_cr3_crash_counts
-                where
-                    true
-                    and non_cr3_crash_counts.location_id is not null
-                    and non_cr3_crash_counts.date
-                    > (now() - '5 years'::interval)
-            )
+drop view if exists locations_list_view;
+create view locations_list_view as
+with cr3_comp_costs as (
+    select
+        location_id,
+        sum(est_comp_cost_crash_based) as cr3_comp_costs_total
+    from crashes_list_view group by location_id
+),
 
-            select * from cr3_crash_counts
-            union all
-            select * from non_cr3_crash_counts
-        )
+cr3_crash_counts as (
+    select
+        location_id,
+        count(location_id) as crash_count
+    from
+        crashes
+    where
+        crashes.private_dr_fl = false
+        and crashes.location_id is not null
+        and crashes.crash_timestamp > (now() - '5 years'::interval)
+    group by
+        location_id
+),
 
-        select
-            location_id,
-            count(unioned_crash_counts.*) as crash_count,
-            sum(
-                unioned_crash_counts.sus_serious_injry_count
-            ) as sus_serious_injry_count,
-            sum(unioned_crash_counts.vz_fatality_count) as vz_fatality_count,
-            sum(
-                unioned_crash_counts.est_comp_cost_crash_based
-            ) as total_est_comp_cost
-        from
-            unioned_crash_counts
-        group by location_id
-    )
+non_cr3_crash_counts as (
+    select
+        location_id,
+        count(location_id) as crash_count
+    from
+        atd_apd_blueform
+    where
+        atd_apd_blueform.location_id is not null
+        and atd_apd_blueform.date > (now() - '5 years'::interval)
+    group by
+        location_id
+)
+
+select
+    locations.location_id,
+    locations.description,
+    cr3_comp_costs.cr3_comp_costs_total,
+    coalesce(cr3_crash_counts.crash_count, 0) as cr3_crash_count,
+    coalesce(non_cr3_crash_counts.crash_count, 0) as non_cr3_crash_count,
+    coalesce(cr3_crash_counts.crash_count, 0)
+    + coalesce(non_cr3_crash_counts.crash_count, 0) as crash_count
+from
+    atd_txdot_locations as locations
+left join
+    cr3_crash_counts
+    on locations.location_id = cr3_crash_counts.location_id
+left join
+    non_cr3_crash_counts
+    on locations.location_id = non_cr3_crash_counts.location_id
+left join cr3_comp_costs on locations.location_id = cr3_comp_costs.location_id
+where
+    locations.council_district > 0
+    and locations.location_group = 1;
+
+create or replace view location_crashes_view as (
 
     select
-        locations.location_id,
-        locations.description,
-        coalesce(crash_totals.crash_count, 0) as crash_count,
-        coalesce(
-            crash_totals.sus_serious_injry_count, 0
-        ) as sus_serious_injry_count,
-        coalesce(crash_totals.vz_fatality_count, 0) as vz_fatality_count,
-        coalesce(crash_totals.total_est_comp_cost, 0) as total_est_comp_cost
-    from atd_txdot_locations as locations
-    left join crash_totals on locations.location_id = crash_totals.location_id
-    where locations.council_district > 0 and locations.location_group = 1
-);
-
-create or replace view location_crashes_view as (select
-    public.crashes.cris_crash_id,
-    'CR3'::text as type,
-    public.crashes.location_id,
-    public.crashes.case_id,
-    to_char(
-        public.crashes.crash_timestamp at time zone 'US/Central', 'YYYY-MM-DD'
-    ) as crash_date,
-    to_char(
-        public.crashes.crash_timestamp at time zone 'US/Central', 'HH24:MI:SS'
-    ) as crash_time,
-    upper(
+        public.crashes.cris_crash_id,
+        'CR3'::text as type,
+        public.crashes.location_id,
+        public.crashes.case_id,
         to_char(
-            public.crashes.crash_timestamp at time zone 'US/Central', 'dy'
-        )
-    ) as day_of_week,
-    crash_injury_metrics_view.crash_injry_sev_id as crash_sev_id,
-    public.crashes.latitude,
-    public.crashes.longitude,
-    public.crashes.address_primary,
-    public.crashes.address_secondary,
-    crash_injury_metrics_view.non_injry_count,
-    crash_injury_metrics_view.nonincap_injry_count,
-    crash_injury_metrics_view.poss_injry_count,
-    crash_injury_metrics_view.sus_serious_injry_count,
-    crash_injury_metrics_view.tot_injry_count,
-    crash_injury_metrics_view.unkn_injry_count,
-    crash_injury_metrics_view.vz_fatality_count,
-    crash_injury_metrics_view.est_comp_cost_crash_based,
-    lookups.collsn_lkp.label as collsn_desc,
-    crash_units.movement_desc,
-    crash_units.travel_direction,
-    crash_units.veh_body_styl_desc,
-    crash_units.veh_unit_desc
-from
-    public.crashes
-left join lateral
-    (
-        select
-            units.crash_pk,
-            string_agg(movt_lkp.label::text, ',') as movement_desc,
-            string_agg(trvl_dir_lkp.label::text, ',') as travel_direction,
-            string_agg(
-                veh_body_styl_lkp.label::text, ','
-            ) as veh_body_styl_desc,
-            string_agg(unit_desc_lkp.label::text, ',') as veh_unit_desc
-        from units
-        left join
-            lookups.movt_lkp as movt_lkp
-            on units.movement_id = movt_lkp.id
-        left join
-            lookups.trvl_dir_lkp as trvl_dir_lkp
-            on units.veh_trvl_dir_id = trvl_dir_lkp.id
-        left join
-            lookups.veh_body_styl_lkp as veh_body_styl_lkp
-            on units.veh_body_styl_id = veh_body_styl_lkp.id
-        left join
-            lookups.unit_desc_lkp as unit_desc_lkp
-            on units.unit_desc_id = unit_desc_lkp.id
-        where crashes.id = units.crash_pk
-        group by units.crash_pk
-    ) as crash_units
-    on true
-left join lateral (
-    select *
+            public.crashes.crash_timestamp at time zone 'US/Central',
+            'YYYY-MM-DD'
+        ) as crash_date,
+        to_char(
+            public.crashes.crash_timestamp at time zone 'US/Central',
+            'HH24:MI:SS'
+        ) as crash_time,
+        upper(
+            to_char(
+                public.crashes.crash_timestamp at time zone 'US/Central', 'dy'
+            )
+        ) as day_of_week,
+        crash_injury_metrics_view.crash_injry_sev_id as crash_sev_id,
+        public.crashes.latitude,
+        public.crashes.longitude,
+        public.crashes.address_primary,
+        public.crashes.address_secondary,
+        crash_injury_metrics_view.non_injry_count,
+        crash_injury_metrics_view.nonincap_injry_count,
+        crash_injury_metrics_view.poss_injry_count,
+        crash_injury_metrics_view.sus_serious_injry_count,
+        crash_injury_metrics_view.tot_injry_count,
+        crash_injury_metrics_view.unkn_injry_count,
+        crash_injury_metrics_view.vz_fatality_count,
+        crash_injury_metrics_view.est_comp_cost_crash_based,
+        lookups.collsn_lkp.label as collsn_desc,
+        crash_units.movement_desc,
+        crash_units.travel_direction,
+        crash_units.veh_body_styl_desc,
+        crash_units.veh_unit_desc
     from
-        public.crash_injury_metrics_view
+        public.crashes
+    left join lateral
+        (
+            select
+                units.crash_pk,
+                string_agg(movt_lkp.label::text, ',') as movement_desc,
+                string_agg(trvl_dir_lkp.label::text, ',') as travel_direction,
+                string_agg(
+                    veh_body_styl_lkp.label::text, ','
+                ) as veh_body_styl_desc,
+                string_agg(unit_desc_lkp.label::text, ',') as veh_unit_desc
+            from units
+            left join
+                lookups.movt_lkp as movt_lkp
+                on units.movement_id = movt_lkp.id
+            left join
+                lookups.trvl_dir_lkp as trvl_dir_lkp
+                on units.veh_trvl_dir_id = trvl_dir_lkp.id
+            left join
+                lookups.veh_body_styl_lkp as veh_body_styl_lkp
+                on units.veh_body_styl_id = veh_body_styl_lkp.id
+            left join
+                lookups.unit_desc_lkp as unit_desc_lkp
+                on units.unit_desc_id = unit_desc_lkp.id
+            where crashes.id = units.crash_pk
+            group by units.crash_pk
+        ) as crash_units
+        on true
+    left join lateral (
+        select *
+        from
+            public.crash_injury_metrics_view
+        where
+            crashes.id = id
+        limit 1
+    ) as crash_injury_metrics_view on true
+    left join
+        lookups.collsn_lkp
+        on public.crashes.fhe_collsn_id = lookups.collsn_lkp.id
     where
-        crashes.id = id
-    limit 1
-) as crash_injury_metrics_view on true
-left join
-    lookups.collsn_lkp
-    on public.crashes.fhe_collsn_id = lookups.collsn_lkp.id
-where crashes.is_deleted = false and crashes.crash_timestamp >= (now() - '5 years'::interval)::date
-union all
-select
-    aab.form_id as cris_crash_id,
-    'NON-CR3'::text as record_type,
-    aab.location_id,
-    aab.case_id::text as case_id,
-    aab.date::text as crash_date,
-    concat(aab.hour, ':00:00') as crash_time,
-    (
-        select
-            case date_part('dow'::text, aab.date)
-                when 0 then 'SUN'::text
-                when 1 then 'MON'::text
-                when 2 then 'TUE'::text
-                when 3 then 'WED'::text
-                when 4 then 'THU'::text
-                when 5 then 'FRI'::text
-                when 6 then 'SAT'::text
-                else 'Unknown'::text
-            end as "case"
-    ) as day_of_week,
-    0 as crash_sev_id,
-    aab.latitude as latitude,
-    aab.longitude as longitude,
-    aab.address as address_primary,
-    ''::text as address_secondary,
-    0 as non_injry_count,
-    0 as nonincap_injry_count,
-    0 as poss_injry_count,
-    0 as sus_serious_injry_count,
-    0 as tot_injry_count,
-    0 as unkn_injry_count,
-    0 as vz_fatality_count,
-    aab.est_comp_cost_crash_based as est_comp_cost,
-    ''::text as collsn_desc,
-    ''::text as travel_direction,
-    ''::text as movement_desc,
-    ''::text as veh_body_styl_desc,
-    ''::text as veh_unit_desc
-from atd_apd_blueform as aab
-where aab.date >= (now() - '5 years'::interval)::date);
+        crashes.is_deleted = false
+        and crashes.crash_timestamp >= (now() - '5 years'::interval)::date
+    union all
+    select
+        aab.form_id as cris_crash_id,
+        'NON-CR3'::text as record_type,
+        aab.location_id,
+        aab.case_id::text as case_id,
+        aab.date::text as crash_date,
+        concat(aab.hour, ':00:00') as crash_time,
+        (
+            select
+                case date_part('dow'::text, aab.date)
+                    when 0 then 'SUN'::text
+                    when 1 then 'MON'::text
+                    when 2 then 'TUE'::text
+                    when 3 then 'WED'::text
+                    when 4 then 'THU'::text
+                    when 5 then 'FRI'::text
+                    when 6 then 'SAT'::text
+                    else 'Unknown'::text
+                end as "case"
+        ) as day_of_week,
+        0 as crash_sev_id,
+        aab.latitude as latitude,
+        aab.longitude as longitude,
+        aab.address as address_primary,
+        ''::text as address_secondary,
+        0 as non_injry_count,
+        0 as nonincap_injry_count,
+        0 as poss_injry_count,
+        0 as sus_serious_injry_count,
+        0 as tot_injry_count,
+        0 as unkn_injry_count,
+        0 as vz_fatality_count,
+        aab.est_comp_cost_crash_based as est_comp_cost,
+        ''::text as collsn_desc,
+        ''::text as travel_direction,
+        ''::text as movement_desc,
+        ''::text as veh_body_styl_desc,
+        ''::text as veh_unit_desc
+    from atd_apd_blueform as aab
+    where aab.date >= (now() - '5 years'::interval)::date
+);

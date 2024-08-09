@@ -37,19 +37,19 @@ export const crashGridTableColumns = {
   sus_serious_injry_count: {
     searchable: false,
     sortable: true,
-    label_table: "Suspected Serious Injury Count",
+    label_table: "Sus Serious Injuries Count",
     type: "Int",
   },
   vz_fatality_count: {
     searchable: false,
     sortable: true,
-    label_table: "VZ Death Count",
+    label_table: "Death Count",
     type: "Date",
   },
   est_comp_cost_crash_based: {
     searchable: false,
     sortable: true,
-    label_table: "Est Comprehensive Cost",
+    label_table: "Est Comp Cost",
     type: "Currency",
   },
   collsn_desc: {
@@ -58,20 +58,77 @@ export const crashGridTableColumns = {
     label_table: "Collision Description",
     type: "String",
   },
-  "units { unit_desc_lkp { label } }": {
-    searchable: false,
-    sortable: false,
-    label_table: "Unit Description",
-    type: "String",
-    hidden: true,
-  },
-  is_manual_geocode: {
-    searchable: false,
-    sortable: true,
-    label_table: "Manual geocode",
-    type: "Boolean",
-  },
 };
+
+
+export const locationCrashGridTableColumns = {
+    record_locator: {
+      primary_key: true,
+      searchable: true,
+      sortable: true,
+      label_search: "Search by Crash ID",
+      label_table: "Crash ID",
+      type: "String",
+    },
+    case_id: {
+      searchable: true,
+      sortable: true,
+      label_search: "Search by Case ID",
+      label_table: "Case ID",
+      type: "String",
+    },
+    crash_timestamp: {
+      searchable: false,
+      sortable: true,
+      label_table: "Crash Date",
+      type: "date_iso",
+    },
+    address_primary: {
+      searchable: true,
+      sortable: true,
+      label_search: "Search by Primary Address",
+      label_table: "Primary Address",
+      type: "String",
+    },
+    address_secondary: {
+      searchable: true,
+      sortable: true,
+      label_search: "Search by Secondary Address",
+      label_table: "Secondary Address",
+      type: "String",
+    },
+    sus_serious_injry_count: {
+      searchable: false,
+      sortable: true,
+      label_table: "Suspected Serious Injury Count",
+      type: "Int",
+    },
+    vz_fatality_count: {
+      searchable: false,
+      sortable: true,
+      label_table: "Death Count",
+      type: "Date",
+    },
+    est_comp_cost_crash_based: {
+      searchable: false,
+      sortable: true,
+      label_table: "Est Comprehensive Cost",
+      type: "Currency",
+    },
+    collsn_desc: {
+      searchable: false,
+      sortable: true,
+      label_table: "Collision Description",
+      type: "String",
+    },
+    "units { unit_desc_lkp { label } }": {
+      searchable: false,
+      sortable: false,
+      label_table: "Unit Description",
+      type: "String",
+      hidden: true,
+    },
+  };
 
 export const nonCR3CrashGridTableColumns = {
   case_id: {
@@ -203,28 +260,6 @@ export const crashGridTableAdvancedFilters = {
     icon: "map-marker",
     label: "Geography",
     filters: [
-      {
-        id: "geo_geocoded",
-        label: "Has Been Geocoded",
-        filter: {
-          where: [
-            {
-              is_manual_geocode: "_eq: true",
-            },
-          ],
-        },
-      },
-      {
-        id: "geo_confirmed_coordinates",
-        label: "No CRIS Coordinates",
-        filter: {
-          where: [
-            {
-              has_no_cris_coordinates: "_eq: true",
-            },
-          ],
-        },
-      },
       {
         id: "geo_afd",
         label: "Include Outside Of Austin Full Purpose",

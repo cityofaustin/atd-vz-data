@@ -7,7 +7,7 @@ import gqlAbstract from "../../queries/gqlAbstract";
 import { crashQueryExportFields } from "../../queries/crashes";
 
 import {
-  crashGridTableColumns,
+    locationCrashGridTableColumns,
   crashGridTableAdvancedFilters,
 } from "../Crashes/crashGridTableParameters";
 import { colors } from "../../styles/colors";
@@ -19,7 +19,7 @@ function LocationCrashes(props) {
     dateField: "crash_date_ct",
     single_item: "crashes",
     showDateRange: true,
-    columns: crashGridTableColumns,
+    columns: locationCrashGridTableColumns,
     order_by: {
       est_comp_cost_crash_based: "desc",
     },

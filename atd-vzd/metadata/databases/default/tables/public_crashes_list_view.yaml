@@ -43,7 +43,6 @@ select_permissions:
         - cris_fatality_count
         - est_comp_cost_crash_based
         - fatality_count
-        - has_no_cris_coordinates
         - id
         - in_austin_full_purpose
         - intrsct_relat_id
@@ -103,7 +102,6 @@ select_permissions:
         - cris_fatality_count
         - est_comp_cost_crash_based
         - fatality_count
-        - has_no_cris_coordinates
         - id
         - in_austin_full_purpose
         - intrsct_relat_id
@@ -158,7 +156,6 @@ select_permissions:
         - years_of_life_lost
         - active_school_zone_fl
         - at_intrsct_fl
-        - has_no_cris_coordinates
         - in_austin_full_purpose
         - is_manual_geocode
         - onsys_fl
