@@ -80,6 +80,7 @@
 - "!include public_person_injury_metrics_view.yaml"
 - "!include public_recommendations.yaml"
 - "!include public_recommendations_partners.yaml"
+- "!include public_signal_engineer_areas.yaml"
 - "!include public_socrata_export_crashes_view.yaml"
 - "!include public_socrata_export_people_view.yaml"
 - "!include public_unit_injury_metrics_view.yaml"

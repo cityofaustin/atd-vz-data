@@ -28,6 +28,7 @@ The design supports an editing environment which enables Vision Zero program sta
   - [Add a custom lookup value to a CRIS-managed lookup table (todo)](#add-a-custom-lookup-value-to-a-cris-managed-lookup-table-todo)
   - [Debugging record triggers](#debugging-record-triggers)
   - [Parsing change log data](#parsing-change-log-data)
+  - [Creating a new geospatial layer](#creating-a-new-geospatial-layer)
 - [Backups](#backups)
 - [Hasura](#hasura)
 - [Development and deployment](#development-and-deployment)
@@ -237,13 +238,16 @@ The view `crashes_change_log_view` provides a unioned view of the unified table 
 
 We have a number of tables which function as geospatial layers which are referenced by crashes and various other records. At the Vision Zero team's request, our team is actively working to expand the number of layers available in the database as well as add new attribute columns to crash records which will be populated based on their intersection with these layers.
 
-| Table                 | Geometry type | description                                                                                               | owner/source                                                         |
-| --------------------- | ------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `council_districts`   | polygon       | City of Austin council districts                                                                          | ArcGIS Online authoritative layer owned by CTM GIS                   |
-| `atd_jurisdictions`   | polygon       | City of Austin jurisdictions                                                                              | ArcGIS Online authoritative layer owned by CTM GIS                   |
-| `engineering_areas`   | polygon       | TPW traffic engineering areas                                                                             | ArcGIS Online authoritative layer owned by DTS GIS                   |
-| `non_coa_roadways`    | polygon       | Polygon layer covering roadways which are not maintained by the City of Austin                            | ArcGIS Online authoritative layer maintained by Vision Zero GIS team |
-| `atd_txdot_locations` | polygon       | Aka, "location polygons", these shapes are used to group crashes based on an intersection or road segment | ArcGIS Online authoritative layer maintained by Vision Zero GIS team |
+See also the guidance for creating a new geospatial layer in the common maintance tasks section, below.
+
+| Table                   | Geometry type  | description                                                                                               | owner/source                                                         |
+| ----------------------- | -------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `council_districts`     | `MultiPolygon` | City of Austin council districts                                                                          | ArcGIS Online authoritative layer owned by CTM GIS                   |
+| `atd_jurisdictions`     | `MultiPolygon` | City of Austin jurisdictions                                                                              | ArcGIS Online authoritative layer owned by CTM GIS                   |
+| `engineering_areas`     | `MultiPolygon` | TPW traffic engineering areas                                                                             | ArcGIS Online authoritative layer owned by DTS GIS                   |
+| `non_coa_roadways`      | `MultiPolygon` | Polygon layer covering roadways which are not maintained by the City of Austin                            | ArcGIS Online authoritative layer maintained by Vision Zero GIS team |
+| `atd_txdot_locations`   | `MultiPolygon` | Aka, "location polygons", these shapes are used to group crashes based on an intersection or road segment | ArcGIS Online authoritative layer maintained by Vision Zero GIS team |
+| `signal_engineer_areas` | `MultiPolygon` | Polygon zones assigned to traffic signal engineers.                                                       | ArcGIS Online authoritative layer owned by DTS GIS                   |
 
 ## Common maintenance tasks
 
@@ -352,6 +356,14 @@ WHERE
     column_name NOT IN('updated_at', 'created_at', 'cr3_stored_fl', 'cr3_processed_at')
 LIMIT 10000;
 ```
+
+### Creating a new geospatial layer
+
+When creating a new database table to hold feature data, polygon geometries should always be stored in a `Multipolygon` column type to avoid future issues. Any columns that will be populated with AGOL feature attribute data should exactly match the column names used in AGOL, except they should be lowercase.
+
+As a best practice, tables should always be configured with `created_at` and `updated_at` columns of type `timestamptz` with default `now()`. As well, the layer should be configured with an `on update` trigger to set the `updated_at` timestamp using the existing `set_updated_at_timestamp()` function.
+
+Lastly, new layers should make use of the [ArcGIS Online Layer Helper](/toolbox/load_agol_layer) tool so that they can be easily refreshed/maintained.
 
 ## Backups
 
