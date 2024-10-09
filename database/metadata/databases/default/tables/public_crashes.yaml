@@ -17,15 +17,6 @@ object_relationships:
   - name: crashes_cri
     using:
       foreign_key_constraint_on: id
-  - name: crashes_list_view
-    using:
-      manual_configuration:
-        column_mapping:
-          id: id
-        insertion_order: null
-        remote_table:
-          name: crashes_list_view
-          schema: public
   - name: recommendation
     using:
       foreign_key_constraint_on:
@@ -324,4 +315,139 @@ select_permissions:
         - updated_at
         - position
       filter: {}
+    comment: ""
+update_permissions:
+  - role: editor
+    permission:
+      columns:
+        - active_school_zone_fl
+        - at_intrsct_fl
+        - case_id
+        - council_district
+        - cr3_processed_at
+        - cr3_stored_fl
+        - crash_speed_limit
+        - crash_timestamp
+        - created_by
+        - cris_crash_id
+        - engineering_area_id
+        - fhe_collsn_id
+        - in_austin_full_purpose
+        - intrsct_relat_id
+        - investigat_agency_id
+        - investigator_narrative
+        - latitude
+        - law_enforcement_ytd_fatality_num
+        - light_cond_id
+        - location_id
+        - longitude
+        - medical_advisory_fl
+        - obj_struck_id
+        - onsys_fl
+        - position
+        - private_dr_fl
+        - road_constr_zone_fl
+        - road_constr_zone_wrkr_fl
+        - rpt_block_num
+        - rpt_city_id
+        - rpt_cris_cnty_id
+        - rpt_hwy_num
+        - rpt_hwy_sfx
+        - rpt_rdwy_sys_id
+        - rpt_ref_mark_dir
+        - rpt_ref_mark_dist_uom
+        - rpt_ref_mark_nbr
+        - rpt_ref_mark_offset_amt
+        - rpt_road_part_id
+        - rpt_sec_block_num
+        - rpt_sec_hwy_num
+        - rpt_sec_hwy_sfx
+        - rpt_sec_rdwy_sys_id
+        - rpt_sec_road_part_id
+        - rpt_sec_street_desc
+        - rpt_sec_street_name
+        - rpt_sec_street_pfx
+        - rpt_sec_street_sfx
+        - rpt_street_desc
+        - rpt_street_name
+        - rpt_street_pfx
+        - rpt_street_sfx
+        - rr_relat_fl
+        - schl_bus_fl
+        - surf_cond_id
+        - surf_type_id
+        - thousand_damage_fl
+        - toll_road_fl
+        - traffic_cntl_id
+        - txdot_rptable_fl
+        - updated_by
+        - wthr_cond_id
+      filter: {}
+      check: {}
+    comment: ""
+  - role: vz-admin
+    permission:
+      columns:
+        - active_school_zone_fl
+        - at_intrsct_fl
+        - case_id
+        - council_district
+        - cr3_processed_at
+        - cr3_stored_fl
+        - crash_speed_limit
+        - crash_timestamp
+        - engineering_area_id
+        - fhe_collsn_id
+        - in_austin_full_purpose
+        - intrsct_relat_id
+        - investigat_agency_id
+        - investigator_narrative
+        - latitude
+        - law_enforcement_ytd_fatality_num
+        - light_cond_id
+        - location_id
+        - longitude
+        - medical_advisory_fl
+        - obj_struck_id
+        - onsys_fl
+        - position
+        - private_dr_fl
+        - road_constr_zone_fl
+        - road_constr_zone_wrkr_fl
+        - rpt_block_num
+        - rpt_city_id
+        - rpt_cris_cnty_id
+        - rpt_hwy_num
+        - rpt_hwy_sfx
+        - rpt_rdwy_sys_id
+        - rpt_ref_mark_dir
+        - rpt_ref_mark_dist_uom
+        - rpt_ref_mark_nbr
+        - rpt_ref_mark_offset_amt
+        - rpt_road_part_id
+        - rpt_sec_block_num
+        - rpt_sec_hwy_num
+        - rpt_sec_hwy_sfx
+        - rpt_sec_rdwy_sys_id
+        - rpt_sec_road_part_id
+        - rpt_sec_street_desc
+        - rpt_sec_street_name
+        - rpt_sec_street_pfx
+        - rpt_sec_street_sfx
+        - rpt_street_desc
+        - rpt_street_name
+        - rpt_street_pfx
+        - rpt_street_sfx
+        - rr_relat_fl
+        - schl_bus_fl
+        - surf_cond_id
+        - surf_type_id
+        - thousand_damage_fl
+        - toll_road_fl
+        - traffic_cntl_id
+        - txdot_rptable_fl
+        - updated_by
+        - wthr_cond_id
+      filter: {}
+      check: {}
     comment: ""

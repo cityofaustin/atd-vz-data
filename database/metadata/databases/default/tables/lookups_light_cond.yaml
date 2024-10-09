@@ -9,13 +9,6 @@ array_relationships:
         table:
           name: crashes_cris
           schema: public
-  - name: crashes_edits
-    using:
-      foreign_key_constraint_on:
-        column: light_cond_id
-        table:
-          name: crashes_edits
-          schema: public
   - name: crashess
     using:
       foreign_key_constraint_on:

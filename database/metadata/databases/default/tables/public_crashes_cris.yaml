@@ -9,13 +9,6 @@ object_relationships:
         table:
           name: crashes
           schema: public
-  - name: crashes_edit
-    using:
-      foreign_key_constraint_on:
-        column: id
-        table:
-          name: crashes_edits
-          schema: public
 array_relationships:
   - name: change_log_crashes_cris
     using:

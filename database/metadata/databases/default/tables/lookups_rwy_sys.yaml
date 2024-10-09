@@ -9,13 +9,6 @@ array_relationships:
         table:
           name: crashes_cris
           schema: public
-  - name: crashesEditsByRptSecRdwySysId
-    using:
-      foreign_key_constraint_on:
-        column: rpt_sec_rdwy_sys_id
-        table:
-          name: crashes_edits
-          schema: public
   - name: crashesUnifiedsByRptSecRdwySysId
     using:
       foreign_key_constraint_on:
@@ -29,13 +22,6 @@ array_relationships:
         column: rpt_rdwy_sys_id
         table:
           name: crashes_cris
-          schema: public
-  - name: crashes_edits
-    using:
-      foreign_key_constraint_on:
-        column: rpt_rdwy_sys_id
-        table:
-          name: crashes_edits
           schema: public
   - name: crashess
     using:

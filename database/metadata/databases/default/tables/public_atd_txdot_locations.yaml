@@ -1,16 +1,6 @@
 table:
   name: atd_txdot_locations
   schema: public
-object_relationships:
-  - name: locations_list_view
-    using:
-      manual_configuration:
-        column_mapping:
-          location_id: location_id
-        insertion_order: null
-        remote_table:
-          name: locations_list_view
-          schema: public
 array_relationships:
   - name: crashes
     using:
