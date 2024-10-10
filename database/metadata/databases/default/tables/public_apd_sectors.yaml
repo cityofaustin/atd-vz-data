@@ -1,0 +1,3 @@
+table:
+  name: apd_sectors
+  schema: public

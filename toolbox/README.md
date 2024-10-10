@@ -12,10 +12,6 @@ Helper script to disable or enable all VZ users through the Auth0 API.
 
 Various scripts used as part of launching the new data model for VZ v2.0. We want to keep these around for the few months after launch (August 2024) but they can be archived in the near future.
 
-### Engineering Areas and council districts load tools - `engineering_areas_load`, `load_council_districts`
-
-Nodejs tool for importing ArcGIS Online (AGOL) layers into the database
-
 ### ArcGIS Online Layer Helper - `load_agol_layer`
 
 Nodejs tool load ArcGIS Online (AGOL) layers into the Vision Zero database.

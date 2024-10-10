@@ -1,0 +1,3 @@
+table:
+  name: zip_codes
+  schema: public

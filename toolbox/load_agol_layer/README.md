@@ -9,8 +9,8 @@ This tool is used to load an ArcGIS Online (AGOL) layer into the Vision Zero dat
 ```
 HASURA_GRAPHQL_ENDPOINT=http://localhost:8084/v1/graphql
 HASURA_GRAPHQL_ADMIN_SECRET=hasurapassword
-AGOL_USERNAME=
-AGOL_PASSWORD=
+AGOL_USERNAME=<use AGOL Scripts Publisher item in 1pass>
+AGOL_PASSWORD=<use AGOL Scripts Publisher item in 1pass>
 ```
 
 2. Start your local Vision Zero stack ([docs](https://github.com/cityofaustin/vision-zero?tab=readme-ov-file#quick-start))
@@ -37,13 +37,16 @@ See the [database documentation](/database#geospatial-layers) about geospatial l
 
 ## CLI
 
-The `-l/--layer` arg is required to specify which layer will be processed. You can use the `--help` flag to see which layer options are available.
+- The `-l/--layer` arg is required to specify which layer will be processed.
+- Use `-s/--save` to save a copy of the post-processed geojson to `./data/<layer-name>.geojson`
+- Use the `--help` flag to see which layer options are available.
 
 ```shell
-❯ node src/load_agol_layer.js --help
+$ node src/load_agol_layer.js --help
 Usage: load_agol_layer [options]
 
 Options:
-  -l, --layer <name>  layer name (choices: "non_coa_roadways", "signal_engineer_areas")
-  -h, --help          display help for comma
+  -l, --layer <name>  layer name (choices: "apd_sectors", "council_districts", "engineering_areas", "non_coa_roadways", "signal_engineer_areas", "zipcodes")
+  -s, --save          save a copy of the geojson output to './data/<layer-name>.geojson'
+  -h, --help          display help for command
 ```

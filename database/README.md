@@ -240,14 +240,16 @@ We have a number of tables which function as geospatial layers which are referen
 
 See also the guidance for creating a new geospatial layer in the common maintance tasks section, below.
 
-| Table                   | Geometry type  | description                                                                                               | owner/source                                                         |
-| ----------------------- | -------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `council_districts`     | `MultiPolygon` | City of Austin council districts                                                                          | ArcGIS Online authoritative layer owned by CTM GIS                   |
-| `atd_jurisdictions`     | `MultiPolygon` | City of Austin jurisdictions                                                                              | ArcGIS Online authoritative layer owned by CTM GIS                   |
-| `engineering_areas`     | `MultiPolygon` | TPW traffic engineering areas                                                                             | ArcGIS Online authoritative layer owned by DTS GIS                   |
-| `non_coa_roadways`      | `MultiPolygon` | Polygon layer covering roadways which are not maintained by the City of Austin                            | ArcGIS Online authoritative layer maintained by Vision Zero GIS team |
-| `atd_txdot_locations`   | `MultiPolygon` | Aka, "location polygons", these shapes are used to group crashes based on an intersection or road segment | ArcGIS Online authoritative layer maintained by Vision Zero GIS team |
-| `signal_engineer_areas` | `MultiPolygon` | Polygon zones assigned to traffic signal engineers.                                                       | ArcGIS Online authoritative layer owned by DTS GIS                   |
+| Table                   | Geometry type  | description                                                                                                      | owner/source                                                         |
+| ----------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `council_districts`     | `MultiPolygon` | City of Austin council districts                                                                                 | ArcGIS Online authoritative layer owned by CTM GIS                   |
+| `atd_jurisdictions`     | `MultiPolygon` | City of Austin jurisdictions                                                                                     | ArcGIS Online authoritative layer owned by CTM GIS                   |
+| `engineering_areas`     | `MultiPolygon` | TPW traffic engineering areas                                                                                    | ArcGIS Online authoritative layer owned by DTS GIS                   |
+| `non_coa_roadways`      | `MultiPolygon` | Polygon layer covering roadways which are not maintained by the City of Austin                                   | ArcGIS Online authoritative layer maintained by Vision Zero GIS team |
+| `atd_txdot_locations`   | `MultiPolygon` | Aka, "location polygons", these shapes are used to group crashes based on an intersection or road segment        | ArcGIS Online authoritative layer maintained by Vision Zero GIS team |
+| `signal_engineer_areas` | `MultiPolygon` | Polygon zones assigned to traffic signal engineers                                                               | ArcGIS Online authoritative layer owned by DTS GIS                   |
+| `zip_codes`             | `MultiPolygon` | Polygons which represent the Zone Improvement Plan (ZIP) postal code areas in the Austin metro area              | ArcGIS Online authoritative layer owned by DTS GIS                   |
+| `apd_sectors`           | `MultiPolygon` | Polygons which reprerest Austin Police Department (APD) sectors and districts used for dispatching and reporting | ArcGIS Online authoritative layer owned by APD                       |
 
 ## Common maintenance tasks
 

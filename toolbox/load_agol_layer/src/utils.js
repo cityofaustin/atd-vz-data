@@ -8,6 +8,20 @@ const COORDINATE_DECIMAL_PLACES = 6;
 const coordPrecisionMultiplier = Math.pow(10, COORDINATE_DECIMAL_PLACES);
 
 /**
+ * Save a JSON object to file
+ */
+const saveJSONFile = (name, data) => {
+  fs.writeFileSync(name, JSON.stringify(data));
+};
+
+/**
+ * Read a JSON file into memory
+ */
+const loadJSONFile = (name) => {
+  return JSON.parse(fs.readFileSync(name));
+};
+
+/**
  * Construct a URL to an AGOL service
  */
 const getEsriLayerUrl = ({ service_name, layer_id, query_params }) => {
@@ -160,12 +174,43 @@ const makeHasuraRequest = async ({ query, variables }) => {
   return genericJSONFetch({ url, method: "POST", body, headers });
 };
 
+/**
+ * The COA council layer has two district 10 features.
+ * This helper combines their geometries into a single feature. Alternatively
+ * we could restructure the VZ database to use this layer's official primary
+ * key column, which is called `single_member_districts_id`
+ * @param {Object} geojson - the geojson feature collection to be processed
+ *
+ * @returns {void} Updates the geojson
+ */
+const combineDistrictTenFeatures = (geojson) => {
+  let combinedDistrictTenFeature;
+  geojson.features
+    .filter((feature) => feature.properties.council_district === 10)
+    .forEach((feature) => {
+      if (!combinedDistrictTenFeature) {
+        combinedDistrictTenFeature = feature;
+        return;
+      }
+      combinedDistrictTenFeature.geometry.coordinates[0].concat(
+        feature.geometry.coordinates[0]
+      );
+    });
+  geojson.features = geojson.features.filter(
+    (feature) => feature.properties.council_district !== 10
+  );
+  geojson.features.push(combinedDistrictTenFeature);
+};
+
 module.exports = {
+  combineDistrictTenFeatures,
+  getEsriJson,
   getEsriLayerUrl,
   getEsriToken,
-  getEsriJson,
-  makeUniformMultiPoly,
   handleFields,
+  loadJSONFile,
   makeHasuraRequest,
+  makeUniformMultiPoly,
   reduceGeomPrecision,
+  saveJSONFile,
 };

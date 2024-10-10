@@ -5,8 +5,8 @@ select_permissions:
   - role: editor
     permission:
       columns:
-        - area_id
-        - label
+        - engineering_area_id
+        - atd_engineer_areas
         - updated_at
         - geometry
       filter: {}
@@ -14,8 +14,8 @@ select_permissions:
   - role: readonly
     permission:
       columns:
-        - area_id
-        - label
+        - engineering_area_id
+        - atd_engineer_areas
         - updated_at
         - geometry
       filter: {}
@@ -23,8 +23,8 @@ select_permissions:
   - role: vz-admin
     permission:
       columns:
-        - area_id
-        - label
+        - engineering_area_id
+        - atd_engineer_areas
         - updated_at
         - geometry
       filter: {}

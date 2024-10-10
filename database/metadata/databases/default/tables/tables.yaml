@@ -43,6 +43,7 @@
 - "!include public__column_metadata.yaml"
 - "!include public__cris_import_log.yaml"
 - "!include public__lookup_tables_view.yaml"
+- "!include public_apd_sectors.yaml"
 - "!include public_atd__coordination_partners_lkp.yaml"
 - "!include public_atd__recommendation_status_lkp.yaml"
 - "!include public_atd_apd_blueform.yaml"
@@ -88,3 +89,4 @@
 - "!include public_units_cris.yaml"
 - "!include public_units_edits.yaml"
 - "!include public_view_crash_narratives_ocr_todo.yaml"
+- "!include public_zip_codes.yaml"

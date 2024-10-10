@@ -15,7 +15,7 @@ object_relationships:
     using:
       manual_configuration:
         column_mapping:
-          engineering_area_id: area_id
+          engineering_area_id: engineering_area_id
         insertion_order: null
         remote_table:
           name: engineering_areas
