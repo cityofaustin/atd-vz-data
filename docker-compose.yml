@@ -3,13 +3,16 @@ services:
     image: hasura/graphql-engine:v2.43.0
     volumes:
       - ./viewer/graphql-engine-metadata:/metadata
-    container_name: visionzero-graphql-engine
     ports:
       - 8084:8080
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://visionzero:visionzero@postgis:5432/atd_vz_data
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: /srv/console-assets
+      HASURA_GRAPHQL_NO_OF_RETRIES: 30
+    depends_on:
+      - postgis
+
   vze:
     tty: true
     container_name: visionzero-vze
@@ -30,3 +33,12 @@ services:
     build: viewer
     volumes:
       - ./viewer:/root/viewer
+
+  postgis:
+    build: database
+    env_file:
+      - .env
+    volumes:
+      - ./database/snapshots:/snapshots
+    ports:
+      - 5432:5432

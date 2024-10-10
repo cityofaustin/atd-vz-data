@@ -1,0 +1,68 @@
+name: "Build & Publish DB Documentation"
+
+on:
+  push:
+    branches:
+      #- main
+      #- production
+      - add-schema-spy-github-action
+
+    paths:
+      - "database/**"
+      - ".github/workflows/schema_spy.yml"
+
+jobs:
+  build:
+    name: "Build SchemaSpy Documentation"
+    runs-on: ubuntu-24.04
+    # Setup Python
+    steps:
+
+      # Checkout our code
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+
+      # Get python installed
+      - uses: actions/setup-python@v5
+        name: "Install setup-python@v5"
+        with:
+          python-version: "3.10"
+          # architecture: "x64"
+
+      # Install python libraries
+      - name: "Install Python Libraries"
+        run: |
+          sudo apt-get install -y python3-setuptools
+          pip3 install awscli boto3 virtualenv requests shtab python-dotenv --break-system-packages
+      
+      # Install the graphql-engine CLI
+      - name: "Install the graphql-engine CLI"
+        run: |
+          curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | /bin/bash
+
+      # Run the shell commands using the AWS environment variables
+      - name: "Build & Publish Database Documentation"
+        env:
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          export BRANCH_NAME=${GITHUB_REF##*/};
+          echo "SHA: ${GITHUB_SHA}";
+          echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}";
+          echo "GR: ${GITHUB_REF}";
+          echo "PWD: $(pwd)";
+
+          echo "POSTGRES_PASSWORD=visionzero" >> .env;
+          echo "POSTGRES_USER=visionzero" >> .env;
+          echo "POSTGRES_DB=atd_vz_data" >> .env;
+          echo "POSTGRES_HOST_AUTH_METHOD=trust" >> .env;
+
+          docker compose -f docker-compose-gh-action.yml up -d postgis;
+          sleep 10;
+          docker compose logs postgis;
+          docker compose -f docker-compose-gh-action.yml up -d graphql-engine;
+          sleep 10;
+          docker compose logs graphql-engine;
+          cd database;
+          hasura --skip-update-check --database-name=default migrate apply;

@@ -131,8 +131,6 @@ def replicateDb(args):
     # fmt: off
     replicate_runner_command = docker_compose_invocation + [
         "-f", "docker-compose.yml", 
-        "-f",
-        "docker-compose-ram-disk.yml" if args.ram_disk else "docker-compose-docker-volume.yml",
         "run",
         "--rm",
         "-e", "PGHOST=" + os.environ["RR_HOSTNAME"],
@@ -160,8 +158,6 @@ def replicateDb(args):
 
     postgres_db_runner_command = docker_compose_invocation + [
         "-f", "docker-compose.yml", 
-        "-f",
-        "docker-compose-ram-disk.yml" if args.ram_disk else "docker-compose-docker-volume.yml",
         "run",
         "--rm",
         "-e", "PGHOST=" + 'postgis',
@@ -173,8 +169,6 @@ def replicateDb(args):
     
     populate_runner_command = docker_compose_invocation + [
         "-f", "docker-compose.yml", 
-        "-f",
-        "docker-compose-ram-disk.yml" if args.ram_disk else "docker-compose-docker-volume.yml",
         "run",
         "--rm",
         "-e", "PGHOST=" + 'postgis',
@@ -198,7 +192,9 @@ def replicateDb(args):
 
     drop_database_command = [
         "psql",
-        "--command=DROP DATABASE " + os.environ["POSTGRES_DB"] + " WITH(force)",
+        "--command=DROP DATABASE IF EXISTS "
+        + os.environ["POSTGRES_DB"]
+        + " WITH(force)",
     ]
 
     print("️🫳 Dropping the local database")
@@ -229,12 +225,6 @@ def dumpLocalDb(args):
     dump_runner_command = docker_compose_invocation + [
         "-f",
         "docker-compose.yml",
-        "-f",
-        (
-            "docker-compose-ram-disk.yml"
-            if args.ram_disk
-            else "docker-compose-docker-volume.yml"
-        ),
         "run",
         "--rm",
         "-e",
@@ -266,8 +256,6 @@ def psql(args):
     # fmt: off
     db_tools_runner_command = docker_compose_invocation + [
         "-f", "docker-compose.yml", 
-        "-f",
-        "docker-compose-ram-disk.yml" if args.ram_disk else "docker-compose-docker-volume.yml",
         "run",
         "--rm",
         "-e", "PGHOST=postgis",
@@ -289,12 +277,6 @@ def buildTools(args):
         + [
             "-f",
             "docker-compose.yml",
-            "-f",
-            (
-                "docker-compose-ram-disk.yml"
-                if args.ram_disk
-                else "docker-compose-docker-volume.yml"
-            ),
             "build",
             "--no-cache",
         ]
@@ -308,12 +290,6 @@ def dbUp(args):
         + [
             "-f",
             "docker-compose.yml",
-            "-f",
-            (
-                "docker-compose-ram-disk.yml"
-                if args.ram_disk
-                else "docker-compose-docker-volume.yml"
-            ),
             "up",
             "-d",
             "postgis",
@@ -331,12 +307,6 @@ def dbDown(args):
         + [
             "-f",
             "docker-compose.yml",
-            "-f",
-            (
-                "docker-compose-ram-disk.yml"
-                if args.ram_disk
-                else "docker-compose-docker-volume.yml"
-            ),
             "stop",
             "postgis",
         ]
@@ -352,12 +322,6 @@ def graphqlEngineUp(args):
         + [
             "-f",
             "docker-compose.yml",
-            "-f",
-            (
-                "docker-compose-ram-disk.yml"
-                if args.ram_disk
-                else "docker-compose-docker-volume.yml"
-            ),
             "up",
             "-d",
             "graphql-engine",
@@ -383,12 +347,6 @@ def graphqlEngineDown(args):
         + [
             "-f",
             "docker-compose.yml",
-            "-f",
-            (
-                "docker-compose-ram-disk.yml"
-                if args.ram_disk
-                else "docker-compose-docker-volume.yml"
-            ),
             "stop",
             "graphql-engine",
         ]
@@ -403,12 +361,6 @@ def vzeUp(args):
         + [
             "-f",
             "docker-compose.yml",
-            "-f",
-            (
-                "docker-compose-ram-disk.yml"
-                if args.ram_disk
-                else "docker-compose-docker-volume.yml"
-            ),
             "up",
             "-d",
             "vze",
@@ -424,12 +376,6 @@ def vzeDown(args):
         + [
             "-f",
             "docker-compose.yml",
-            "-f",
-            (
-                "docker-compose-ram-disk.yml"
-                if args.ram_disk
-                else "docker-compose-docker-volume.yml"
-            ),
             "stop",
             "vze",
         ]
@@ -444,12 +390,6 @@ def vzvUp(args):
         + [
             "-f",
             "docker-compose.yml",
-            "-f",
-            (
-                "docker-compose-ram-disk.yml"
-                if args.ram_disk
-                else "docker-compose-docker-volume.yml"
-            ),
             "up",
             "-d",
             "vzv",
@@ -465,12 +405,6 @@ def vzvDown(args):
         + [
             "-f",
             "docker-compose.yml",
-            "-f",
-            (
-                "docker-compose-ram-disk.yml"
-                if args.ram_disk
-                else "docker-compose-docker-volume.yml"
-            ),
             "stop",
             "vzv",
         ]
@@ -484,8 +418,6 @@ def toolsShell(args):
     # fmt: off
     tool_runner_command = docker_compose_invocation + [
         "-f", "docker-compose.yml", 
-        "-f",
-        "docker-compose-ram-disk.yml" if args.ram_disk else "docker-compose-docker-volume.yml",
         "run",
         "--rm",
         "-e", "PGHOST=" + "postgis",
@@ -507,12 +439,6 @@ def stop(args):
         + [
             "-f",
             "docker-compose.yml",
-            "-f",
-            (
-                "docker-compose-ram-disk.yml"
-                if args.ram_disk
-                else "docker-compose-docker-volume.yml"
-            ),
             "stop",
         ]
     )
