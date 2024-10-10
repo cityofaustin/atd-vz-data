@@ -1,6 +1,6 @@
 table:
   name: engineering_areas
-  schema: public
+  schema: geo
 select_permissions:
   - role: editor
     permission:

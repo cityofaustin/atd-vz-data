@@ -19,7 +19,7 @@ object_relationships:
         insertion_order: null
         remote_table:
           name: engineering_areas
-          schema: public
+          schema: geo
   - name: recommendation
     using:
       manual_configuration:

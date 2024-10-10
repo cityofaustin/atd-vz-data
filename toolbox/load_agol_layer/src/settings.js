@@ -45,8 +45,8 @@ const LAYERS = {
     ],
     shouldTruncateFirst: false,
     upsertMutation: `
-      mutation UpsertApdSectors($objects: [apd_sectors_insert_input!]!) {
-        insert_apd_sectors(
+      mutation UpsertApdSectors($objects: [geo_apd_sectors_insert_input!]!) {
+        insert_geo_apd_sectors(
           objects: $objects
           on_conflict: {
             constraint: apd_sectors_pkey
@@ -74,9 +74,9 @@ const LAYERS = {
     transformer: combineDistrictTenFeatures,
     upsertMutation: `
       mutation UpsertCouncilDistricts(
-        $objects: [council_districts_insert_input!]!
+        $objects: [geo_council_districts_insert_input!]!
       ) {
-        insert_council_districts(
+        insert_geo_council_districts(
           objects: $objects
           on_conflict: {
             constraint: council_districts_pkey
@@ -96,9 +96,9 @@ const LAYERS = {
     shouldTruncateFirst: false,
     upsertMutation: `
       mutation UpsertEngineeringAreas(
-        $objects: [engineering_areas_insert_input!]!
+        $objects: [geo_engineering_areas_insert_input!]!
       ) {
-        insert_engineering_areas(
+        insert_geo_engineering_areas(
           objects: $objects
           on_conflict: {
             constraint: engineering_areas_pkey
@@ -118,16 +118,16 @@ const LAYERS = {
     shouldTruncateFirst: true,
     truncateMutation: `
       mutation DeleteNonCoaRoadways {
-        delete_non_coa_roadways(where: { geometry: { _is_null: false } }) {
+        delete_geo_non_coa_roadways(where: { geometry: { _is_null: false } }) {
           affected_rows
         }
       }
     `,
     upsertMutation: `
       mutation InsertNonCoaRoadways(
-        $objects: [non_coa_roadways_insert_input!]!
+        $objects: [geo_non_coa_roadways_insert_input!]!
       ) {
-        insert_non_coa_roadways(objects: $objects) {
+        insert_geo_non_coa_roadways(objects: $objects) {
           affected_rows
         }
       }
@@ -141,9 +141,9 @@ const LAYERS = {
     shouldTruncateFirst: false,
     upsertMutation: `
       mutation UpsertSignalEngineerAreas(
-        $objects: [signal_engineer_areas_insert_input!]!
+        $objects: [geo_signal_engineer_areas_insert_input!]!
       ) {
-        insert_signal_engineer_areas(
+        insert_geo_signal_engineer_areas(
           objects: $objects
           on_conflict: {
             constraint: signal_engineer_areas_signal_engineer_area_id_key
@@ -163,9 +163,9 @@ const LAYERS = {
     shouldTruncateFirst: false,
     upsertMutation: `
       mutation UpsertZipCodes(
-        $objects: [zip_codes_insert_input!]!
+        $objects: [geo_zip_codes_insert_input!]!
       ) {
-        insert_zip_codes(
+        insert_geo_zip_codes(
           objects: $objects
           on_conflict: {
             constraint: zip_codes_pkey
